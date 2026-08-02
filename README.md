@@ -8,6 +8,7 @@ https://pangpangDaddy.github.io/llm-systems-lab/
 
 ## 课程内容
 
+- 7 个独立课程 Tab，支持 URL 深链接、浏览器前进/后退和移动端横向切换
 - 一次 Token 的生成过程
 - Embedding、Q/K/V、Attention、Transformer、Logits 与采样
 - Prefill 与 Decode 的区别
