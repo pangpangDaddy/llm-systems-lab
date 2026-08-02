@@ -415,6 +415,67 @@
     .policy-card b { display: block; margin: 7px 0 4px; font-size: 11px; }
     .policy-card p { margin: 0; color: var(--muted); font-size: 9px; }
 
+    /* 1M context explorer */
+    .long-card { padding: 22px; overflow: hidden; }
+    .long-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 17px; border-bottom: 1px solid var(--line); }
+    .long-controls .field { padding: 7px 9px; border: 1px solid var(--line); border-radius: 11px; background: rgba(3,12,16,.25); }
+    .context-presets { display: flex; gap: 6px; flex-wrap: wrap; }
+    .context-preset { padding: 7px 10px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: rgba(255,255,255,.025); cursor: pointer; font-size: 10px; }
+    .context-preset:hover, .context-preset.active { color: #061411; border-color: var(--cyan); background: var(--cyan); font-weight: 800; }
+    .long-metrics { display: grid; grid-template-columns: repeat(5,1fr); gap: 9px; margin: 17px 0; }
+    .long-metric { min-height: 88px; padding: 13px; border: 1px solid var(--line); border-radius: 13px; background: rgba(3,12,16,.26); }
+    .long-metric b { display: block; color: var(--metric-color,var(--cyan)); font: 760 21px/1.2 "Cascadia Code",Consolas,monospace; letter-spacing: -.04em; }
+    .long-metric span { display: block; margin-top: 6px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .08em; }
+    .long-metric small { display: block; margin-top: 3px; color: #718a8d; font-size: 8px; }
+
+    .long-flow { display: grid; grid-template-columns: 1.2fr auto 1fr auto 1fr auto 1fr; gap: 8px; align-items: stretch; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: rgba(3,12,16,.25); }
+    .long-flow-node { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.025); }
+    .long-flow-node.chunk { border-color: rgba(87,229,210,.24); background: var(--cyan-soft); }
+    .long-flow-node.parallel { border-color: rgba(171,140,255,.24); background: var(--violet-soft); }
+    .long-flow-node.kv { border-color: rgba(255,199,102,.24); background: var(--amber-soft); }
+    .long-flow-node span { color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spacing: .11em; }
+    .long-flow-node b { display: block; margin: 5px 0 2px; font-size: 13px; }
+    .long-flow-node small { color: var(--muted); font-size: 9px; }
+    .long-flow-arrow { display: grid; place-items: center; color: var(--cyan); font: 18px Consolas,monospace; animation: nudge 1.1s ease-in-out infinite; }
+
+    .long-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 15px; margin-top: 15px; }
+    .long-panel { padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: rgba(3,12,16,.24); min-width: 0; }
+    .long-panel-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 13px; }
+    .long-panel h3 { margin: 0; font-size: 16px; }
+    .long-panel-head small { color: var(--muted); font-size: 9px; text-align: right; }
+    .attention-map-wrap { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: end; }
+    .map-y { color: var(--muted); font: 8px Consolas,monospace; writing-mode: vertical-rl; transform: rotate(180deg); }
+    .attention-map { display: grid; grid-template-columns: repeat(24,1fr); gap: 2px; aspect-ratio: 1.85/1; }
+    .attention-map i { border-radius: 2px; background: rgba(255,255,255,.025); transition: background .35s ease, opacity .35s ease; }
+    .attention-map i.on { background: color-mix(in srgb,var(--map-color,var(--cyan)) 72%,#0c1b22); box-shadow: 0 0 5px color-mix(in srgb,var(--map-color,var(--cyan)) 22%,transparent); }
+    .map-x { margin: 7px 0 0 22px; color: var(--muted); font: 8px Consolas,monospace; text-align: center; }
+    .attention-caption { margin-top: 11px; color: var(--muted); font-size: 9px; }
+    .attention-caption b { color: var(--cyan); }
+
+    .shard-list { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; }
+    .gpu-shard { position: relative; min-height: 75px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.02); overflow: hidden; }
+    .gpu-shard::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--fill); max-height: 100%; background: linear-gradient(0deg,rgba(171,140,255,.36),rgba(87,229,210,.09)); z-index: 0; transition: height .4s ease; }
+    .gpu-shard.over { border-color: rgba(255,128,108,.5); }
+    .gpu-shard.over::after { background: linear-gradient(0deg,rgba(255,128,108,.42),rgba(255,128,108,.08)); }
+    .gpu-shard > * { position: relative; z-index: 1; }
+    .gpu-shard b { display: block; font: 10px Consolas,monospace; }
+    .gpu-shard span { color: var(--muted); font-size: 8px; }
+    .gpu-shard strong { display: block; margin-top: 7px; color: var(--violet); font: 11px Consolas,monospace; }
+    .gpu-shard.over strong { color: var(--coral); }
+    .shard-legend { margin-top: 10px; color: var(--muted); font-size: 9px; }
+
+    .long-warning { margin-top: 15px; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 14px; border: 1px solid rgba(255,199,102,.22); border-radius: 13px; background: var(--amber-soft); }
+    .long-warning-icon { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; color: #241705; background: var(--amber); font-weight: 900; }
+    .long-warning b { display: block; color: var(--amber); font-size: 11px; }
+    .long-warning p { margin: 3px 0 0; color: #b9aa8d; font-size: 10px; }
+
+    .long-concepts { display: grid; grid-template-columns: repeat(5,1fr); gap: 9px; margin-top: 15px; }
+    .long-concept { padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: rgba(3,12,16,.22); }
+    .long-concept em { display: inline-grid; place-items: center; width: 25px; height: 25px; border-radius: 8px; color: var(--cyan); background: var(--cyan-soft); font: normal 800 10px Consolas,monospace; }
+    .long-concept b { display: block; margin: 8px 0 4px; font-size: 11px; }
+    .long-concept p { margin: 0; color: var(--muted); font-size: 9px; }
+    .long-concept p strong { color: var(--amber); }
+
     .takeaway { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; padding: 26px; border-color: rgba(87,229,210,.24); }
     .takeaway-icon { width: 62px; height: 62px; display: grid; place-items: center; border-radius: 18px; color: var(--cyan); background: var(--cyan-soft); border: 1px solid rgba(87,229,210,.3); font: 800 25px Consolas, monospace; }
     .takeaway h3 { margin: 0 0 7px; font-size: 20px; }
@@ -447,7 +508,11 @@
       .stage-node:nth-child(-n+4) { border-bottom: 1px solid var(--line); }
       .stage-panel, .below-grid, .memory-layout, .manager-grid { grid-template-columns: 1fr; }
       .kv-metrics { grid-template-columns: repeat(3,1fr); }
-      .policy-grid { grid-template-columns: repeat(3,1fr); }
+      .policy-grid, .long-concepts { grid-template-columns: repeat(3,1fr); }
+      .long-metrics { grid-template-columns: repeat(3,1fr); }
+      .long-grid { grid-template-columns: 1fr; }
+      .long-flow { grid-template-columns: 1fr auto 1fr auto 1fr; }
+      .long-flow-node:last-of-type, .long-flow-arrow:nth-last-child(2) { display: none; }
       .site-nav { display: none; }
     }
     @media (max-width: 700px) {
@@ -472,7 +537,12 @@
       .kv-cluster { grid-template-columns: 1fr; }
       .cluster-arrow { transform: rotate(90deg); min-height: 26px; }
       .kv-page-grid { grid-template-columns: repeat(8,1fr); }
-      .tier-grid, .policy-grid { grid-template-columns: 1fr; }
+      .tier-grid, .policy-grid, .long-concepts, .long-metrics { grid-template-columns: 1fr; }
+      .long-card { padding: 12px; }
+      .long-flow { grid-template-columns: 1fr; }
+      .long-flow-arrow { transform: rotate(90deg); min-height: 22px; }
+      .long-flow-node:last-of-type, .long-flow-arrow:nth-last-child(2) { display: block; }
+      .shard-list { grid-template-columns: repeat(2,1fr); }
       .cache-row { grid-template-columns: 55px 1fr 1fr; }
       .cache-status { grid-column: 1 / -1; text-align: left; }
       .qkv { gap: 6px; }
@@ -492,7 +562,7 @@
   <header class="shell topbar">
     <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>LLM Systems Lab</span></div>
     <nav class="site-nav" aria-label="课程导航">
-      <a href="#lab">Token 推理</a><a href="#phases">P/D 阶段</a><a href="#kv-manager">KV 管理</a><a href="#memory">显存估算</a>
+      <a href="#lab">Token 推理</a><a href="#phases">P/D 阶段</a><a href="#kv-manager">KV 管理</a><a href="#long-context">1M 上下文</a><a href="#memory">显存估算</a>
     </nav>
     <div class="top-pills">
       <span class="tiny-pill live">交互式课程</span>
@@ -724,9 +794,78 @@
       </div>
     </section>
 
+    <section class="section" id="long-context">
+      <div class="section-head">
+        <div><div class="section-kicker">04 · Million-Token Context</div><h2>1M 上下文，不只是把参数改大</h2></div>
+        <div class="section-note">1M 通常指最多 1,048,576 个输入与输出 Token。它同时挑战位置编码、训练数据、Prefill 算力、Attention 复杂度、KV 容量和跨节点传输。</div>
+      </div>
+
+      <div class="card long-card">
+        <div class="long-controls">
+          <div class="context-presets" aria-label="上下文长度预设">
+            <button class="context-preset" data-long-context="8192" type="button">8K</button>
+            <button class="context-preset" data-long-context="32768" type="button">32K</button>
+            <button class="context-preset" data-long-context="131072" type="button">128K</button>
+            <button class="context-preset active" data-long-context="1048576" type="button">1M</button>
+          </div>
+          <div class="field"><label for="longModel">模型结构</label><select id="longModel"><option value="qwen7">Qwen 7B · GQA 4 KV Heads</option><option value="llama8">Llama 8B · GQA 8 KV Heads</option><option value="mqa">MQA 示例 · 1 KV Head</option></select></div>
+          <div class="field"><label for="longPrecision">KV 精度</label><select id="longPrecision"><option value="2">FP16</option><option value="1">Q8</option><option value="0.5">Q4</option></select></div>
+          <div class="field"><label for="longAttention">Attention</label><select id="longAttention"><option value="dense">Dense · 精确全局</option><option value="sliding">Sliding Window · 8K</option><option value="hybrid">Hybrid Sparse · 12.5%</option></select></div>
+          <div class="field"><label for="longGpus">Context Parallel</label><select id="longGpus"><option value="1">1 GPU</option><option value="2">2 GPUs</option><option value="4">4 GPUs</option><option value="8" selected>8 GPUs</option><option value="16">16 GPUs</option></select></div>
+          <div class="field"><label for="longBandwidth">P→D 网络</label><select id="longBandwidth"><option value="100">100 Gbps</option><option value="200">200 Gbps</option><option value="400" selected>400 Gbps</option><option value="800">800 Gbps</option></select></div>
+        </div>
+
+        <div class="long-metrics">
+          <div class="long-metric"><b id="longTokens">1.05M</b><span>Context Tokens</span><small>序列长度，不是参数量</small></div>
+          <div class="long-metric" style="--metric-color:var(--violet)"><b id="longKv">56.0 GiB</b><span>KV Cache / Request</span><small id="longKvDetail">56 KiB / token</small></div>
+          <div class="long-metric" style="--metric-color:var(--amber)"><b id="longPairs">550B</b><span>Attention Pairs</span><small>每层每个 Query Head（示意）</small></div>
+          <div class="long-metric" style="--metric-color:var(--green)"><b id="longChunks">128</b><span>Prefill Chunks</span><small>按 8K Chunk 调度</small></div>
+          <div class="long-metric" style="--metric-color:var(--coral)"><b id="longTransfer">1.20s</b><span>Ideal P→D Transfer</span><small>仅按链路带宽下界估算</small></div>
+        </div>
+
+        <div class="long-flow">
+          <div class="long-flow-node"><span>01 · Tokens</span><b id="longFlowTokens">1,048,576 Tokens</b><small>Tokenizer 后的超长序列</small></div>
+          <div class="long-flow-arrow">→</div>
+          <div class="long-flow-node chunk"><span>02 · Chunked Prefill</span><b id="longFlowChunks">128 × 8K Chunks</b><small>控制峰值并与 Decode 交错</small></div>
+          <div class="long-flow-arrow">→</div>
+          <div class="long-flow-node parallel"><span>03 · Context Parallel</span><b id="longFlowGpus">8 GPU Shards</b><small>分片序列与 Attention 通信</small></div>
+          <div class="long-flow-arrow">→</div>
+          <div class="long-flow-node kv"><span>04 · KV Lifecycle</span><b id="longFlowKv">56.0 GiB KV</b><small>分片、量化、复用、P→D 传输</small></div>
+        </div>
+
+        <div class="long-grid">
+          <section class="long-panel">
+            <div class="long-panel-head"><div><h3>Attention 访问模式</h3><small id="attentionModeLabel">Dense：完整因果下三角</small></div></div>
+            <div class="attention-map-wrap"><span class="map-y">Query position →</span><div class="attention-map" id="longAttentionMap"></div></div>
+            <div class="map-x">Key position → 历史 Token</div>
+            <div class="attention-caption" id="attentionCaption"><b>Dense Attention</b> 允许每个 Query 读取全部历史位置。FlashAttention 能避免保存完整分数矩阵，但不会消除 O(n²) 算术量。</div>
+          </section>
+
+          <section class="long-panel">
+            <div class="long-panel-head"><div><h3>Context Parallel · KV 分片</h3><small>按 80GiB 数据中心 GPU 示意<br>只画 KV，不含权重与工作区</small></div></div>
+            <div class="shard-list" id="longShardList"></div>
+            <div class="shard-legend" id="longShardLegend">每卡约 7.00 GiB KV；Attention 需要跨卡通信或 Ring Attention。</div>
+          </section>
+        </div>
+
+        <div class="long-warning">
+          <span class="long-warning-icon">!</span>
+          <div><b id="longWarningTitle">1M 窗口 ≠ 1M 内容都能被同等理解</b><p id="longWarningText">模型必须经过长序列继续训练并验证位置外推；还要测试 Lost-in-the-Middle、Needle-in-a-Haystack、RULER 等任务。只修改 max_position_embeddings 或 RoPE scale 通常不够。</p></div>
+        </div>
+
+        <div class="long-concepts">
+          <article class="long-concept"><em>①</em><b>位置编码与训练</b><p>通过原生长序列训练，或 Position Interpolation、NTK-aware、YaRN、LongRoPE 等扩展 RoPE。<strong>外推必须配合数据和评测。</strong></p></article>
+          <article class="long-concept"><em>②</em><b>高效 Attention</b><p>FlashAttention 降低中间显存；Ring/Context Parallel 分摊精确 Attention；Sliding/Block Sparse 才真正减少计算，但会改变可见范围。</p></article>
+          <article class="long-concept"><em>③</em><b>Chunked Prefill</b><p>把 1M Prompt 切成可调度小块，降低峰值并避免长 Prefill 阻塞 Decode。<strong>它不等于减少总计算量。</strong></p></article>
+          <article class="long-concept"><em>④</em><b>KV Cache 工程</b><p>依靠 GQA/MQA、KV 量化、Paged KV、Context Parallel、Prefix 复用，以及 GPU→CPU→SSD 分层管理线性增长的缓存。</p></article>
+          <article class="long-concept"><em>⑤</em><b>不要忘记 RAG</b><p>1M Context 适合全局代码库、长视频和文档；普通问答通常先检索再放入较短窗口，成本和有效注意力往往更好。</p></article>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="memory">
       <div class="section-head">
-        <div><div class="section-kicker">04 · Memory Budget</div><h2>你的 8GB 显存里装了什么？</h2></div>
+        <div><div class="section-kicker">05 · Memory Budget</div><h2>你的 8GB 显存里装了什么？</h2></div>
         <div class="section-note">以当前 RX 6650 XT 8GB 为容量上限。结果是便于理解的粗估；具体值会随 GGUF 格式、后端、模型结构与内存对齐变化。</div>
       </div>
       <div class="card memory-card">
@@ -744,7 +883,7 @@
             <label class="calc-row"><span>Head dimension</span><input id="headDim" type="number" value="128" min="32" max="512" step="32"></label>
             <label class="calc-row"><span>KV 精度</span><select id="kvBytes"><option value="2">FP16 · 2 bytes</option><option value="1">Q8 · 1 byte</option><option value="0.5">Q4 · 0.5 byte</option></select></label>
             <label class="calc-row"><span>上下文长度</span><span class="context-value" id="contextValue">8,192 tokens</span></label>
-            <input id="contextRange" type="range" min="1024" max="32768" step="1024" value="8192" style="width:100%">
+            <input id="contextRange" type="range" min="0" max="10" step="1" value="3" style="width:100%" aria-label="上下文长度：1K 到 1M，对数档位">
             <label class="calc-row"><span>并发序列数</span><input id="parallelCount" type="number" value="1" min="1" max="16" step="1"></label>
           </div>
 
@@ -1420,6 +1559,116 @@
       managerEls.policy.addEventListener("change",resetManager);
       managerEls.capacity.addEventListener("change",resetManager);
 
+      /* Million-token context explorer */
+      const longEls = {
+        model:$("longModel"), precision:$("longPrecision"), attention:$("longAttention"), gpus:$("longGpus"), bandwidth:$("longBandwidth"),
+        tokens:$("longTokens"), kv:$("longKv"), kvDetail:$("longKvDetail"), pairs:$("longPairs"), chunks:$("longChunks"), transfer:$("longTransfer"),
+        flowTokens:$("longFlowTokens"), flowChunks:$("longFlowChunks"), flowGpus:$("longFlowGpus"), flowKv:$("longFlowKv"),
+        map:$("longAttentionMap"), modeLabel:$("attentionModeLabel"), caption:$("attentionCaption"), shards:$("longShardList"), shardLegend:$("longShardLegend"),
+        warningTitle:$("longWarningTitle"), warningText:$("longWarningText")
+      };
+      const longModels = {
+        qwen7:{label:"Qwen 7B",layers:28,kvHeads:4,headDim:128},
+        llama8:{label:"Llama 8B",layers:32,kvHeads:8,headDim:128},
+        mqa:{label:"MQA 示例",layers:32,kvHeads:1,headDim:128}
+      };
+      let longContext=1048576;
+
+      function compactNumber(value) {
+        if (value>=1e12) return `${(value/1e12).toFixed(2)}T`;
+        if (value>=1e9) return `${(value/1e9).toFixed(value>=1e11?0:2)}B`;
+        if (value>=1e6) return `${(value/1e6).toFixed(value<1e7?2:1)}M`;
+        if (value>=1e3) return `${(value/1e3).toFixed(1)}K`;
+        return String(Math.round(value));
+      }
+      function contextLabel(value) {
+        if (value===1048576) return "1M";
+        if (value>=1024) return `${Math.round(value/1024)}K`;
+        return String(value);
+      }
+      function renderLongAttention(mode,n) {
+        const rows=14, cols=24, window=8192;
+        let html="";
+        for(let r=0;r<rows;r++) {
+          const causalEnd=Math.floor(r/(rows-1)*(cols-1));
+          const band=Math.max(1,Math.ceil(cols*Math.min(1,window/n)));
+          for(let c=0;c<cols;c++) {
+            const causal=c<=causalEnd;
+            let on=false;
+            if(mode==="dense") on=causal;
+            else if(mode==="sliding") on=causal && c>=causalEnd-band+1;
+            else on=causal && (c>=causalEnd-Math.max(1,band)+1 || c%8===0 || r%7===0);
+            html+=`<i class="${on?"on":""}"></i>`;
+          }
+        }
+        longEls.map.style.setProperty("--map-color",mode==="dense"?"var(--cyan)":mode==="sliding"?"var(--violet)":"var(--amber)");
+        longEls.map.innerHTML=html;
+      }
+
+      function renderLongContext() {
+        const model=longModels[longEls.model.value];
+        const bytes=Number(longEls.precision.value);
+        const gpus=Number(longEls.gpus.value);
+        const bandwidth=Number(longEls.bandwidth.value);
+        const mode=longEls.attention.value;
+        const bytesPerToken=2*model.layers*model.kvHeads*model.headDim*bytes;
+        // A model trained with pure sliding-window attention can use a ring KV
+        // buffer and discard positions outside the window. Dense/hybrid modes
+        // conservatively retain the full sequence.
+        const residentTokens=mode==="sliding"?Math.min(longContext,8192):longContext;
+        const kvGiB=bytesPerToken*residentTokens/(1024**3);
+        const densePairs=longContext*(longContext+1)/2;
+        const window=Math.min(8192,longContext);
+        const slidingPairs=longContext<=window?densePairs:longContext*window-window*(window-1)/2;
+        const pairs=mode==="dense"?densePairs:mode==="sliding"?slidingPairs:densePairs*.125;
+        const chunks=Math.ceil(longContext/8192);
+        const transferSeconds=(kvGiB*1.073741824)/(bandwidth/8);
+        const perGpu=kvGiB/gpus;
+        const precisionName=bytes===2?"FP16":bytes===1?"Q8":"Q4";
+
+        longEls.tokens.textContent=compactNumber(longContext);
+        longEls.kv.textContent=`${kvGiB.toFixed(kvGiB<10?2:1)} GiB`;
+        longEls.kvDetail.textContent=`${(bytesPerToken/1024).toFixed(bytesPerToken<1024?1:0)} KiB / token · ${precisionName}${mode==="sliding"?" · 8K ring":""}`;
+        longEls.pairs.textContent=compactNumber(pairs);
+        longEls.chunks.textContent=chunks.toLocaleString("zh-CN");
+        longEls.transfer.textContent=transferSeconds<1?`${(transferSeconds*1000).toFixed(0)}ms`:`${transferSeconds.toFixed(2)}s`;
+        longEls.flowTokens.textContent=`${longContext.toLocaleString("zh-CN")} Tokens`;
+        longEls.flowChunks.textContent=`${chunks} × 8K Chunks`;
+        longEls.flowGpus.textContent=`${gpus} GPU Shards`;
+        longEls.flowKv.textContent=`${kvGiB.toFixed(1)} GiB KV`;
+
+        const modeNames={dense:"Dense：完整因果下三角",sliding:"Sliding Window：只读取最近 8K",hybrid:"Hybrid Sparse：局部窗口 + 稀疏全局"};
+        longEls.modeLabel.textContent=modeNames[mode];
+        const reduction=(100*(1-pairs/densePairs)).toFixed(1);
+        if(mode==="dense") longEls.caption.innerHTML="<b>Dense Attention</b> 允许每个 Query 读取全部历史位置。FlashAttention 能避免保存完整分数矩阵，但不会消除 O(n²) 算术量。";
+        else if(mode==="sliding") longEls.caption.innerHTML=`<b>Sliding Window</b> 把理论配对数减少约 ${reduction}%，Decode 每步只扫描最近 8K KV；代价是普通层不能直接看到更早内容。`;
+        else longEls.caption.innerHTML=`<b>Hybrid Sparse</b> 用局部窗口配合稀疏全局位置，示意计算量为 Dense 的 12.5%；实际稀疏模式必须由模型训练和内核共同支持。`;
+        renderLongAttention(mode,longContext);
+
+        longEls.shards.innerHTML=Array.from({length:gpus},(_,i)=>{
+          const fill=Math.min(100,perGpu/80*100);
+          const over=perGpu>80;
+          return `<div class="gpu-shard ${over?"over":""}" style="--fill:${fill}%"><b>GPU ${String(i).padStart(2,"0")}</b><span>Context shard ${i+1}/${gpus}</span><strong>${perGpu.toFixed(perGpu<10?2:1)} GiB</strong></div>`;
+        }).join("");
+        const safeMin=Math.max(1,Math.ceil(kvGiB/64));
+        longEls.shardLegend.textContent=`每卡约 ${perGpu.toFixed(2)} GiB KV；若每卡只给 KV 预留 64GiB，至少需要 ${safeMin} 卡。精确 Attention 还需要跨卡交换统计量或 KV 分块。`;
+
+        const localBudget=2.5;
+        const localTokens=Math.floor(localBudget*(1024**3)/bytesPerToken);
+        if(mode==="sliding") {
+          longEls.warningTitle.textContent=`8K 滑窗只需保留 ${kvGiB.toFixed(2)} GiB KV，但它不是完整的 1M 全局注意力`;
+          longEls.warningText.textContent=`纯 Sliding Window 可以用环形 KV Buffer 丢弃 8K 以外的 K/V，因此显存不再随 1M 线性增长；代价是当前 Token 无法直接访问更早位置。要保留跨 1M 的信息，还需全局稀疏层、摘要/记忆 Token、检索或其他经过训练的架构，不能只在推理时强行打开滑窗。`;
+        } else {
+          longEls.warningTitle.textContent=`当前组合：单请求 KV 就需要 ${kvGiB.toFixed(1)} GiB`;
+          longEls.warningText.textContent=`你的 RX 6650 XT 8GB 在模型权重和工作区之外，粗略只剩约 ${localBudget}GiB 给 KV，可容纳约 ${contextLabel(localTokens)} Token。1M 需要数据中心多卡、KV 量化/分片或稀疏窗口；把 KV 放到 CPU/SSD 能扩容，但 Dense Decode 仍需读取相关 KV。声明“支持 1M”也不代表 1M 位置具有同等召回质量。`;
+        }
+
+        document.querySelectorAll(".context-preset").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.longContext)===longContext));
+      }
+
+      document.querySelectorAll(".context-preset").forEach(btn=>btn.addEventListener("click",()=>{longContext=Number(btn.dataset.longContext);renderLongContext();}));
+      [longEls.model,longEls.precision,longEls.attention,longEls.gpus,longEls.bandwidth].forEach(el=>el.addEventListener("change",renderLongContext));
+
       const calcEls = {
         param: $("paramB"), bits: $("quantBits"), layers: $("layerCount"), heads: $("kvHeads"), dim: $("headDim"),
         bytes: $("kvBytes"), context: $("contextRange"), contextText: $("contextValue"), parallel: $("parallelCount"),
@@ -1440,7 +1689,8 @@
         const heads = numberValue(calcEls.heads,8);
         const dim = numberValue(calcEls.dim,128);
         const bytes = numberValue(calcEls.bytes,2);
-        const context = numberValue(calcEls.context,8192);
+        const contextSteps=[1024,2048,4096,8192,16384,32768,65536,131072,262144,524288,1048576];
+        const context = contextSteps[Math.max(0,Math.min(contextSteps.length-1,Number(calcEls.context.value)))] || 8192;
         const parallel = numberValue(calcEls.parallel,1);
         const gib = 1024 ** 3;
         const weights = (param * 1e9 * bits / 8 / gib) * 1.08;
@@ -1486,6 +1736,7 @@
       }));
 
       resetManager();
+      renderLongContext();
       render();
       updateMemory();
     })();
