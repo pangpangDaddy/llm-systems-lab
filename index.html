@@ -560,6 +560,81 @@
     .quant-takeaway { margin-top: 15px; padding: 13px 15px; border: 1px solid rgba(255,199,102,.2); border-radius: 12px; color: #bfb29a; background: var(--amber-soft); font-size: 10px; }
     .quant-takeaway b { color: var(--amber); }
 
+    /* Frontier open-weight model analysis */
+    .frontier-card { overflow: hidden; }
+    .frontier-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 15px 18px; border-bottom: 1px solid var(--line); background: rgba(3,12,16,.38); }
+    .family-selector { display: flex; gap: 6px; }
+    .family-button { min-width: 112px; padding: 9px 13px; border: 1px solid var(--line-strong); border-radius: 10px; color: var(--muted); background: rgba(255,255,255,.025); cursor: pointer; font-weight: 760; }
+    .family-button.active.deepseek { color: white; border-color: #5a7cff; background: linear-gradient(135deg,#315bea,#4e71d3); }
+    .family-button.active.kimi { color: #1c1302; border-color: var(--amber); background: linear-gradient(135deg,#ffd769,#f2aa45); }
+    .verified-badge { margin-left: auto; padding: 6px 9px; border: 1px solid rgba(133,232,157,.2); border-radius: 99px; color: var(--green); background: rgba(133,232,157,.06); font-size: 9px; }
+    .frontier-body { padding: 20px; }
+    .version-tabs { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 15px; }
+    .version-button { position: relative; padding: 8px 11px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: rgba(255,255,255,.02); cursor: pointer; font-size: 10px; }
+    .version-button:hover, .version-button.active { color: var(--text); border-color: var(--model-accent,var(--cyan)); background: color-mix(in srgb,var(--model-accent,var(--cyan)) 13%,transparent); }
+    .version-button.latest::after { content: "LATEST"; position: absolute; right: -5px; top: -7px; padding: 1px 4px; border-radius: 99px; color: #071015; background: var(--green); font: 6px Consolas,monospace; }
+
+    .frontier-overview { display: grid; grid-template-columns: .68fr 1.32fr; gap: 14px; }
+    .model-identity { position: relative; min-height: 255px; padding: 21px; border: 1px solid color-mix(in srgb,var(--model-accent) 35%,var(--line)); border-radius: 17px; background: radial-gradient(circle at 15% 5%,color-mix(in srgb,var(--model-accent) 15%,transparent),transparent 55%),rgba(3,12,16,.28); overflow: hidden; }
+    .model-identity::after { content: attr(data-mark); position: absolute; right: -5px; bottom: -25px; color: color-mix(in srgb,var(--model-accent) 7%,transparent); font: 900 110px/1 sans-serif; letter-spacing: -.08em; }
+    .model-family-label { color: var(--model-accent); font: 800 9px Consolas,monospace; letter-spacing: .12em; text-transform: uppercase; }
+    .model-identity h3 { position: relative; z-index: 1; margin: 10px 0 8px; font-size: clamp(28px,3vw,42px); line-height: 1; letter-spacing: -.045em; }
+    .model-identity p { position: relative; z-index: 1; margin: 0; color: #aebfc1; font-size: 11px; }
+    .model-tags { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .model-tag { padding: 4px 7px; border: 1px solid color-mix(in srgb,var(--model-accent) 25%,var(--line)); border-radius: 99px; color: color-mix(in srgb,var(--model-accent) 75%,white); background: color-mix(in srgb,var(--model-accent) 8%,transparent); font-size: 8px; }
+    .official-link { position: relative; z-index: 1; display: inline-block; margin-top: 17px; color: var(--model-accent); font-size: 10px; text-decoration: none; }
+    .official-link:hover { text-decoration: underline; }
+
+    .frontier-specs { display: grid; gap: 10px; }
+    .frontier-metrics { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; }
+    .frontier-metric { min-height: 74px; padding: 11px; border: 1px solid var(--line); border-radius: 11px; background: rgba(3,12,16,.26); }
+    .frontier-metric b { display: block; color: var(--model-accent); font: 750 17px/1.2 Consolas,monospace; }
+    .frontier-metric span { display: block; margin-top: 5px; color: var(--muted); font-size: 7px; text-transform: uppercase; letter-spacing: .08em; }
+    .activation-panel { padding: 13px; border: 1px solid var(--line); border-radius: 13px; background: rgba(3,12,16,.24); }
+    .activation-head { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 9px; }
+    .activation-head b { color: var(--text); }
+    .activation-track { position: relative; height: 18px; margin-top: 9px; border-radius: 6px; background: color-mix(in srgb,var(--model-accent) 18%,rgba(255,255,255,.03)); overflow: hidden; }
+    .activation-fill { width: var(--w); height: 100%; min-width: 3px; border-radius: inherit; background: var(--model-accent); box-shadow: 0 0 18px color-mix(in srgb,var(--model-accent) 35%,transparent); transition: width .4s ease; }
+    .activation-caption { margin-top: 7px; color: var(--muted); font-size: 8px; }
+    .frontier-arch { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; align-items: stretch; }
+    .arch-node { min-height: 79px; padding: 9px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.022); }
+    .arch-node b { display: block; color: var(--model-accent); font-size: 9px; }
+    .arch-node span { display: block; margin-top: 5px; color: var(--muted); font-size: 7px; }
+    .arch-arrow { display: grid; place-items: center; color: var(--model-accent); font: 15px Consolas,monospace; }
+
+    .frontier-details { display: grid; grid-template-columns: 1.08fr .92fr; gap: 14px; margin-top: 14px; }
+    .frontier-panel { padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: rgba(3,12,16,.24); }
+    .frontier-panel-head { display: flex; justify-content: space-between; gap: 12px; align-items: start; margin-bottom: 12px; }
+    .frontier-panel h3 { margin: 0; font-size: 16px; }
+    .frontier-panel-head small { color: var(--muted); font-size: 8px; text-align: right; }
+    .innovation-list { display: grid; gap: 7px; }
+    .innovation-item { display: grid; grid-template-columns: 29px 1fr; gap: 9px; padding: 9px; border: 1px solid rgba(153,197,209,.10); border-radius: 10px; background: rgba(255,255,255,.018); }
+    .innovation-num { width: 27px; height: 27px; display: grid; place-items: center; border-radius: 8px; color: #071015; background: var(--model-accent); font: 800 9px Consolas,monospace; }
+    .innovation-item b { display: block; font-size: 10px; }
+    .innovation-item p { margin: 3px 0 0; color: var(--muted); font-size: 8px; }
+    .serving-list { display: grid; gap: 7px; }
+    .serving-item { padding: 10px; border-left: 2px solid var(--model-accent); border-radius: 0 9px 9px 0; background: color-mix(in srgb,var(--model-accent) 5%,rgba(255,255,255,.012)); }
+    .serving-item b { display: block; font-size: 9px; }
+    .serving-item span { display: block; margin-top: 3px; color: var(--muted); font-size: 8px; }
+
+    .evolution-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .evolution-lane { padding: 16px; border: 1px solid var(--line); border-radius: 15px; background: rgba(3,12,16,.22); }
+    .evolution-title { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .evolution-title b { font-size: 12px; }
+    .evolution-title span { color: var(--muted); font-size: 8px; }
+    .evolution-steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+    .evolution-step { position: relative; min-height: 92px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.018); }
+    .evolution-step::after { content: "→"; position: absolute; right: -8px; top: 34px; z-index: 2; color: var(--muted); }
+    .evolution-step:last-child::after { display: none; }
+    .evolution-step time { color: var(--lane-color); font: 8px Consolas,monospace; }
+    .evolution-step b { display: block; margin-top: 5px; font-size: 9px; }
+    .evolution-step span { display: block; margin-top: 3px; color: var(--muted); font-size: 7px; }
+    .frontier-caveat { margin-top: 14px; padding: 12px 14px; border: 1px solid rgba(255,199,102,.20); border-radius: 12px; color: #bdb099; background: var(--amber-soft); font-size: 9px; }
+    .frontier-caveat b { color: var(--amber); }
+    .source-links { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .source-links a { padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 8px; }
+    .source-links a:hover { color: var(--cyan); border-color: rgba(87,229,210,.3); }
+
     .takeaway { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; padding: 26px; border-color: rgba(87,229,210,.24); }
     .takeaway-icon { width: 62px; height: 62px; display: grid; place-items: center; border-radius: 18px; color: var(--cyan); background: var(--cyan-soft); border: 1px solid rgba(87,229,210,.3); font: 800 25px Consolas, monospace; }
     .takeaway h3 { margin: 0 0 7px; font-size: 20px; }
@@ -594,7 +669,8 @@
       .kv-metrics { grid-template-columns: repeat(3,1fr); }
       .policy-grid, .long-concepts { grid-template-columns: repeat(3,1fr); }
       .long-metrics { grid-template-columns: repeat(3,1fr); }
-      .long-grid, .quant-layout, .quant-bottom { grid-template-columns: 1fr; }
+      .long-grid, .quant-layout, .quant-bottom, .frontier-overview, .frontier-details { grid-template-columns: 1fr; }
+      .frontier-metrics { grid-template-columns: repeat(5,1fr); }
       .long-flow { grid-template-columns: 1fr auto 1fr auto 1fr; }
       .format-grid { grid-template-columns: repeat(3,1fr); }
       .long-flow-node:last-of-type, .long-flow-arrow:nth-last-child(2) { display: none; }
@@ -633,6 +709,13 @@
       .weight-samples { grid-template-columns: repeat(3,1fr); }
       .format-grid { grid-template-columns: 1fr; }
       .quant-object { grid-template-columns: 66px 52px 1fr; }
+      .frontier-body { padding: 11px; }
+      .verified-badge { width: 100%; margin-left: 0; }
+      .frontier-metrics { grid-template-columns: repeat(2,1fr); }
+      .frontier-arch { grid-template-columns: 1fr; }
+      .arch-arrow { transform: rotate(90deg); min-height: 18px; }
+      .evolution-grid { grid-template-columns: 1fr; }
+      .evolution-steps { grid-template-columns: repeat(2,1fr); }
       .cache-row { grid-template-columns: 55px 1fr 1fr; }
       .cache-status { grid-column: 1 / -1; text-align: left; }
       .qkv { gap: 6px; }
@@ -652,7 +735,7 @@
   <header class="shell topbar">
     <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>LLM Systems Lab</span></div>
     <nav class="site-nav" aria-label="课程导航">
-      <a href="#lab">Token 推理</a><a href="#phases">P/D 阶段</a><a href="#kv-manager">KV 管理</a><a href="#long-context">1M 上下文</a><a href="#memory">显存估算</a><a href="#quantization">量化</a>
+      <a href="#lab">Token 推理</a><a href="#phases">P/D 阶段</a><a href="#kv-manager">KV 管理</a><a href="#long-context">1M 上下文</a><a href="#frontier-models">模型分析</a><a href="#memory">显存估算</a><a href="#quantization">量化</a>
     </nav>
     <div class="top-pills">
       <span class="tiny-pill live">交互式课程</span>
@@ -968,9 +1051,99 @@
       </div>
     </section>
 
+    <section class="section" id="frontier-models">
+      <div class="section-head">
+        <div><div class="section-kicker">05 · Frontier Open-Weight Models</div><h2>DeepSeek 与 Kimi：两条架构演进路线</h2></div>
+        <div class="section-note">基于官方仓库与模型说明，分析 MoE、MLA、稀疏/线性 Attention、强化学习、原生多模态和量化，而不是只比较排行榜分数。</div>
+      </div>
+
+      <div class="card frontier-card" id="frontierCard" style="--model-accent:#5a7cff">
+        <div class="frontier-toolbar">
+          <div class="family-selector">
+            <button class="family-button deepseek active" data-model-family="deepseek" type="button">DeepSeek 系列</button>
+            <button class="family-button kimi" data-model-family="kimi" type="button">Kimi 系列</button>
+          </div>
+          <span class="tiny-pill" id="latestModelStatus">官方最新开源仓库：DeepSeek-V3.2-Exp</span>
+          <span class="verified-badge">● 官方来源核对 · 2026-08-02</span>
+        </div>
+
+        <div class="frontier-body">
+          <div class="version-tabs" id="frontierVersionTabs"></div>
+
+          <div class="frontier-overview">
+            <article class="model-identity" id="modelIdentity" data-mark="DS">
+              <span class="model-family-label" id="modelFamilyLabel">DEEPSEEK · LONG-CONTEXT EXPERIMENT</span>
+              <h3 id="frontierModelName">DeepSeek-V3.2-Exp</h3>
+              <p id="frontierSummary">在 V3.1-Terminus 基础上引入 DeepSeek Sparse Attention，用轻量 Indexer 先筛选历史位置，再执行稀疏 MLA。</p>
+              <div class="model-tags" id="frontierTags"><span class="model-tag">MoE</span><span class="model-tag">DSA</span><span class="model-tag">MLA</span><span class="model-tag">FP8</span></div>
+              <a class="official-link" id="frontierOfficialLink" href="https://github.com/deepseek-ai/DeepSeek-V3.2-Exp" target="_blank" rel="noreferrer">查看官方仓库 ↗</a>
+            </article>
+
+            <div class="frontier-specs">
+              <div class="frontier-metrics">
+                <div class="frontier-metric"><b id="frontierTotal">671B</b><span>Total Parameters</span></div>
+                <div class="frontier-metric"><b id="frontierActive">37B</b><span>Active / Token</span></div>
+                <div class="frontier-metric"><b id="frontierContext">160K</b><span>Context Window</span></div>
+                <div class="frontier-metric"><b id="frontierLayers">61</b><span>Transformer Layers</span></div>
+                <div class="frontier-metric"><b id="frontierAttention">DSA + MLA</b><span>Attention Core</span></div>
+              </div>
+              <div class="activation-panel">
+                <div class="activation-head"><span>MoE 容量利用：每个 Token 激活参数 / 总参数</span><b id="activationRatio">5.5%</b></div>
+                <div class="activation-track"><div class="activation-fill" id="activationFill" style="--w:5.5%"></div></div>
+                <div class="activation-caption" id="activationCaption">256 个路由专家中选择 8 个，并使用共享专家；全部权重需存储，但单 Token 只计算一部分专家。</div>
+              </div>
+              <div class="frontier-arch" id="frontierArch">
+                <div class="arch-node"><b>Indexer</b><span>64 heads × 128 dim</span></div><div class="arch-arrow">→</div>
+                <div class="arch-node"><b>Top-k 2048</b><span>筛选历史位置</span></div><div class="arch-arrow">→</div>
+                <div class="arch-node"><b>Sparse MLA</b><span>只计算候选注意力</span></div><div class="arch-arrow">→</div>
+                <div class="arch-node"><b>DeepSeekMoE</b><span>8 routed + shared</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="frontier-details">
+            <section class="frontier-panel">
+              <div class="frontier-panel-head"><div><h3>核心技术拆解</h3><small>为什么这样设计？</small></div><small id="frontierLicense">License · MIT</small></div>
+              <div class="innovation-list" id="frontierInnovations"></div>
+            </section>
+            <section class="frontier-panel">
+              <div class="frontier-panel-head"><div><h3>推理与部署含义</h3><small>对显存、KV、通信和服务框架的影响</small></div><small id="frontierModality">Text</small></div>
+              <div class="serving-list" id="frontierServing"></div>
+            </section>
+          </div>
+
+          <div class="evolution-grid">
+            <section class="evolution-lane" style="--lane-color:#5a7cff"><div class="evolution-title"><b>DeepSeek：从容量效率到稀疏长上下文</b><span>官方开放路线</span></div><div class="evolution-steps">
+              <div class="evolution-step"><time>2024</time><b>DeepSeek-V2</b><span>MLA + DeepSeekMoE，建立低 KV 与专家稀疏基础</span></div>
+              <div class="evolution-step"><time>2024-12</time><b>DeepSeek-V3</b><span>671B/37B，FP8 训练、无辅助损失均衡、MTP</span></div>
+              <div class="evolution-step"><time>2025-01</time><b>DeepSeek-R1</b><span>V3 Base 上用冷启动、SFT 与 RL 激发长推理</span></div>
+              <div class="evolution-step"><time>2025-09</time><b>V3.2-Exp</b><span>DSA Indexer + Top-k 2048，降低长上下文 Attention</span></div>
+            </div></section>
+            <section class="evolution-lane" style="--lane-color:#ffc766"><div class="evolution-title"><b>Kimi：从 Agent MoE 到 KDA 混合架构</b><span>官方开放路线</span></div><div class="evolution-steps">
+              <div class="evolution-step"><time>2025-07</time><b>Kimi K2</b><span>1T/32B、MLA、128K，面向 Coding 与 Tool Use</span></div>
+              <div class="evolution-step"><time>2025-10</time><b>Kimi Linear</b><span>3:1 KDA/MLA，48B-A3B，验证 1M 线性 Attention</span></div>
+              <div class="evolution-step"><time>2026-01</time><b>Kimi K2.5</b><span>原生视觉、256K、Agent Swarm、Native INT4</span></div>
+              <div class="evolution-step"><time>2026-07</time><b>Kimi K3</b><span>2.8T/104B、69 KDA + 24 Gated MLA、1M</span></div>
+            </div></section>
+          </div>
+
+          <div class="frontier-caveat"><b>版本核对说明：</b>截至 2026-08-02，DeepSeek 官方 GitHub 中最新可核验的通用模型仓库是 <strong>DeepSeek-V3.2-Exp</strong>；第三方项目虽然已出现“DeepSeek-V4”名称，但官方组织尚无对应开放仓库，因此本站不引用未经官方确认的 V4 参数。Moonshot AI 官方最新开放权重仓库为 <strong>Kimi K3</strong>。Kimi K3 使用自定义许可证，并非标准 MIT/Apache，应在商用前阅读原文。</div>
+          <div class="source-links">
+            <a href="https://github.com/deepseek-ai/DeepSeek-V3" target="_blank" rel="noreferrer">DeepSeek-V3 官方</a>
+            <a href="https://github.com/deepseek-ai/DeepSeek-R1" target="_blank" rel="noreferrer">DeepSeek-R1 官方</a>
+            <a href="https://github.com/deepseek-ai/DeepSeek-V3.2-Exp" target="_blank" rel="noreferrer">V3.2-Exp 官方</a>
+            <a href="https://github.com/MoonshotAI/Kimi-K2" target="_blank" rel="noreferrer">Kimi K2 官方</a>
+            <a href="https://github.com/MoonshotAI/Kimi-K2.5" target="_blank" rel="noreferrer">Kimi K2.5 官方</a>
+            <a href="https://github.com/MoonshotAI/Kimi-Linear" target="_blank" rel="noreferrer">Kimi Linear 官方</a>
+            <a href="https://github.com/MoonshotAI/Kimi-K3" target="_blank" rel="noreferrer">Kimi K3 官方</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="memory">
       <div class="section-head">
-        <div><div class="section-kicker">05 · Memory Budget</div><h2>从 7B 到 405B，显存账本怎么算？</h2></div>
+        <div><div class="section-kicker">06 · Memory Budget</div><h2>从 7B 到 405B，显存账本怎么算？</h2></div>
         <div class="section-note">不再局限于本机：切换消费级显卡、工作站卡和数据中心 GPU，对比 Dense、MoE 模型的权重与标准 GQA KV 占用。</div>
       </div>
       <div class="card memory-card">
@@ -1022,7 +1195,7 @@
 
     <section class="section" id="quantization">
       <div class="section-head">
-        <div><div class="section-kicker">06 · Quantization Lab</div><h2>Q4、Q8 到底把数字变成了什么？</h2></div>
+        <div><div class="section-kicker">07 · Quantization Lab</div><h2>Q4、Q8 到底把数字变成了什么？</h2></div>
         <div class="section-note">移动原始权重，观察它如何“吸附”到最近的离散等级。Q4 是约 4 bit，不是 4 字节或 4 位小数；Q8 也不等于 FP8。</div>
       </div>
 
@@ -1861,6 +2034,188 @@
       document.querySelectorAll(".context-preset").forEach(btn=>btn.addEventListener("click",()=>{longContext=Number(btn.dataset.longContext);renderLongContext();}));
       [longEls.model,longEls.precision,longEls.attention,longEls.gpus,longEls.bandwidth].forEach(el=>el.addEventListener("change",renderLongContext));
 
+      /* DeepSeek / Kimi official open-weight model analysis */
+      const frontierEls={
+        card:$("frontierCard"),tabs:$("frontierVersionTabs"),status:$("latestModelStatus"),identity:$("modelIdentity"),
+        familyLabel:$("modelFamilyLabel"),name:$("frontierModelName"),summary:$("frontierSummary"),tags:$("frontierTags"),link:$("frontierOfficialLink"),
+        total:$("frontierTotal"),active:$("frontierActive"),context:$("frontierContext"),layers:$("frontierLayers"),attention:$("frontierAttention"),
+        ratio:$("activationRatio"),activationFill:$("activationFill"),activationCaption:$("activationCaption"),arch:$("frontierArch"),
+        license:$("frontierLicense"),modality:$("frontierModality"),innovations:$("frontierInnovations"),serving:$("frontierServing")
+      };
+      const frontierModels={
+        deepseek:[
+          {
+            key:"v3",name:"DeepSeek-V3",subtitle:"FOUNDATION · EFFICIENT MOE",mark:"V3",total:"671B",totalN:671,active:"37B",activeN:37,context:"128K",layers:"61",attention:"MLA",license:"Model License · 可商用",modality:"Text",latest:false,
+            summary:"以 Multi-head Latent Attention 和 DeepSeekMoE 为核心，在 671B 总容量下每个 Token 只激活约 37B 参数，并通过 FP8 训练与系统协同降低成本。",
+            tags:["MoE","MLA","FP8 Training","MTP"],link:"https://github.com/deepseek-ai/DeepSeek-V3",
+            activation:"256 路由专家、每 Token 选择 8 个并配合共享专家；MoE 降低计算量，但全部专家权重仍需分片存放。",
+            arch:[["MLA","512 latent + 64 RoPE"],["Router","Aux-loss-free balance"],["DeepSeekMoE","8 routed + shared"],["MTP","预测多个未来 Token"]],
+            innovations:[
+              ["MLA 压缩 KV","不缓存每个 Attention Head 的完整 K/V，而是保存低秩 latent 与 RoPE Key，显著降低长上下文 KV 容量。"],
+              ["DeepSeekMoE","细粒度专家与共享专家扩大总容量，同时每个 Token 只计算少量路由专家。"],
+              ["无辅助损失均衡","通过偏置调节专家负载，减少传统负载均衡辅助损失对主任务质量的干扰。"],
+              ["Multi-Token Prediction","主模型外还有约 14B MTP 模块；训练时预测多个未来 Token，也为推测解码提供基础。"]
+            ],
+            serving:[
+              ["KV 与带宽","FP16 MLA 缓存约 68.6KiB/Token（结构估算），远小于标准 128-head MHA，但 128K 与高并发仍需分页和 FP8 KV。"],
+              ["并行方式","通常同时使用 TP、DP Attention 与 Expert Parallel；MoE All-to-All 通信需要 DeepEP/NVLink/RDMA 优化。"],
+              ["权重不是 37B","37B 是每 Token 激活量，不是部署体积；671B 主模型加 MTP 权重仍需多卡保存。"],
+              ["推理生态","官方列出 SGLang、vLLM、TensorRT-LLM、LMDeploy 等，部署要匹配 FP8、MLA 和 MoE 内核。"]
+            ]
+          },
+          {
+            key:"r1",name:"DeepSeek-R1",subtitle:"REASONING · RL POST-TRAINING",mark:"R1",total:"671B",totalN:671,active:"37B",activeN:37,context:"128K",layers:"61",attention:"MLA",license:"MIT · Distill 需看底模条款",modality:"Text · Reasoning",latest:false,
+            summary:"R1 并不是另一套 671B 骨干：它基于 DeepSeek-V3-Base，通过冷启动数据、SFT 与大规模强化学习形成长链推理；R1-Zero 则先验证无 SFT 的纯 RL 路线。",
+            tags:["Reasoning","RL","Cold Start","Distillation"],link:"https://github.com/deepseek-ai/DeepSeek-R1",
+            activation:"骨干仍是 V3 的 671B/37B MoE。变化主要发生在后训练与行为，而不是把模型架构替换成 Dense 推理模型。",
+            arch:[["V3 Base","671B MoE + MLA"],["Cold-start SFT","改善可读性与格式"],["Reasoning RL","自验证与反思"],["Preference RL","对齐通用回答"]],
+            innovations:[
+              ["R1-Zero","不先进行监督微调，直接对 Base 做大规模 RL，出现自验证、反思和长 CoT，也暴露重复、混语和可读性问题。"],
+              ["R1 Pipeline","正式 R1 使用两个 SFT 阶段和两个 RL 阶段，在推理能力与通用可用性之间折中。"],
+              ["推理时扩展","更长的 reasoning tokens 可以换取复杂任务成功率，但会线性增加 Decode 时间、KV 增量和服务成本。"],
+              ["蒸馏系列","1.5B/7B/8B/14B/32B/70B Distill 是 Qwen/Llama Dense 底模微调，不继承 671B 模型的 MLA/MoE 架构。"]
+            ],
+            serving:[
+              ["和 V3 同级部署","完整 R1 的权重、MLA KV 和专家通信需求与 V3 同一量级，不能因“激活 37B”按 37B Dense 估算。"],
+              ["TPOT 更关键","Reasoning 输出可能非常长；除 TTFT 外，应重点观察 TPOT、最大输出 Token 和并发下降。"],
+              ["Distill 更易部署","7B/8B 适合单卡量化，32B/70B 适合工作站或多卡，但能力与完整 R1 不等价。"],
+              ["提示词差异","官方初代 R1 建议温度约 0.6，并避免额外 System Prompt；具体仍应以所用 checkpoint 的 model card 为准。"]
+            ]
+          },
+          {
+            key:"v32",name:"DeepSeek-V3.2-Exp",subtitle:"LATEST OFFICIAL REPO · SPARSE ATTENTION",mark:"3.2",total:"671B",totalN:671,active:"37B",activeN:37,context:"160K",layers:"61",attention:"DSA + MLA",license:"MIT",modality:"Text · Dynamic Thinking",latest:true,
+            summary:"在 V3.1-Terminus 基础上引入 DeepSeek Sparse Attention：轻量 Indexer 为每个 Query 选出 Top-k 历史位置，再执行稀疏 MLA，目标是降低长上下文训练和推理成本。",
+            tags:["DSA","MLA","Top-k 2048","FP8 KV"],link:"https://github.com/deepseek-ai/DeepSeek-V3.2-Exp",
+            activation:"主干保持 671B/37B MoE。稀疏 Attention 降低的是序列维度上的计算，而专家路由降低的是 FFN 容量维度上的计算。",
+            arch:[["FP8 Indexer","64 heads × 128"],["Top-k 2048","选择相关历史位置"],["Sparse MLA","latent 512 + RoPE 64"],["MoE","256 experts · Top-8"]],
+            innovations:[
+              ["DeepSeek Sparse Attention","把 Dense Attention 的全历史匹配改为细粒度检索；官方配置每个 Query 选 Top-k 2048。"],
+              ["独立 Indexer Cache","Indexer 使用 64 个 128 维 Head 计算相关性，并维护额外 FP8 Key Cache；省下 Attention 计算但增加索引阶段。"],
+              ["MLA 继续负责内容","Indexer 只决定看哪里，真正的内容聚合仍由 MLA latent KV 完成，因此 DSA 与 MLA 是叠加而不是二选一。"],
+              ["内核协同","官方开放 DeepGEMM Indexer Logit 与 FlashMLA Sparse Attention 内核；RoPE 在 Indexer 和 MLA 中还使用不同布局。"]
+            ],
+            serving:[
+              ["160K 窗口","公开 Transformers/vLLM 配置为 163,840 Token；稀疏化减少配对计算，但 KV/Indexer 状态仍随上下文增长。"],
+              ["部署下界","vLLM 官方 recipes 的 FP8 方案估算至少约 805GiB 显存，典型为 8×H200/H20/B200 或同级 AMD 集群。"],
+              ["FP8 KV 取舍","FP8 KV 提高可驻留 Token 数并减轻带宽；短请求可用 BF16 KV，避免额外量化/反量化开销。"],
+              ["框架支持","SGLang 与 vLLM 均有专用支持；稀疏 Block、Indexer Kernel 和模型并行配置必须成套匹配。"]
+            ]
+          }
+        ],
+        kimi:[
+          {
+            key:"k2",name:"Kimi K2",subtitle:"AGENTIC MOE · TEXT",mark:"K2",total:"1T",totalN:1000,active:"32B",activeN:32,context:"128K",layers:"61",attention:"MLA",license:"Modified MIT",modality:"Text · Tool Use",latest:false,
+            summary:"1T 总参数、32B 激活的 Agentic MoE 模型，以 MLA 降低 KV，使用 Muon 系优化器完成大规模稳定训练，重点面向 Coding、工具调用与知识任务。",
+            tags:["MoE","MLA","Muon","Agentic"],link:"https://github.com/MoonshotAI/Kimi-K2",
+            activation:"384 个路由专家中每 Token 选择 8 个，另有共享专家。总权重决定存储，32B 激活量主要决定单 Token 专家计算。",
+            arch:[["Tokenizer","160K vocab"],["MLA","压缩长上下文 KV"],["MoE Router","Top-8 / 384"],["Agent Output","Code + Tool Calls"]],
+            innovations:[
+              ["1T Sparse Capacity","通过 384 个专家扩大知识和技能容量，每个 Token 只进入少量专家，降低相对 Dense 1T 的计算成本。"],
+              ["MLA Backbone","沿用低秩 latent KV 思路，避免 64 个 Attention Heads 各自保存完整 K/V。"],
+              ["Muon 大规模训练","官方报告在 15.5T Token 预训练中保持稳定，说明优化器与训练基础设施是模型能力的一部分。"],
+              ["Agentic Post-training","不仅优化聊天答案，还针对 Tool Call、Coding 和多步任务执行进行后训练。"]
+            ],
+            serving:[
+              ["权重规模","1T 权重即使 INT4 也在数百 GB 量级，需要 TP/EP 多卡；32B active 不代表单张 32B 卡即可部署。"],
+              ["128K KV","MLA 降低每 Token KV，但多轮 Agent 的工具结果会快速扩大上下文，仍需要 Prefix Cache 和上下文管理。"],
+              ["专家通信","高吞吐依赖 Expert Parallel、负载均衡和高性能 All-to-All；只做普通 TP 未必最优。"],
+              ["变体区别","K2 Base、Instruct、Thinking 的后训练与输出协议不同，调用时应匹配 Tool/Reasoning Parser。"]
+            ]
+          },
+          {
+            key:"k25",name:"Kimi K2.5",subtitle:"NATIVE MULTIMODAL · AGENT SWARM",mark:"2.5",total:"1T",totalN:1000,active:"32B",activeN:32,context:"256K",layers:"61",attention:"MLA",license:"Modified MIT",modality:"Text · Image · Video*",latest:false,
+            summary:"在 K2 Base 上继续使用约 15T 视觉与文本混合 Token 预训练，加入 MoonViT 原生视觉编码器、Thinking/Instant 双模式和 Agent Swarm 能力。",
+            tags:["Native Multimodal","Agent Swarm","MLA","INT4"],link:"https://github.com/MoonshotAI/Kimi-K2.5",
+            activation:"仍是 1T/32B：384 个专家、Top-8 路由和 1 个共享专家。新增的 MoonViT 约 400M，相比语言 MoE 很小。",
+            arch:[["MoonViT","400M vision encoder"],["MLA","256K context"],["MoE","384 experts · Top-8"],["Agent Swarm","并行子任务"]],
+            innovations:[
+              ["原生多模态","视觉-语言 Token 参与继续预训练，而不是简单外挂 OCR；可进行图表、UI、视频工作流与视觉工具调用。"],
+              ["Agent Swarm","模型学习把复杂任务拆成并行子任务并组织领域 Agent；真正执行仍需要外部 Agent Runtime 和资源隔离。"],
+              ["256K Context","窗口从 K2 的 128K 扩大到 256K，适合长代码、视觉文档和长工具轨迹，但有效召回仍需评测。"],
+              ["Native INT4","官方 checkpoint 使用原生 INT4；这不是部署后随意 PTQ，模型在低精度路径上做了针对性设计。"]
+            ],
+            serving:[
+              ["显存下界","vLLM recipes 给出的 packed INT4 权重约 595GB、建议预算约 714GiB，典型为 8×H200 或等价集群。"],
+              ["视觉编码器并行","视觉编码器仅约 400M，常用 Data Parallel 避免小 Encoder 做 TP 的通信开销；纯文本可不加载它。"],
+              ["FP8 KV","在 256K 和高并发下可将 KV 改为 FP8，容量约翻倍且降低读带宽，但要验证精度和内核。"],
+              ["P/D 与推测解码","可结合 P/D 分离及 Eagle3/MLA 推测解码；Prefill 侧处理视觉和长输入，Decode 侧优化连续生成。"]
+            ]
+          },
+          {
+            key:"linear",name:"Kimi Linear 48B-A3B",subtitle:"RESEARCH CHECKPOINT · 1M LINEAR ATTENTION",mark:"KL",total:"48B",totalN:48,active:"3B",activeN:3,context:"1M",layers:"—",attention:"3:1 KDA + MLA",license:"MIT Repository",modality:"Text",latest:false,
+            summary:"用于验证 Kimi Delta Attention 的开放研究模型：3 层 KDA 搭配 1 层全局 MLA，以有限状态线性 Attention 承担大部分长序列处理。",
+            tags:["KDA","Linear Attention","1M","MoE 48B-A3B"],link:"https://github.com/MoonshotAI/Kimi-Linear",
+            activation:"48B 总参数、约 3B 激活。它更适合研究 KDA/长上下文效率，不应直接按 K2/K3 的产品能力理解。",
+            arch:[["KDA ×3","有限状态递归更新"],["Global MLA ×1","补充精确内容检索"],["MoE","48B total / 3B active"],["1M Decode","状态 + 少量全局 KV"]],
+            innovations:[
+              ["Kimi Delta Attention","基于 Gated DeltaNet 改进，用输入相关 Gate 更新固定大小的递归状态，避免所有层都缓存完整历史 K/V。"],
+              ["3:1 Hybrid","大多数层使用线性 KDA 保持效率，每四层保留一层全局 MLA，弥补有限状态记忆对精确检索的不足。"],
+              ["KV 减少约 75%","项目报告相对全 MLA 可减少最多约 75% KV；仍存在全局 MLA 层，所以不是“零 KV Cache”。"],
+              ["长上下文吞吐","项目报告在 1M Context 下 TPOT 相比 MLA 最多约 6.3×；结果依赖专用 KDA Kernel 和硬件。"]
+            ],
+            serving:[
+              ["状态不同于 KV","KDA Decode 维护 [Head,V,K] 递归状态，容量不随 Token 数线性增长；MLA 层仍保留长序列 latent KV。"],
+              ["专用 Kernel","需要 fla-core/FlashKDA 等实现；把普通 Dense 模型在推理时切成 KDA 不会自动得到相同能力。"],
+              ["部署示例","官方给出 vLLM TP=4、max-model-len=1,048,576 示例，但实际可用窗口取决于显存和全局 MLA KV。"],
+              ["研究定位","48B-A3B checkpoint 展示架构可行性；其规模、训练量和能力定位与 1T K2.5、2.8T K3 不同。"]
+            ]
+          },
+          {
+            key:"k3",name:"Kimi K3",subtitle:"LATEST · NATIVE MULTIMODAL · 1M",mark:"K3",total:"2.8T",totalN:2800,active:"104B",activeN:104,context:"1M",layers:"93",attention:"69 KDA + 24 Gated MLA",license:"Kimi K3 License · Custom",modality:"Text · Image · Agent",latest:true,
+            summary:"2.8T 总参数、104B 激活的原生多模态 Agent 模型。以 69 层 KDA、24 层 Gated MLA、Attention Residuals 和 Stable LatentMoE 组成 1M 长上下文混合架构。",
+            tags:["2.8T MoE","KDA","Gated MLA","AttnRes","MXFP4 QAT"],link:"https://github.com/MoonshotAI/Kimi-K3",
+            activation:"896 个路由专家中选择 16 个，另有 2 个共享专家；官方给出的每 Token 激活参数约 104B。更高稀疏度换来更大的总容量。",
+            arch:[["KDA ×69","线性有限状态"],["Gated MLA ×24","全局 latent KV"],["AttnRes","跨深度选择表示"],["LatentMoE","16/896 + 2 shared"]],
+            innovations:[
+              ["KDA + Gated MLA","约四分之三层使用线性 KDA 控制长序列状态，约四分之一层保留 Gated MLA 全局检索，在效率和精确回看之间折中。"],
+              ["Attention Residuals","不再把所有层输出固定相加，而是用输入相关注意力选择前面层/Block 的表示，缓解深层 PreNorm 稀释。"],
+              ["Stable LatentMoE","896 路由专家、每 Token 选择 16 个并加 2 个共享专家，官方称相对 K2 提升整体 Scaling Efficiency。"],
+              ["原生低精度训练","从 SFT 阶段开始进行 QAT，权重采用 MXFP4、激活采用 MXFP8；不是事后把 2.8T BF16 权重简单压成 Q4。"]
+            ],
+            serving:[
+              ["权重约 1.68TB 级","vLLM pre-release recipe 按 MXFP4 checkpoint 和余量估算约 1.68TB；推荐至少 8×GB300，H100 可能需要 32 卡。"],
+              ["Hybrid KV Manager","KDA 层维护递归状态，Gated MLA 层保存 latent KV；运行时必须识别两类缓存，不能套用纯 Dense KV 公式。"],
+              ["P/D 分离","公开 recipe 给出 Prefill TEP8、Decode DEP 与 RDMA KV 传输方案；1M Prefill、MoE 通信和 Decode 是不同瓶颈。"],
+              ["许可证限制","Kimi K3 License 允许使用和修改，但对一定规模的 Model-as-a-Service 收入与大型商业产品署名有额外条件。"]
+            ]
+          }
+        ]
+      };
+      let frontierFamily="deepseek",frontierKey="v32";
+
+      function renderFrontier() {
+        const models=frontierModels[frontierFamily];
+        const model=models.find(x=>x.key===frontierKey)||models[models.length-1];
+        frontierKey=model.key;
+        const accent=frontierFamily==="deepseek"?"#5a7cff":"#ffc766";
+        frontierEls.card.style.setProperty("--model-accent",accent);
+        frontierEls.tabs.innerHTML=models.map(item=>`<button class="version-button ${item.key===model.key?"active":""} ${item.latest?"latest":""}" data-frontier-key="${item.key}" type="button">${escapeHTML(item.name)}</button>`).join("");
+        frontierEls.identity.dataset.mark=model.mark;
+        frontierEls.familyLabel.textContent=model.subtitle;
+        frontierEls.name.textContent=model.name;
+        frontierEls.summary.textContent=model.summary;
+        frontierEls.tags.innerHTML=model.tags.map(tag=>`<span class="model-tag">${escapeHTML(tag)}</span>`).join("");
+        frontierEls.link.href=model.link;
+        frontierEls.total.textContent=model.total;
+        frontierEls.active.textContent=model.active;
+        frontierEls.context.textContent=model.context;
+        frontierEls.layers.textContent=model.layers;
+        frontierEls.attention.textContent=model.attention;
+        const ratio=model.activeN/model.totalN*100;
+        frontierEls.ratio.textContent=`${ratio.toFixed(1)}%`;
+        frontierEls.activationFill.style.setProperty("--w",`${Math.max(1,ratio)}%`);
+        frontierEls.activationCaption.textContent=model.activation;
+        frontierEls.arch.innerHTML=model.arch.map((node,i)=>`${i?'<div class="arch-arrow">→</div>':""}<div class="arch-node"><b>${escapeHTML(node[0])}</b><span>${escapeHTML(node[1])}</span></div>`).join("");
+        frontierEls.license.textContent=`License · ${model.license}`;
+        frontierEls.modality.textContent=model.modality;
+        frontierEls.innovations.innerHTML=model.innovations.map((item,i)=>`<div class="innovation-item"><span class="innovation-num">0${i+1}</span><div><b>${escapeHTML(item[0])}</b><p>${escapeHTML(item[1])}</p></div></div>`).join("");
+        frontierEls.serving.innerHTML=model.serving.map(item=>`<div class="serving-item"><b>${escapeHTML(item[0])}</b><span>${escapeHTML(item[1])}</span></div>`).join("");
+        frontierEls.status.textContent=frontierFamily==="deepseek"?"官方最新开源仓库：DeepSeek-V3.2-Exp":"官方最新开放权重：Kimi K3";
+        document.querySelectorAll(".family-button").forEach(btn=>btn.classList.toggle("active",btn.dataset.modelFamily===frontierFamily));
+        frontierEls.tabs.querySelectorAll(".version-button").forEach(btn=>btn.addEventListener("click",()=>{frontierKey=btn.dataset.frontierKey;renderFrontier();}));
+      }
+      document.querySelectorAll(".family-button").forEach(btn=>btn.addEventListener("click",()=>{frontierFamily=btn.dataset.modelFamily;frontierKey=frontierModels[frontierFamily].find(x=>x.latest).key;renderFrontier();}));
+
       const calcEls = {
         capacity:$("vramCapacity"), hardware:$("vramHardwareLabel"), limitLabel:$("vramLimitLabel"),
         param: $("paramB"), bits: $("quantBits"), layers: $("layerCount"), heads: $("kvHeads"), dim: $("headDim"),
@@ -2009,6 +2364,7 @@
 
       resetManager();
       renderLongContext();
+      renderFrontier();
       renderQuantization();
       render();
       updateMemory();
