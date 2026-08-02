@@ -475,6 +475,20 @@
     .long-concept b { display: block; margin: 8px 0 4px; font-size: 11px; }
     .long-concept p { margin: 0; color: var(--muted); font-size: 9px; }
     .long-concept p strong { color: var(--amber); }
+    .model-zoo { margin-top: 15px; padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: rgba(3,12,16,.24); overflow: hidden; }
+    .model-zoo-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    .model-zoo h3 { margin: 0; font-size: 16px; }
+    .model-zoo-head small { color: var(--muted); font-size: 9px; text-align: right; }
+    .model-table-wrap { overflow-x: auto; }
+    .model-table { width: 100%; min-width: 790px; border-collapse: collapse; font-size: 10px; }
+    .model-table th { padding: 9px 10px; color: var(--muted); font-size: 8px; text-align: left; text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid var(--line-strong); }
+    .model-table td { padding: 10px; border-bottom: 1px solid rgba(153,197,209,.08); color: #b9c9ca; }
+    .model-table tr:last-child td { border-bottom: 0; }
+    .model-table td:first-child { color: var(--text); font-weight: 760; }
+    .model-table .architecture { color: var(--cyan); font-family: "Cascadia Code",Consolas,monospace; }
+    .model-table .kv-big { color: var(--amber); font-family: "Cascadia Code",Consolas,monospace; }
+    .model-table .kv-small { color: var(--green); font-family: "Cascadia Code",Consolas,monospace; }
+    .open-weight-note { margin-top: 10px; color: var(--muted); font-size: 9px; }
 
     .takeaway { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; padding: 26px; border-color: rgba(87,229,210,.24); }
     .takeaway-icon { width: 62px; height: 62px; display: grid; place-items: center; border-radius: 18px; color: var(--cyan); background: var(--cyan-soft); border: 1px solid rgba(87,229,210,.3); font: 800 25px Consolas, monospace; }
@@ -808,7 +822,7 @@
             <button class="context-preset" data-long-context="131072" type="button">128K</button>
             <button class="context-preset active" data-long-context="1048576" type="button">1M</button>
           </div>
-          <div class="field"><label for="longModel">模型结构</label><select id="longModel"><option value="qwen7">Qwen 7B · GQA 4 KV Heads</option><option value="llama8">Llama 8B · GQA 8 KV Heads</option><option value="mqa">MQA 示例 · 1 KV Head</option></select></div>
+          <div class="field"><label for="longModel">主流开放权重模型</label><select id="longModel"><option value="qwen7">Qwen2.5 7B · GQA</option><option value="llama8">Llama 3.1 8B · GQA</option><option value="qwen32">Qwen3 32B · GQA</option><option value="mixtral">Mixtral 8×7B · MoE + GQA</option><option value="llama70">Llama 3.1 70B · GQA</option><option value="qwen72">Qwen2.5 72B · GQA</option><option value="deepseek">DeepSeek-V3 / R1 · MoE + MLA</option><option value="llama405">Llama 3.1 405B · GQA</option></select></div>
           <div class="field"><label for="longPrecision">KV 精度</label><select id="longPrecision"><option value="2">FP16</option><option value="1">Q8</option><option value="0.5">Q4</option></select></div>
           <div class="field"><label for="longAttention">Attention</label><select id="longAttention"><option value="dense">Dense · 精确全局</option><option value="sliding">Sliding Window · 8K</option><option value="hybrid">Hybrid Sparse · 12.5%</option></select></div>
           <div class="field"><label for="longGpus">Context Parallel</label><select id="longGpus"><option value="1">1 GPU</option><option value="2">2 GPUs</option><option value="4">4 GPUs</option><option value="8" selected>8 GPUs</option><option value="16">16 GPUs</option></select></div>
@@ -860,23 +874,43 @@
           <article class="long-concept"><em>④</em><b>KV Cache 工程</b><p>依靠 GQA/MQA、KV 量化、Paged KV、Context Parallel、Prefix 复用，以及 GPU→CPU→SSD 分层管理线性增长的缓存。</p></article>
           <article class="long-concept"><em>⑤</em><b>不要忘记 RAG</b><p>1M Context 适合全局代码库、长视频和文档；普通问答通常先检索再放入较短窗口，成本和有效注意力往往更好。</p></article>
         </div>
+
+        <section class="model-zoo">
+          <div class="model-zoo-head"><div><h3>主流开放权重模型 · KV 架构对比</h3><small>不要用“总参数量”直接推断 KV 大小</small></div><small>以下为 1M Token、FP16、单请求、完整 KV 的结构估算<br>不含对齐、工作区与推理框架额外开销</small></div>
+          <div class="model-table-wrap"><table class="model-table">
+            <thead><tr><th>模型家族</th><th>规模示例</th><th>Attention / KV</th><th>FP16 KV @ 1M</th><th>应该观察什么</th></tr></thead>
+            <tbody>
+              <tr><td>Qwen2.5 / Qwen3</td><td>7B · 32B · 72B</td><td class="architecture">Dense GQA</td><td class="kv-big">56 / 256 / 320 GiB</td><td>KV Heads 和层数随规格变化；中文、代码与长上下文常见</td></tr>
+              <tr><td>Llama 3.1</td><td>8B · 70B · 405B</td><td class="architecture">Dense GQA</td><td class="kv-big">128 / 320 / 504 GiB</td><td>同为 8 KV Heads，层数增加仍让每 Token KV 变大</td></tr>
+              <tr><td>Mixtral</td><td>8×7B MoE</td><td class="architecture">MoE + GQA</td><td class="kv-big">约 128 GiB</td><td>专家增加权重容量，但 KV 主要由共享 Attention 层决定</td></tr>
+              <tr><td>DeepSeek-V3 / R1</td><td>671B MoE</td><td class="architecture">MLA latent cache</td><td class="kv-small">约 68.6 GiB</td><td>MLA 缓存压缩 latent，而不是保存标准多头 K/V</td></tr>
+              <tr><td>Mistral / Gemma</td><td>多种 Dense / MoE</td><td class="architecture">Local + Global 混合</td><td>取决于各层窗口</td><td>局部层可用 Ring KV；全局层仍需保留长程状态</td></tr>
+            </tbody>
+          </table></div>
+          <div class="open-weight-note">“开放权重”模型的许可证并不完全相同；实际商用前应分别核对 Llama、Gemma、Qwen、Mistral、DeepSeek 等模型条款。数值按公开架构做教学估算，模型版本升级后配置可能变化。</div>
+        </section>
       </div>
     </section>
 
     <section class="section" id="memory">
       <div class="section-head">
-        <div><div class="section-kicker">05 · Memory Budget</div><h2>你的 8GB 显存里装了什么？</h2></div>
-        <div class="section-note">以当前 RX 6650 XT 8GB 为容量上限。结果是便于理解的粗估；具体值会随 GGUF 格式、后端、模型结构与内存对齐变化。</div>
+        <div><div class="section-kicker">05 · Memory Budget</div><h2>从 7B 到 405B，显存账本怎么算？</h2></div>
+        <div class="section-note">不再局限于本机：切换消费级显卡、工作站卡和数据中心 GPU，对比 Dense、MoE 模型的权重与标准 GQA KV 占用。</div>
       </div>
       <div class="card memory-card">
         <div class="memory-layout">
           <div class="calc-controls">
             <div class="preset-row">
-              <button class="preset active" data-preset="llama8" type="button">Llama 8B</button>
-              <button class="preset" data-preset="qwen7" type="button">Qwen 7B</button>
-              <button class="preset" data-preset="qwen14" type="button">Qwen 14B</button>
+              <button class="preset active" data-preset="llama8" type="button">Llama 3.1 8B</button>
+              <button class="preset" data-preset="qwen7" type="button">Qwen2.5 7B</button>
+              <button class="preset" data-preset="qwen32" type="button">Qwen3 32B</button>
+              <button class="preset" data-preset="mixtral" type="button">Mixtral 8×7B</button>
+              <button class="preset" data-preset="llama70" type="button">Llama 3.1 70B</button>
+              <button class="preset" data-preset="qwen72" type="button">Qwen2.5 72B</button>
+              <button class="preset" data-preset="llama405" type="button">Llama 3.1 405B</button>
             </div>
-            <label class="calc-row"><span>参数量（B）</span><input id="paramB" type="number" value="8" min="1" max="100" step="0.1"></label>
+            <label class="calc-row"><span>显存预算</span><select id="vramCapacity"><option value="8">8 GiB · 消费级</option><option value="24">24 GiB · 高端消费级</option><option value="48">48 GiB · 工作站/数据中心</option><option value="80">80 GiB · A100/H100</option><option value="96">96 GiB · H100 NVL/H200 分片</option><option value="192">192 GiB · GB200 单 GPU</option><option value="640">640 GiB · 8×80G 集群</option></select></label>
+            <label class="calc-row"><span>参数量（B）</span><input id="paramB" type="number" value="8" min="1" max="800" step="0.1"></label>
             <label class="calc-row"><span>平均量化位宽</span><input id="quantBits" type="number" value="4.5" min="2" max="16" step="0.1"></label>
             <label class="calc-row"><span>Transformer 层数</span><input id="layerCount" type="number" value="32" min="1" max="160" step="1"></label>
             <label class="calc-row"><span>KV Heads</span><input id="kvHeads" type="number" value="8" min="1" max="128" step="1"></label>
@@ -884,26 +918,26 @@
             <label class="calc-row"><span>KV 精度</span><select id="kvBytes"><option value="2">FP16 · 2 bytes</option><option value="1">Q8 · 1 byte</option><option value="0.5">Q4 · 0.5 byte</option></select></label>
             <label class="calc-row"><span>上下文长度</span><span class="context-value" id="contextValue">8,192 tokens</span></label>
             <input id="contextRange" type="range" min="0" max="10" step="1" value="3" style="width:100%" aria-label="上下文长度：1K 到 1M，对数档位">
-            <label class="calc-row"><span>并发序列数</span><input id="parallelCount" type="number" value="1" min="1" max="16" step="1"></label>
+            <label class="calc-row"><span>并发序列数</span><input id="parallelCount" type="number" value="1" min="1" max="64" step="1"></label>
           </div>
 
           <div>
-            <div class="vram-title"><div><span>估算占用 / 可用显存</span><br><b id="totalMemory">—</b></div><span>RX 6650 XT · 8GB</span></div>
+            <div class="vram-title"><div><span>估算占用 / 显存预算</span><br><b id="totalMemory">—</b></div><span id="vramHardwareLabel">8 GiB · 消费级</span></div>
             <div class="vram-shell" id="vramShell">
               <div class="vram-seg weights" id="weightSeg"><span>模型权重</span></div>
               <div class="vram-seg kv" id="kvSeg"><span>KV Cache</span></div>
               <div class="vram-seg work" id="workSeg"><span>运行缓冲</span></div>
-              <div class="vram-limit" id="vramLimit"><span>8GB 上限</span></div>
+              <div class="vram-limit" id="vramLimit"><span id="vramLimitLabel">8GiB 上限</span></div>
             </div>
             <div class="memory-legend">
               <div class="memory-value"><b id="weightValue">—</b><span>模型权重（含格式开销粗估）</span></div>
               <div class="memory-value"><b id="kvValue">—</b><span>KV Cache</span></div>
-              <div class="memory-value"><b id="workValue">0.70 GiB</b><span>计算图、临时缓冲等</span></div>
+              <div class="memory-value"><b id="workValue">0.70 GiB</b><span>计算图、临时缓冲等粗估</span></div>
             </div>
             <div class="fit-message" id="fitMessage"></div>
             <div class="equation-box">
               <code>KV bytes = 2(K+V) × layers × kv_heads × head_dim × context × bytes × parallel</code><br>
-              注意：GQA/MQA 通过减少 KV Heads 显著缩小缓存；长上下文和并发会线性增加占用。
+              注意：该公式适用于标准 MHA/GQA/MQA；DeepSeek MLA 等压缩潜变量架构需要使用专门公式。MoE 的所有专家权重通常要驻留，但每 Token KV 不按专家总数成倍增长。
             </div>
           </div>
         </div>
@@ -1568,9 +1602,14 @@
         warningTitle:$("longWarningTitle"), warningText:$("longWarningText")
       };
       const longModels = {
-        qwen7:{label:"Qwen 7B",layers:28,kvHeads:4,headDim:128},
-        llama8:{label:"Llama 8B",layers:32,kvHeads:8,headDim:128},
-        mqa:{label:"MQA 示例",layers:32,kvHeads:1,headDim:128}
+        qwen7:{label:"Qwen2.5 7B",layers:28,kvHeads:4,headDim:128,kind:"gqa"},
+        llama8:{label:"Llama 3.1 8B",layers:32,kvHeads:8,headDim:128,kind:"gqa"},
+        qwen32:{label:"Qwen3 32B",layers:64,kvHeads:8,headDim:128,kind:"gqa"},
+        mixtral:{label:"Mixtral 8×7B",layers:32,kvHeads:8,headDim:128,kind:"gqa"},
+        llama70:{label:"Llama 3.1 70B",layers:80,kvHeads:8,headDim:128,kind:"gqa"},
+        qwen72:{label:"Qwen2.5 72B",layers:80,kvHeads:8,headDim:128,kind:"gqa"},
+        deepseek:{label:"DeepSeek-V3 / R1",layers:61,latentDim:576,kind:"mla"},
+        llama405:{label:"Llama 3.1 405B",layers:126,kvHeads:8,headDim:128,kind:"gqa"}
       };
       let longContext=1048576;
 
@@ -1611,7 +1650,9 @@
         const gpus=Number(longEls.gpus.value);
         const bandwidth=Number(longEls.bandwidth.value);
         const mode=longEls.attention.value;
-        const bytesPerToken=2*model.layers*model.kvHeads*model.headDim*bytes;
+        const bytesPerToken=model.kind==="mla"
+          ? model.layers*model.latentDim*bytes
+          : 2*model.layers*model.kvHeads*model.headDim*bytes;
         // A model trained with pure sliding-window attention can use a ring KV
         // buffer and discard positions outside the window. Dense/hybrid modes
         // conservatively retain the full sequence.
@@ -1628,7 +1669,8 @@
 
         longEls.tokens.textContent=compactNumber(longContext);
         longEls.kv.textContent=`${kvGiB.toFixed(kvGiB<10?2:1)} GiB`;
-        longEls.kvDetail.textContent=`${(bytesPerToken/1024).toFixed(bytesPerToken<1024?1:0)} KiB / token · ${precisionName}${mode==="sliding"?" · 8K ring":""}`;
+        const kvArchitecture=model.kind==="mla"?"MLA latent":"GQA K+V";
+        longEls.kvDetail.textContent=`${(bytesPerToken/1024).toFixed(bytesPerToken<1024?1:0)} KiB / token · ${precisionName} · ${kvArchitecture}${mode==="sliding"?" · 8K ring":""}`;
         longEls.pairs.textContent=compactNumber(pairs);
         longEls.chunks.textContent=chunks.toLocaleString("zh-CN");
         longEls.transfer.textContent=transferSeconds<1?`${(transferSeconds*1000).toFixed(0)}ms`:`${transferSeconds.toFixed(2)}s`;
@@ -1660,7 +1702,7 @@
           longEls.warningText.textContent=`纯 Sliding Window 可以用环形 KV Buffer 丢弃 8K 以外的 K/V，因此显存不再随 1M 线性增长；代价是当前 Token 无法直接访问更早位置。要保留跨 1M 的信息，还需全局稀疏层、摘要/记忆 Token、检索或其他经过训练的架构，不能只在推理时强行打开滑窗。`;
         } else {
           longEls.warningTitle.textContent=`当前组合：单请求 KV 就需要 ${kvGiB.toFixed(1)} GiB`;
-          longEls.warningText.textContent=`你的 RX 6650 XT 8GB 在模型权重和工作区之外，粗略只剩约 ${localBudget}GiB 给 KV，可容纳约 ${contextLabel(localTokens)} Token。1M 需要数据中心多卡、KV 量化/分片或稀疏窗口；把 KV 放到 CPU/SSD 能扩容，但 Dense Decode 仍需读取相关 KV。声明“支持 1M”也不代表 1M 位置具有同等召回质量。`;
+          longEls.warningText.textContent=`以 ${model.label} 为例，1M Dense KV 如上所示；数据中心通常使用 TP/CP 多卡和高速互联。作为对照，你的 RX 6650 XT 8GB 在权重与工作区之外粗略只剩约 ${localBudget}GiB 给 KV，可容纳约 ${contextLabel(localTokens)} Token。外部 CPU/SSD 能扩容，但 Dense Decode 仍需读取相关 KV；声明“支持 1M”也不代表所有位置具有同等召回质量。`;
         }
 
         document.querySelectorAll(".context-preset").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.longContext)===longContext));
@@ -1670,6 +1712,7 @@
       [longEls.model,longEls.precision,longEls.attention,longEls.gpus,longEls.bandwidth].forEach(el=>el.addEventListener("change",renderLongContext));
 
       const calcEls = {
+        capacity:$("vramCapacity"), hardware:$("vramHardwareLabel"), limitLabel:$("vramLimitLabel"),
         param: $("paramB"), bits: $("quantBits"), layers: $("layerCount"), heads: $("kvHeads"), dim: $("headDim"),
         bytes: $("kvBytes"), context: $("contextRange"), contextText: $("contextValue"), parallel: $("parallelCount"),
         total: $("totalMemory"), weight: $("weightValue"), kv: $("kvValue"), work: $("workValue"),
@@ -1678,7 +1721,11 @@
       const presets = {
         llama8: { param: 8, bits: 4.5, layers: 32, heads: 8, dim: 128 },
         qwen7: { param: 7.6, bits: 4.5, layers: 28, heads: 4, dim: 128 },
-        qwen14: { param: 14.7, bits: 4.5, layers: 48, heads: 8, dim: 128 }
+        qwen32: { param: 32.8, bits: 4.5, layers: 64, heads: 8, dim: 128 },
+        mixtral: { param: 46.7, bits: 4.5, layers: 32, heads: 8, dim: 128 },
+        llama70: { param: 70.6, bits: 4.5, layers: 80, heads: 8, dim: 128 },
+        qwen72: { param: 72.7, bits: 4.5, layers: 80, heads: 8, dim: 128 },
+        llama405: { param: 405, bits: 4.5, layers: 126, heads: 8, dim: 128 }
       };
       const numberValue = (el, fallback) => Number(el.value) || fallback;
 
@@ -1695,35 +1742,40 @@
         const gib = 1024 ** 3;
         const weights = (param * 1e9 * bits / 8 / gib) * 1.08;
         const kv = (2 * layers * heads * dim * context * bytes * parallel) / gib;
-        const work = 0.70;
+        const work = Math.max(0.70,Math.min(16,param*0.03));
         const total = weights + kv + work;
-        const capacity = 8;
+        const capacity = numberValue(calcEls.capacity,8);
         const displayBase = Math.max(capacity,total);
+        const hardwareText=calcEls.capacity.options[calcEls.capacity.selectedIndex].text;
         calcEls.contextText.textContent = `${context.toLocaleString("zh-CN")} tokens`;
+        calcEls.hardware.textContent=hardwareText;
+        calcEls.limitLabel.textContent=`${capacity}GiB 上限`;
         calcEls.weight.textContent = `${weights.toFixed(2)} GiB`;
         calcEls.kv.textContent = `${kv.toFixed(2)} GiB`;
-        calcEls.total.textContent = `${total.toFixed(2)} / 8.00 GiB`;
+        calcEls.work.textContent = `${work.toFixed(2)} GiB`;
+        calcEls.total.textContent = `${total.toFixed(2)} / ${capacity.toFixed(2)} GiB`;
         calcEls.weightSeg.style.setProperty("--w", `${weights/displayBase*100}%`);
         calcEls.kvSeg.style.setProperty("--w", `${kv/displayBase*100}%`);
         calcEls.workSeg.style.setProperty("--w", `${work/displayBase*100}%`);
         calcEls.limit.style.display = total > capacity ? "block" : "none";
         calcEls.limit.style.left = `${capacity/displayBase*100}%`;
-        if (total <= 7.2) {
+        if (total <= capacity*0.88) {
           calcEls.fit.className = "fit-message ok";
-          calcEls.fit.textContent = `✓ 估算可完整放入 8GB 显存，并留有约 ${(capacity-total).toFixed(2)} GiB 余量。实际部署仍建议实测。`;
+          calcEls.fit.textContent = `✓ 估算可放入当前 ${capacity}GiB 预算，并留有约 ${(capacity-total).toFixed(2)} GiB 余量。实际部署仍需为通信库和碎片预留空间。`;
         } else if (total <= capacity) {
           calcEls.fit.className = "fit-message warn";
-          calcEls.fit.textContent = `△ 理论上接近可用，但只剩约 ${(capacity-total).toFixed(2)} GiB；后端额外分配可能导致显存不足，可降低上下文或 KV 精度。`;
+          calcEls.fit.textContent = `△ 理论上接近预算上限，只剩约 ${(capacity-total).toFixed(2)} GiB；后端额外分配可能 OOM，可降低量化、上下文或并发。`;
         } else {
+          const devices=Math.ceil(total/capacity);
           calcEls.fit.className = "fit-message bad";
-          calcEls.fit.textContent = `✕ 超出约 ${(total-capacity).toFixed(2)} GiB，需要部分卸载到系统内存、降低量化/上下文/并发，或换更小模型。`;
+          calcEls.fit.textContent = `✕ 超出当前预算约 ${(total-capacity).toFixed(2)} GiB。若每个设备均为 ${capacity}GiB，容量下界约 ${devices} 个设备；真实多卡还受 TP/PP/EP 切分和通信影响。`;
         }
       }
 
       Object.values(calcEls).forEach(el => {
         if (el && ["INPUT","SELECT"].includes(el.tagName)) {
           el.addEventListener("input", () => {
-            document.querySelectorAll(".preset").forEach(x => x.classList.remove("active"));
+            if (el !== calcEls.capacity) document.querySelectorAll(".preset").forEach(x => x.classList.remove("active"));
             updateMemory();
           });
         }
