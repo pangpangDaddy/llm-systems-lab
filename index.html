@@ -301,6 +301,78 @@
     .attn-pct { color: var(--muted); font: 9px Consolas, monospace; }
     .attn-query { margin-bottom: 15px; padding: 9px 11px; border: 1px solid rgba(87,229,210,.2); background: var(--cyan-soft); border-radius: 10px; font-size: 11px; }
 
+    /* QKV + activation deep dive */
+    .deep-dive { margin-top: 18px; overflow: hidden; scroll-margin-top: 68px; }
+    .deep-dive-toolbar { min-height: 66px; display: flex; align-items: center; gap: 14px; padding: 13px 17px; border-bottom: 1px solid var(--line); background: rgba(3,12,16,.35); }
+    .deep-dive-title { margin-right: auto; }
+    .deep-dive-title b { display: block; font-size: 13px; }
+    .deep-dive-title span { display: block; color: var(--muted); font-size: 9px; }
+    .deep-tabs { display: flex; gap: 6px; }
+    .deep-tab { padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: rgba(255,255,255,.02); cursor: pointer; font-size: 10px; font-weight: 760; }
+    .deep-tab.active { color: #071015; border-color: var(--cyan); background: var(--cyan); }
+    .deep-panel { padding: 18px; }
+    .deep-panel:not([hidden]) { animation: coursePageIn .3s ease both; }
+    .deep-note { margin-bottom: 13px; padding: 10px 12px; border: 1px solid rgba(87,229,210,.14); border-radius: 11px; color: #b4c8c9; background: rgba(87,229,210,.045); font-size: 10px; }
+    .deep-note b { color: var(--cyan); }
+    .qkv-lab-grid { display: grid; grid-template-columns: .72fr 1.28fr; gap: 13px; }
+    .deep-control-card, .deep-calc-card, .activation-control-card, .activation-chart-card { padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: rgba(3,12,16,.27); }
+    .deep-control-card h3, .deep-calc-card h3, .activation-control-card h3, .activation-chart-card h3 { margin: 0 0 4px; font-size: 14px; }
+    .deep-control-card > small, .deep-calc-card > small, .activation-control-card > small, .activation-chart-card > small { color: var(--muted); font-size: 8px; }
+    .mini-selector { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+    .mini-select { padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: rgba(255,255,255,.02); cursor: pointer; font: 9px Consolas,monospace; }
+    .mini-select.active { color: #071015; border-color: var(--deep-accent,var(--cyan)); background: var(--deep-accent,var(--cyan)); }
+    .vector-display { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+    .vector-cell { min-width: 43px; padding: 8px 6px; border: 1px solid var(--line); border-radius: 8px; color: var(--cyan); background: rgba(87,229,210,.05); text-align: center; font: 10px Consolas,monospace; }
+    .vector-cell small { display: block; color: var(--muted); font-size: 7px; }
+    .shape-stack { display: grid; gap: 6px; margin-top: 12px; }
+    .shape-row { display: grid; grid-template-columns: 72px 1fr; gap: 8px; align-items: center; padding: 7px 9px; border-left: 2px solid var(--cyan); background: rgba(255,255,255,.018); font-size: 8px; }
+    .shape-row code { color: var(--amber); }
+    .projection-hint { margin-top: 11px; color: var(--muted); font-size: 8px; }
+    .projection-hint b { color: var(--amber); }
+    .matrix-table-wrap { margin-top: 11px; overflow-x: auto; }
+    .matrix-calc-table { width: 100%; border-collapse: separate; border-spacing: 4px; font: 9px Consolas,monospace; text-align: center; }
+    .matrix-calc-table th { color: var(--muted); font-weight: 600; }
+    .matrix-calc-table td { min-width: 52px; padding: 7px 6px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255,255,255,.02); }
+    .matrix-calc-table td.input { color: var(--cyan); }
+    .matrix-calc-table .selected-col { border-color: color-mix(in srgb,var(--proj-color) 45%,var(--line)); color: var(--proj-color); background: color-mix(in srgb,var(--proj-color) 8%,transparent); }
+    .matrix-calc-table td.product { color: var(--amber); }
+    .qkv-equation { margin-top: 9px; padding: 10px; border-radius: 9px; color: #bae9e4; background: rgba(87,229,210,.055); font: 9px/1.7 Consolas,monospace; overflow-x: auto; }
+    .qkv-output-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-top: 10px; }
+    .qkv-output { padding: 9px; border: 1px solid var(--line); border-radius: 9px; background: rgba(255,255,255,.018); }
+    .qkv-output b { color: var(--out-color); font-size: 10px; }
+    .qkv-output code { display: block; margin-top: 5px; color: #c5d4d5; font-size: 8px; white-space: nowrap; }
+    .qkv-output.active { border-color: color-mix(in srgb,var(--out-color) 55%,var(--line)); box-shadow: inset 0 -2px var(--out-color); }
+    .qkv-practical { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; margin-top: 12px; }
+    .practical-card { padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.018); }
+    .practical-card b { display: block; color: var(--cyan); font-size: 9px; }
+    .practical-card span { display: block; margin-top: 3px; color: var(--muted); font-size: 7px; }
+
+    .activation-layout { display: grid; grid-template-columns: .68fr 1.32fr; gap: 13px; }
+    .activation-slider-head { display: flex; justify-content: space-between; align-items: center; margin-top: 13px; color: var(--muted); font-size: 9px; }
+    .activation-slider-head b { color: var(--cyan); font: 13px Consolas,monospace; }
+    #activationInput { width: 100%; margin-top: 8px; }
+    .activation-result { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; margin-top: 12px; padding: 11px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.02); }
+    .activation-result code { color: #bcebe5; font-size: 9px; }
+    .activation-result b { color: var(--amber); font: 18px Consolas,monospace; }
+    .activation-why { margin-top: 12px; padding: 10px; border-left: 2px solid var(--amber); border-radius: 0 9px 9px 0; color: var(--muted); background: var(--amber-soft); font-size: 8px; }
+    .activation-why b { color: var(--amber); }
+    .activation-svg { width: 100%; height: 236px; display: block; margin-top: 8px; border-radius: 10px; background: rgba(1,8,11,.3); }
+    .activation-svg text { fill: #6f888b; font: 8px Consolas,monospace; }
+    .activation-compare { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-top: 9px; }
+    .activation-compare-item { padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: rgba(255,255,255,.018); }
+    .activation-compare-item b { display: block; color: var(--muted); font-size: 8px; }
+    .activation-compare-item span { display: block; margin-top: 3px; color: var(--cyan); font: 10px Consolas,monospace; }
+    .activation-compare-item.active { border-color: rgba(87,229,210,.4); background: var(--cyan-soft); }
+    .swiglu-flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 6px; align-items: center; margin-top: 12px; }
+    .swiglu-node { min-height: 68px; display: grid; place-content: center; padding: 8px; border: 1px solid var(--line); border-radius: 9px; text-align: center; background: rgba(255,255,255,.018); }
+    .swiglu-node b { color: var(--cyan); font-size: 9px; }
+    .swiglu-node span { color: var(--muted); font-size: 7px; }
+    .swiglu-arrow { color: var(--amber); text-align: center; }
+    .activation-truths { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-top: 12px; }
+    .activation-truth { padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.018); }
+    .activation-truth b { display: block; font-size: 9px; }
+    .activation-truth p { margin: 4px 0 0; color: var(--muted); font-size: 7px; }
+
     .phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .phase-card { padding: 24px; position: relative; overflow: hidden; }
     .phase-card::after { content: attr(data-index); position: absolute; right: 18px; top: 2px; font: 800 74px/1 Consolas, monospace; color: rgba(255,255,255,.025); }
@@ -686,7 +758,8 @@
       .pipeline { grid-template-columns: repeat(4,1fr); }
       .stage-node:nth-child(4) { border-right: 0; }
       .stage-node:nth-child(-n+4) { border-bottom: 1px solid var(--line); }
-      .stage-panel, .below-grid, .memory-layout, .manager-grid { grid-template-columns: 1fr; }
+      .stage-panel, .below-grid, .memory-layout, .manager-grid, .qkv-lab-grid, .activation-layout { grid-template-columns: 1fr; }
+      .qkv-practical { grid-template-columns: repeat(2,1fr); }
       .kv-metrics { grid-template-columns: repeat(3,1fr); }
       .policy-grid, .long-concepts { grid-template-columns: repeat(3,1fr); }
       .long-metrics { grid-template-columns: repeat(3,1fr); }
@@ -707,6 +780,14 @@
       .course-pagination { grid-template-columns: 1fr 1fr; }
       .course-page-status { grid-column: 1 / -1; grid-row: 1; }
       .course-page-button { grid-row: 2; min-width: 0; }
+      .deep-dive-toolbar { align-items: flex-start; flex-direction: column; }
+      .deep-dive-title { margin-right: 0; }
+      .deep-tabs { width: 100%; }
+      .deep-tab { flex: 1; }
+      .deep-panel { padding: 10px; }
+      .qkv-output-grid, .activation-compare, .activation-truths { grid-template-columns: repeat(2,1fr); }
+      .swiglu-flow { grid-template-columns: 1fr; }
+      .swiglu-arrow { transform: rotate(90deg); }
       .section-head { align-items: start; flex-direction: column; }
       .section-note { text-align: left; }
       .input-strip { grid-template-columns: 1fr; gap: 6px; }
@@ -866,6 +947,94 @@
               </div>
               <div id="attentionView"></div>
             </section>
+          </div>
+        </div>
+      </div>
+
+      <div class="card deep-dive" id="mathDeepDive">
+        <div class="deep-dive-toolbar">
+          <div class="deep-dive-title"><b>计算细节实验室</b><span>把动画中的关键一步展开成真正的数字计算；两个面板不会同时拉长页面</span></div>
+          <div class="deep-tabs" role="tablist" aria-label="计算细节切换">
+            <button class="deep-tab active" id="deep-tab-qkv" data-deep-tab="qkv" role="tab" aria-controls="deep-panel-qkv" aria-selected="true" type="button">Q / K / V 怎么算</button>
+            <button class="deep-tab" id="deep-tab-activation" data-deep-tab="activation" role="tab" aria-controls="deep-panel-activation" aria-selected="false" type="button">为什么需要激活函数</button>
+          </div>
+        </div>
+
+        <div class="deep-panel" id="deep-panel-qkv" role="tabpanel" aria-labelledby="deep-tab-qkv">
+          <div class="deep-note"><b>先记结论：</b>Q、K、V 都是隐藏状态与三组不同权重矩阵的线性投影。每个输出分量都是“输入各维 × 对应矩阵列”再求和；Q/K 之后通常应用 RoPE，V 不应用。下面用 4→3 的玩具维度展示真实算法。</div>
+          <div class="qkv-lab-grid">
+            <section class="deep-control-card">
+              <h3>① 选择隐藏状态 X</h3><small>假设已经过当前层的 RMSNorm；真实 hidden_dim 通常是数千</small>
+              <div class="mini-selector" aria-label="隐藏状态预设">
+                <button class="mini-select active" data-qkv-vector="0" type="button">“是”</button>
+                <button class="mini-select" data-qkv-vector="1" type="button">“首都”</button>
+                <button class="mini-select" data-qkv-vector="2" type="button">“巴黎”</button>
+              </div>
+              <div class="vector-display" id="qkvInputVector"></div>
+              <div class="shape-stack">
+                <div class="shape-row"><code>X [1×4]</code><span>单个 Token 的归一化隐藏状态</span></div>
+                <div class="shape-row"><code>W [4×3]</code><span>当前层、当前 Head 的投影权重</span></div>
+                <div class="shape-row"><code>XW [1×3]</code><span>矩阵乘法得到一个 Q、K 或 V 向量</span></div>
+              </div>
+              <div class="projection-hint"><b>真实 Prefill：</b>X 是 [T,d_model]，一次矩阵乘法并行处理 T 个位置；Decode 时 T=1，只投影新 Token。</div>
+            </section>
+
+            <section class="deep-calc-card">
+              <h3>② 选择矩阵与输出维度</h3><small>高亮列就是正在计算的输出分量；切换 Q/K/V 会更换整组学习到的权重</small>
+              <div class="mini-selector" aria-label="QKV 投影选择">
+                <button class="mini-select active" style="--deep-accent:var(--cyan)" data-qkv-proj="q" type="button">Wq → Q</button>
+                <button class="mini-select" style="--deep-accent:var(--amber)" data-qkv-proj="k" type="button">Wk → K</button>
+                <button class="mini-select" style="--deep-accent:var(--violet)" data-qkv-proj="v" type="button">Wv → V</button>
+              </div>
+              <div class="mini-selector" aria-label="输出维度选择">
+                <button class="mini-select active" data-qkv-dim="0" type="button">输出 j=0</button>
+                <button class="mini-select" data-qkv-dim="1" type="button">输出 j=1</button>
+                <button class="mini-select" data-qkv-dim="2" type="button">输出 j=2</button>
+              </div>
+              <div class="matrix-table-wrap" id="qkvMatrixCalculation"></div>
+              <div class="qkv-equation" id="qkvEquation"></div>
+              <div class="qkv-output-grid" id="qkvOutputs"></div>
+            </section>
+          </div>
+          <div class="qkv-practical">
+            <div class="practical-card"><b>完整形状</b><span>Wq:[d_model,n_q·d_head]；Wk/Wv:[d_model,n_kv·d_head]，再 reshape 成多个 Head。</span></div>
+            <div class="practical-card"><b>GQA 为什么省 KV</b><span>例如 32 个 Q Heads 共享 8 个 KV Heads：Q 宽度不变，K/V 投影与缓存约缩为 1/4。</span></div>
+            <div class="practical-card"><b>这里没有激活函数</b><span>QKV 投影本身通常是 Linear。Attention 中的 Softmax，以及后续 MLP 的 SiLU/GELU 才引入非线性。</span></div>
+            <div class="practical-card"><b>每层权重不同</b><span>第 1 层和第 20 层各有自己的 Wq/Wk/Wv，也分别产生和缓存自己的 K/V。</span></div>
+          </div>
+        </div>
+
+        <div class="deep-panel" id="deep-panel-activation" role="tabpanel" aria-labelledby="deep-tab-activation" hidden>
+          <div class="deep-note"><b>激活函数的任务：</b>在线性投影之间加入非线性，让多层网络不能被合并成一层；同时像一个连续的信息阀门，决定哪些特征通过、抑制多少。现代 LLM 的门控 MLP 常用 SwiGLU。</div>
+          <div class="activation-layout">
+            <section class="activation-control-card">
+              <h3>输入一个神经元的线性结果 z</h3><small>z = xW + b；移动滑块观察负值、零点和正值怎样被处理</small>
+              <div class="activation-slider-head"><span>线性输出 z</span><b id="activationInputText">1.20</b></div>
+              <input id="activationInput" type="range" min="-5" max="5" step="0.05" value="1.2" aria-label="激活函数输入">
+              <div class="mini-selector" aria-label="激活函数选择">
+                <button class="mini-select" data-activation="relu" type="button">ReLU</button>
+                <button class="mini-select" data-activation="gelu" type="button">GELU</button>
+                <button class="mini-select active" data-activation="silu" type="button">SiLU</button>
+                <button class="mini-select" data-activation="swiglu" type="button">SwiGLU</button>
+              </div>
+              <div class="activation-result"><code id="activationFormula">SiLU(z) = z · sigmoid(z)</code><b id="activationResult">0.922</b></div>
+              <div class="activation-why"><b>没有激活函数：</b>W₃(W₂(W₁x)) = (W₃W₂W₁)x，多层 Linear 仍等于一层 Linear，无法表示复杂的弯曲决策边界与上下文特征组合。</div>
+            </section>
+            <section class="activation-chart-card">
+              <h3>函数曲线与当前数值</h3><small>横轴是线性投影结果 z，纵轴是激活后的输出 f(z)</small>
+              <svg class="activation-svg" id="activationGraph" viewBox="0 0 560 260" role="img" aria-label="激活函数曲线"></svg>
+              <div class="activation-compare" id="activationComparison"></div>
+            </section>
+          </div>
+          <div class="swiglu-flow">
+            <div class="swiglu-node"><b>xW_gate → SiLU</b><span>产生平滑、可正可负的门控分支</span></div><div class="swiglu-arrow">×</div>
+            <div class="swiglu-node"><b>xW_up</b><span>准备要传递的候选特征</span></div><div class="swiglu-arrow">→</div>
+            <div class="swiglu-node"><b>W_down + Residual</b><span>逐元素相乘后投影回 hidden_dim</span></div>
+          </div>
+          <div class="activation-truths">
+            <article class="activation-truth"><b>Transformer 中在哪里？</b><p>主要位于每层 FFN/MLP：SwiGLU(x)=(SiLU(xW_gate)⊙xW_up)W_down。Attention Softmax 也提供非线性。</p></article>
+            <article class="activation-truth"><b>为什么不用硬开关？</b><p>阶跃函数几乎处处梯度为零，难以反向传播。GELU/SiLU 平滑、可导，并保留少量负值信息。</p></article>
+            <article class="activation-truth"><b>别混淆三个“激活”</b><p>激活函数是 f(z)；激活值是中间张量；MoE“激活 37B 参数”指本 Token 路由到的专家权重。</p></article>
           </div>
         </div>
       </div>
@@ -1305,7 +1474,7 @@
     <section class="section course-companion" data-course-companion="lab">
       <div class="card takeaway">
         <div class="takeaway-icon">∑</div>
-        <div><h3>一句话记住整个过程</h3><p>模型读取当前输入 → 每层产生新 Q/K/V → 把 K/V 追加进缓存 → 当前 Q 读取全部历史 K/V → MLP 变换 → LM Head 得到词表 Logits → 采样一个 Token → 把它作为下一轮输入，周而复始。</p></div>
+        <div><h3>一句话记住整个过程</h3><p>模型读取当前输入 → 每层用矩阵乘法产生新 Q/K/V → 把 K/V 追加进缓存 → 当前 Q 读取全部历史 K/V → SwiGLU MLP 做非线性变换 → LM Head 得到词表 Logits → 采样一个 Token → 把它作为下一轮输入，周而复始。</p></div>
       </div>
     </section>
 
@@ -1359,11 +1528,11 @@
           fact: "向量里的单个数字通常没有可独立解释的含义；语义分布在许多维度及多层激活中。"
         },
         {
-          key: "QKV", name: "Q · K · V", title: "投影出 Query、Key、Value",
-          descPrefill: "在当前 Transformer 层，归一化后的隐藏状态分别乘 Wq、Wk、Wv，得到每个位置的 Q、K、V；RoPE 会旋转 Q/K 以编码相对位置。",
-          descDecode: "本轮只计算新 Token 的 qₜ、kₜ、vₜ。qₜ 用于发起查询，kₜ/vₜ 会成为之后所有 Token 可复用的历史。",
-          formula: "Q = XWq   ·   K = XWk   ·   V = XWv   ·   RoPE(Q, K)",
-          fact: "采用 GQA/MQA 的模型让多个 Query Heads 共享较少的 KV Heads，因此能明显缩小 KV Cache。"
+          key: "QKV", name: "Q · K · V", title: "三次矩阵乘法投影出 Q、K、V",
+          descPrefill: "当前层先对隐藏状态 X 做 RMSNorm，再分别右乘三组独立权重。对每个位置、每个输出维度 j，都执行 qⱼ=ΣᵢXᵢWqᵢⱼ；K/V 同理。最后 reshape 成多个 Head，RoPE 只旋转 Q/K。",
+          descDecode: "本轮 X 只有新 Token 这一行，因此只计算 qₜ、kₜ、vₜ。qₜ 马上查询历史，kₜ/vₜ 则写入本层 Cache，供后续所有 Token 使用。",
+          formula: "X:[T,d] · Wq:[d,nq·dh] → Q:[T,nq,dh]   ·   Wk/Wv:[d,nkv·dh] → K/V:[T,nkv,dh]",
+          fact: "QKV 投影本身通常没有激活函数。GQA/MQA 通过 n_kv < n_q 缩小 K/V 投影宽度与 KV Cache；下方实验室可以逐项查看乘加。"
         },
         {
           key: "CACHE", name: "KV Cache", title: "追加 K/V，读取历史",
@@ -1373,11 +1542,11 @@
           fact: "只缓存 K 和 V，不缓存 Q。历史 Q 用完即弃；未来查询只需要历史 K/V。"
         },
         {
-          key: "LAYERS", name: "Transformer × N", title: "注意力与 MLP 层层传递",
-          descPrefill: "Attention 输出经过输出投影和残差连接，再通过门控 MLP。这个结构重复 N 层，每一层都有自己的 K/V Cache。",
-          descDecode: "新 Token 的隐藏状态逐层更新。它在每一层都会读取那一层的历史 K/V，并把自己的新 K/V 写入对应层。",
-          formula: "H ← H + Attention(Norm(H))   ·   H ← H + MLP(Norm(H))",
-          fact: "KV Cache 存的是每层注意力投影后的 K/V，不是只存一份 Token 文本，也不是直接缓存最终答案。"
+          key: "LAYERS", name: "Transformer × N", title: "Attention、SwiGLU MLP 与残差逐层加工",
+          descPrefill: "Attention 混合不同 Token 的信息；随后门控 MLP 用 SiLU/SwiGLU 在每个位置内部组合特征。非线性激活让多层网络不能折叠成一个线性矩阵。这个结构重复 N 层。",
+          descDecode: "新 Token 的隐藏状态逐层更新：每层先读取该层历史 K/V，再经过残差、RMSNorm 和门控 MLP；每一层的激活值和 K/V 都不相同。",
+          formula: "H ← H + Attn(RMSNorm(H))   ·   MLP(x)=(SiLU(xWgate)⊙xWup)Wdown   ·   H ← H + MLP(RMSNorm(H))",
+          fact: "激活函数不是 MoE 的“激活参数”。前者提供非线性；后者表示一个 Token 实际路由到多少专家权重。下方可交互比较 ReLU、GELU、SiLU 与 SwiGLU。"
         },
         {
           key: "LOGITS", name: "Logits", title: "映射到整个词表",
@@ -1497,6 +1666,77 @@
       window.addEventListener("popstate",syncCourseHash);
       const initialCourseId=decodeURIComponent(location.hash.slice(1));
       activateCoursePage(coursePages.some(page=>page.id===initialCourseId)?initialCourseId:"lab",{scroll:Boolean(initialCourseId)});
+
+      /* QKV matrix multiplication toy lab */
+      const qkvToy={
+        vectors:[
+          {label:"是",x:[.60,-.20,.80,.40]},
+          {label:"首都",x:[-.35,.75,.25,.90]},
+          {label:"巴黎",x:[.85,.30,-.45,.55]}
+        ],
+        matrices:{
+          q:[[.40,-.10,.50],[.20,.60,-.30],[-.50,.30,.20],[.70,-.40,.10]],
+          k:[[.10,.50,-.20],[-.40,.20,.60],[.70,-.30,.10],[.20,.40,-.50]],
+          v:[[.60,-.20,.30],[.10,.80,-.40],[-.30,.50,.70],[.40,-.10,.20]]
+        }
+      };
+      const projectionMeta={q:{name:"Q",weight:"Wq",color:"var(--cyan)"},k:{name:"K",weight:"Wk",color:"var(--amber)"},v:{name:"V",weight:"Wv",color:"var(--violet)"}};
+      let qkvVectorIndex=0,qkvProjection="q",qkvDimension=0;
+      const projectVector=(x,matrix)=>matrix[0].map((_,j)=>x.reduce((sum,value,i)=>sum+value*matrix[i][j],0));
+      const fixed=value=>(Math.abs(value)<.0005?0:value).toFixed(3);
+
+      function renderQkvLab(){
+        const x=qkvToy.vectors[qkvVectorIndex].x,matrix=qkvToy.matrices[qkvProjection],meta=projectionMeta[qkvProjection];
+        const products=x.map((value,i)=>value*matrix[i][qkvDimension]);
+        const result=products.reduce((a,b)=>a+b,0);
+        $("qkvInputVector").innerHTML=x.map((value,i)=>`<span class="vector-cell"><small>x${i}</small>${fixed(value)}</span>`).join("");
+        const head=`<thead><tr><th>i</th><th>xᵢ</th>${[0,1,2].map(j=>`<th class="${j===qkvDimension?"selected-col":""}">${meta.weight}[i,${j}]</th>`).join("")}<th>xᵢ × ${meta.weight}[i,${qkvDimension}]</th></tr></thead>`;
+        const rows=x.map((value,i)=>`<tr><td>${i}</td><td class="input">${fixed(value)}</td>${matrix[i].map((weight,j)=>`<td class="${j===qkvDimension?"selected-col":""}">${fixed(weight)}</td>`).join("")}<td class="product">${fixed(products[i])}</td></tr>`).join("");
+        $("qkvMatrixCalculation").innerHTML=`<table class="matrix-calc-table" style="--proj-color:${meta.color}">${head}<tbody>${rows}</tbody></table>`;
+        const terms=x.map((value,i)=>`(${fixed(value)}×${fixed(matrix[i][qkvDimension])})`).join(" + ");
+        $("qkvEquation").textContent=`${meta.name}[${qkvDimension}] = Σᵢ xᵢ·${meta.weight}[i,${qkvDimension}] = ${terms} = ${fixed(result)}`;
+        $("qkvOutputs").innerHTML=["q","k","v"].map(key=>{const m=projectionMeta[key],out=projectVector(x,qkvToy.matrices[key]);return `<div class="qkv-output ${key===qkvProjection?"active":""}" style="--out-color:${m.color}"><b>${m.name} = X·${m.weight}</b><code>[${out.map(fixed).join(", ")}]</code></div>`;}).join("");
+        document.querySelectorAll("[data-qkv-vector]").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.qkvVector)===qkvVectorIndex));
+        document.querySelectorAll("[data-qkv-proj]").forEach(btn=>btn.classList.toggle("active",btn.dataset.qkvProj===qkvProjection));
+        document.querySelectorAll("[data-qkv-dim]").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.qkvDim)===qkvDimension));
+      }
+      document.querySelectorAll("[data-qkv-vector]").forEach(btn=>btn.addEventListener("click",()=>{qkvVectorIndex=Number(btn.dataset.qkvVector);renderQkvLab();}));
+      document.querySelectorAll("[data-qkv-proj]").forEach(btn=>btn.addEventListener("click",()=>{qkvProjection=btn.dataset.qkvProj;renderQkvLab();}));
+      document.querySelectorAll("[data-qkv-dim]").forEach(btn=>btn.addEventListener("click",()=>{qkvDimension=Number(btn.dataset.qkvDim);renderQkvLab();}));
+
+      /* Activation function curve lab */
+      const activationFns={
+        relu:{label:"ReLU",formula:"ReLU(z) = max(0, z)",fn:z=>Math.max(0,z),range:[-1,5.5]},
+        gelu:{label:"GELU",formula:"GELU(z) ≈ 0.5z·[1+tanh(√(2/π)(z+0.044715z³))]",fn:z=>.5*z*(1+Math.tanh(Math.sqrt(2/Math.PI)*(z+.044715*z**3))),range:[-1,5.5]},
+        silu:{label:"SiLU",formula:"SiLU(z) = z · sigmoid(z)",fn:z=>z/(1+Math.exp(-z)),range:[-1,5.5]},
+        swiglu:{label:"SwiGLU（标量示意）",formula:"SiLU(0.8z) × (1.2z + 0.3)",fn:z=>(.8*z/(1+Math.exp(-.8*z)))*(1.2*z+.3),range:[-1,26]}
+      };
+      let activationKey="silu";
+      function renderActivationLab(){
+        const z=Number($("activationInput").value),selected=activationFns[activationKey],value=selected.fn(z);
+        $("activationInputText").textContent=z.toFixed(2);
+        $("activationFormula").textContent=selected.formula;
+        $("activationResult").textContent=fixed(value);
+        document.querySelectorAll("[data-activation]").forEach(btn=>btn.classList.toggle("active",btn.dataset.activation===activationKey));
+        $("activationComparison").innerHTML=Object.entries(activationFns).map(([key,item])=>`<div class="activation-compare-item ${key===activationKey?"active":""}"><b>${escapeHTML(item.label)}</b><span>${fixed(item.fn(z))}</span></div>`).join("");
+        const width=560,height=260,pad=34,[yMin,yMax]=selected.range;
+        const px=x=>pad+(x+5)/10*(width-pad*2),py=y=>height-pad-(y-yMin)/(yMax-yMin)*(height-pad*2);
+        const points=Array.from({length:121},(_,i)=>{const x=-5+i/12;return `${i?"L":"M"}${px(x).toFixed(1)},${py(selected.fn(x)).toFixed(1)}`;}).join(" ");
+        const xAxis=py(0),yAxis=px(0),cx=px(z),cy=py(value);
+        const xTicks=[-5,-2.5,0,2.5,5].map(t=>`<line x1="${px(t)}" y1="${pad}" x2="${px(t)}" y2="${height-pad}" stroke="rgba(153,197,209,.08)"/><text x="${px(t)}" y="${height-13}" text-anchor="middle">${t}</text>`).join("");
+        const yTicks=[yMin,0,yMax].filter((v,i,a)=>a.indexOf(v)===i).map(t=>`<line x1="${pad}" y1="${py(t)}" x2="${width-pad}" y2="${py(t)}" stroke="rgba(153,197,209,.08)"/><text x="${pad-7}" y="${py(t)+3}" text-anchor="end">${Number(t).toFixed(t%1?1:0)}</text>`).join("");
+        $("activationGraph").innerHTML=`${xTicks}${yTicks}<line x1="${pad}" y1="${xAxis}" x2="${width-pad}" y2="${xAxis}" stroke="rgba(153,197,209,.28)"/><line x1="${yAxis}" y1="${pad}" x2="${yAxis}" y2="${height-pad}" stroke="rgba(153,197,209,.28)"/><path d="${points}" fill="none" stroke="#57e5d2" stroke-width="3"/><line x1="${cx}" y1="${xAxis}" x2="${cx}" y2="${cy}" stroke="#ffc766" stroke-dasharray="4 4"/><circle cx="${cx}" cy="${cy}" r="6" fill="#ffc766" stroke="#071015" stroke-width="2"/><text x="${Math.min(width-88,cx+10)}" y="${Math.max(18,cy-10)}" fill="#ffc766">(${z.toFixed(2)}, ${fixed(value)})</text>`;
+      }
+      $("activationInput").addEventListener("input",renderActivationLab);
+      document.querySelectorAll("[data-activation]").forEach(btn=>btn.addEventListener("click",()=>{activationKey=btn.dataset.activation;renderActivationLab();}));
+      document.querySelectorAll("[data-deep-tab]").forEach(btn=>btn.addEventListener("click",()=>{
+        const key=btn.dataset.deepTab;
+        document.querySelectorAll("[data-deep-tab]").forEach(item=>{const active=item===btn;item.classList.toggle("active",active);item.setAttribute("aria-selected",String(active));});
+        $("deep-panel-qkv").hidden=key!=="qkv";
+        $("deep-panel-activation").hidden=key!=="activation";
+      }));
+      renderQkvLab();
+      renderActivationLab();
 
       const data = () => scenarios[scenarioKey];
       const mode = () => cycle === 0 ? "prefill" : "decode";
@@ -1666,7 +1906,7 @@
           const cacheRows = intendedAttentionTokens().slice(-4).map((t,i) => `<div class="cache-mini-row"><span>${escapeHTML(t)}</span><i class="cache-cell"></i><i class="cache-cell v"></i></div>`).join("");
           html = `<div class="scene"><div class="cache-append"><div class="append-packet"><b>${input}</b><br><small>新 kₜ + vₜ</small></div><span class="flow-arrow">→</span><div class="cache-mini"><div class="micro-label">第 18 层 Cache</div>${cacheRows}</div></div><div class="scene-caption">这一步会在每个 Transformer 层各发生一次</div></div>`;
         } else if (stage === 4) {
-          html = `<div class="scene"><div class="layer-stack">${[1,2,3,"…",30,31,32].map((n,i)=>`<div class="layer-slab" style="--i:${i}"><b>Layer ${n}</b><span>Attention → Residual → MLP</span></div>`).join("")}</div><div class="scene-caption">数据逐层通过；层与层之间不能并行跳过</div></div>`;
+          html = `<div class="scene"><div class="layer-stack">${[1,2,3,"…",30,31,32].map((n,i)=>`<div class="layer-slab" style="--i:${i}"><b>Layer ${n}</b><span>Attention → Residual → RMSNorm → SwiGLU → Residual</span></div>`).join("")}</div><div class="scene-caption">激活函数位于每层 MLP 内部；层与层之间通常串行，不能并行跳过</div></div>`;
         } else if (stage === 5) {
           html = `<div class="scene"><div class="micro-label" style="text-align:center">词表候选 · 原始 LOGIT</div><div class="logit-list">${scoreRows("logit")}</div><div class="scene-caption">更高只代表模型更偏好，还不是归一化概率</div></div>`;
         } else if (stage === 6) {
