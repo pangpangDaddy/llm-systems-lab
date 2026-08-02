@@ -11,6 +11,8 @@ https://pangpangDaddy.github.io/llm-systems-lab/
 - 7 个独立课程 Tab，支持 URL 深链接、浏览器前进/后退和移动端横向切换
 - 一次 Token 的生成过程
 - Embedding、Q/K/V、Attention、Transformer、Logits 与采样
+- Q/K/V 矩阵乘法实验：输入向量、Wq/Wk/Wv、逐项乘加、Head/GQA 形状
+- 激活函数实验：ReLU、GELU、SiLU、SwiGLU 曲线、门控 MLP 与非线性解释
 - Prefill 与 Decode 的区别
 - KV Cache 的写入时序与注意力读取
 - KV Cache 分页、连续批处理、Prefix 共享、Admission Control
