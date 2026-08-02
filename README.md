@@ -17,7 +17,9 @@ https://pangpangDaddy.github.io/llm-systems-lab/
 - 1M 上下文：RoPE 扩展、长序列训练、Chunked Prefill、Context Parallel
 - Dense / Sliding Window / Hybrid Sparse Attention 交互对比
 - 1M KV 容量、P→D 传输与多 GPU 分片估算
-- 支持 1K～1M 上下文的 8GB 显存估算器
+- Qwen2.5/Qwen3、Llama 3.1、Mixtral、DeepSeek-V3/R1、Mistral/Gemma 架构示例
+- Dense GQA、MoE、MLA、Local/Global 混合 KV 对比
+- 支持 1K～1M 上下文和 8～640GiB 显存预算的估算器
 
 ## 本地运行
 
