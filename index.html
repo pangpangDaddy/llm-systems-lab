@@ -1,0 +1,1494 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>LLM Systems Lab｜大模型推理交互学习</title>
+  <style>
+    :root {
+      --bg: #071015;
+      --bg-2: #0a171e;
+      --panel: rgba(14, 29, 37, .82);
+      --panel-solid: #0e1d25;
+      --line: rgba(153, 197, 209, .16);
+      --line-strong: rgba(153, 197, 209, .30);
+      --text: #eef7f5;
+      --muted: #92a9ac;
+      --cyan: #57e5d2;
+      --cyan-soft: rgba(87, 229, 210, .14);
+      --violet: #ab8cff;
+      --violet-soft: rgba(171, 140, 255, .15);
+      --amber: #ffc766;
+      --amber-soft: rgba(255, 199, 102, .14);
+      --coral: #ff806c;
+      --green: #85e89d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .36);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 13% 8%, rgba(87,229,210,.12), transparent 26rem),
+        radial-gradient(circle at 88% 15%, rgba(171,140,255,.11), transparent 28rem),
+        linear-gradient(180deg, #061015 0%, #08141a 45%, #071015 100%);
+      font-family: Inter, "SF Pro Display", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .32;
+      background-image:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
+    }
+
+    button, select, input { font: inherit; }
+    button { color: inherit; }
+    a { color: var(--cyan); }
+    code, .mono { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace; }
+
+    .shell { width: min(1240px, calc(100% - 40px)); margin: 0 auto; position: relative; }
+
+    .topbar {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 760; letter-spacing: -.02em; white-space: nowrap; }
+    .site-nav { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+    .site-nav a { color: var(--muted); text-decoration: none; font-size: 12px; padding: 7px 9px; border-radius: 8px; transition: .2s ease; }
+    .site-nav a:hover { color: var(--text); background: var(--cyan-soft); }
+    .brand-mark {
+      width: 34px; height: 34px; border-radius: 11px; position: relative;
+      background: linear-gradient(135deg, var(--cyan), #3f8ca8);
+      box-shadow: 0 0 30px rgba(87,229,210,.24);
+    }
+    .brand-mark::before, .brand-mark::after {
+      content: ""; position: absolute; background: #071015; border-radius: 99px;
+    }
+    .brand-mark::before { width: 18px; height: 4px; left: 8px; top: 10px; box-shadow: 0 10px 0 #071015; }
+    .brand-mark::after { width: 4px; height: 18px; top: 8px; left: 15px; }
+    .top-pills { display: flex; align-items: center; gap: 8px; }
+    .tiny-pill {
+      color: var(--muted); border: 1px solid var(--line); border-radius: 999px;
+      padding: 6px 10px; font-size: 12px; background: rgba(255,255,255,.02);
+    }
+    .tiny-pill.live::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 7px; box-shadow: 0 0 10px var(--green); }
+
+    .hero { padding: 76px 0 48px; display: grid; grid-template-columns: 1.4fr .6fr; gap: 48px; align-items: end; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .18em; font-size: 12px; color: var(--cyan); font-weight: 800; margin-bottom: 18px; }
+    h1 { margin: 0; max-width: 860px; font-size: clamp(42px, 6vw, 78px); line-height: 1.04; letter-spacing: -.055em; }
+    h1 .accent { color: var(--cyan); text-shadow: 0 0 35px rgba(87,229,210,.2); }
+    .hero-copy { color: var(--muted); font-size: 17px; max-width: 760px; margin: 24px 0 0; }
+    .hero-side { border-left: 1px solid var(--line); padding-left: 24px; }
+    .hero-stat { padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .hero-stat:last-child { border-bottom: 0; }
+    .hero-stat b { display: block; font-size: 22px; letter-spacing: -.03em; }
+    .hero-stat span { font-size: 12px; color: var(--muted); }
+
+    .section { margin: 32px 0 76px; }
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+    .section-kicker { color: var(--cyan); font-size: 12px; text-transform: uppercase; letter-spacing: .16em; font-weight: 800; }
+    h2 { font-size: clamp(26px, 3vw, 38px); line-height: 1.15; letter-spacing: -.035em; margin: 8px 0 0; }
+    .section-note { color: var(--muted); font-size: 13px; max-width: 460px; text-align: right; }
+
+    .card {
+      background: linear-gradient(145deg, rgba(16,34,43,.90), rgba(10,23,30,.86));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .demo { overflow: hidden; }
+    .controlbar {
+      min-height: 78px; padding: 15px 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      border-bottom: 1px solid var(--line); background: rgba(3,12,16,.35);
+    }
+    .btn {
+      border: 1px solid var(--line-strong); background: rgba(255,255,255,.035); border-radius: 12px;
+      padding: 10px 14px; cursor: pointer; transition: .2s ease; white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: rgba(87,229,210,.5); background: rgba(87,229,210,.07); }
+    .btn.primary { color: #04110f; background: var(--cyan); border-color: var(--cyan); font-weight: 800; min-width: 104px; }
+    .btn.primary:hover { background: #78edde; box-shadow: 0 9px 28px rgba(87,229,210,.18); }
+    .btn.icon { min-width: 44px; padding-inline: 11px; }
+    .field { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px; }
+    .field select {
+      color: var(--text); background: #0c1b22; border: 1px solid var(--line-strong); border-radius: 10px;
+      padding: 9px 30px 9px 10px; outline: none;
+    }
+    .field select option { background: #0c1b22; }
+    .control-spacer { flex: 1; }
+    .speed-wrap { min-width: 180px; }
+    input[type="range"] { accent-color: var(--cyan); width: 106px; cursor: pointer; }
+
+    .demo-inner { padding: 22px; }
+    .input-strip {
+      display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center;
+      padding: 17px 18px; border: 1px solid var(--line); border-radius: 16px;
+      background: rgba(3,12,16,.35); margin-bottom: 18px;
+    }
+    .input-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+    .prompt-text { font-size: 19px; font-weight: 680; letter-spacing: .01em; }
+    .mode-badge {
+      border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 800;
+      color: var(--cyan); border: 1px solid rgba(87,229,210,.28); background: var(--cyan-soft);
+    }
+    .mode-badge.decode { color: var(--violet); border-color: rgba(171,140,255,.3); background: var(--violet-soft); }
+
+    .sequence-wrap { padding: 12px 2px 19px; }
+    .micro-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 9px; }
+    .token-sequence { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-height: 54px; }
+    .token {
+      position: relative; padding: 10px 12px; min-width: 42px; text-align: center;
+      border: 1px solid var(--line-strong); border-radius: 11px; background: rgba(255,255,255,.035);
+      font-weight: 760; animation: tokenIn .35s ease both;
+    }
+    .token.prompt { color: #c8dadb; }
+    .token.generated { color: var(--violet); border-color: rgba(171,140,255,.38); background: var(--violet-soft); }
+    .token.cached::after, .token.pending::after {
+      content: ""; position: absolute; width: 7px; height: 7px; right: -3px; top: -3px;
+      border-radius: 50%; background: var(--green); box-shadow: 0 0 9px rgba(133,232,157,.6);
+    }
+    .token.pending::after { background: var(--amber); box-shadow: 0 0 9px rgba(255,199,102,.65); animation: blink 1s infinite; }
+    .token-id { display: block; font-family: Consolas, monospace; color: var(--muted); font-size: 9px; font-weight: 500; margin-top: 1px; }
+    .sequence-arrow { color: var(--muted); font-size: 17px; }
+    .sequence-legend { color: var(--muted); font-size: 11px; margin-top: 11px; }
+    .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin: 0 5px 0 10px; }
+    .dot:first-child { margin-left: 0; }
+    .dot.green { background: var(--green); } .dot.amber { background: var(--amber); }
+
+    .pipeline {
+      display: grid; grid-template-columns: repeat(8, minmax(82px,1fr)); position: relative;
+      border: 1px solid var(--line); border-radius: 17px; overflow: hidden; margin-bottom: 18px;
+    }
+    .stage-node {
+      min-height: 92px; padding: 14px 10px; position: relative; display: flex; flex-direction: column; justify-content: space-between;
+      background: rgba(3,12,16,.26); border-right: 1px solid var(--line); transition: .3s ease;
+    }
+    .stage-node:last-child { border-right: 0; }
+    .stage-number { font-family: Consolas, monospace; color: var(--muted); font-size: 10px; }
+    .stage-name { font-size: 12px; color: #afc0c2; font-weight: 700; }
+    .stage-node.done { background: rgba(87,229,210,.04); }
+    .stage-node.done .stage-number { color: var(--cyan); }
+    .stage-node.active { z-index: 2; background: linear-gradient(145deg, rgba(87,229,210,.18), rgba(87,229,210,.06)); box-shadow: inset 0 -3px var(--cyan), 0 0 26px rgba(87,229,210,.08); }
+    .stage-node.active .stage-name { color: var(--text); }
+    .stage-node.active::after { content: ""; position: absolute; left: 12px; right: 12px; top: 0; height: 2px; background: var(--cyan); box-shadow: 0 0 14px var(--cyan); animation: scan 1.25s ease-in-out infinite; }
+
+    .stage-panel { min-height: 340px; display: grid; grid-template-columns: .82fr 1.18fr; gap: 18px; }
+    .explain-pane, .visual-pane { border: 1px solid var(--line); border-radius: 18px; background: rgba(3,12,16,.28); padding: 22px; overflow: hidden; }
+    .stage-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 20px; }
+    .stage-chip { color: var(--cyan); border: 1px solid rgba(87,229,210,.3); background: var(--cyan-soft); border-radius: 999px; font-size: 10px; font-weight: 800; padding: 4px 8px; text-transform: uppercase; letter-spacing: .1em; }
+    .cycle-label { color: var(--muted); font-size: 11px; }
+    .explain-pane h3 { margin: 0 0 10px; font-size: clamp(23px, 2.6vw, 34px); line-height: 1.16; letter-spacing: -.035em; }
+    .explain-pane p { color: #b6c8ca; font-size: 14px; margin: 0 0 16px; }
+    .formula {
+      padding: 13px 14px; border-radius: 12px; background: rgba(87,229,210,.06); border: 1px solid rgba(87,229,210,.14);
+      color: #a9ede4; font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; overflow-x: auto;
+    }
+    .fact { margin-top: 15px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; gap: 10px; color: var(--muted); font-size: 12px; }
+    .fact b { color: var(--amber); }
+
+    .visual-pane { display: flex; align-items: center; justify-content: center; position: relative; min-height: 300px; }
+    .visual-pane::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(87,229,210,.055), transparent 60%); pointer-events: none; }
+    .scene { width: 100%; position: relative; z-index: 1; animation: sceneIn .38s ease both; }
+    .flow-row { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .flow-box {
+      min-width: 104px; padding: 14px; border: 1px solid var(--line-strong); border-radius: 13px; text-align: center;
+      background: rgba(255,255,255,.035); font-size: 12px;
+    }
+    .flow-box strong { display: block; font-size: 16px; margin-bottom: 3px; }
+    .flow-box.cyan { border-color: rgba(87,229,210,.38); background: var(--cyan-soft); }
+    .flow-box.violet { border-color: rgba(171,140,255,.38); background: var(--violet-soft); }
+    .flow-box.amber { border-color: rgba(255,199,102,.38); background: var(--amber-soft); }
+    .flow-arrow { color: var(--cyan); font-size: 23px; animation: nudge 1s ease-in-out infinite; }
+    .scene-caption { color: var(--muted); font-size: 11px; text-align: center; margin-top: 20px; }
+
+    .id-chips { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .id-chip { padding: 9px 10px; border: 1px solid rgba(87,229,210,.28); border-radius: 9px; background: var(--cyan-soft); font: 11px Consolas, monospace; animation: rise .4s calc(var(--i) * .06s) both; }
+    .matrix { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; width: min(430px,100%); margin: 0 auto; }
+    .matrix i { height: 21px; border-radius: 4px; background: color-mix(in srgb, var(--cyan) calc(var(--v) * 1%), rgba(255,255,255,.035)); opacity: calc(.25 + var(--v) / 125); animation: matrixPulse 1.3s calc(var(--i) * .025s) ease-in-out infinite alternate; }
+    .qkv { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .qkv-card { position: relative; padding: 20px 13px; text-align: center; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.025); overflow: hidden; }
+    .qkv-card::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--c); box-shadow: 0 0 16px var(--c); }
+    .qkv-card b { font-size: 28px; color: var(--c); }
+    .qkv-card span { display: block; color: var(--muted); font-size: 10px; }
+    .vector-dots { display: flex; gap: 4px; justify-content: center; margin-top: 13px; }
+    .vector-dots i { width: 5px; border-radius: 4px; height: var(--h); background: var(--c); opacity: .65; animation: bars 1s ease-in-out infinite alternate; }
+    .cache-append { display: grid; grid-template-columns: 1fr auto 1.35fr; gap: 13px; align-items: center; }
+    .cache-mini { border: 1px solid var(--line); border-radius: 13px; padding: 12px; }
+    .cache-mini-row { display: grid; grid-template-columns: 50px 1fr 1fr; gap: 5px; margin: 5px 0; align-items: center; font-size: 10px; color: var(--muted); }
+    .cache-cell { height: 13px; border-radius: 4px; background: repeating-linear-gradient(90deg, rgba(87,229,210,.65) 0 5px, rgba(87,229,210,.12) 5px 8px); }
+    .cache-cell.v { background: repeating-linear-gradient(90deg, rgba(171,140,255,.65) 0 5px, rgba(171,140,255,.12) 5px 8px); }
+    .append-packet { padding: 12px; border-radius: 12px; background: var(--amber-soft); border: 1px solid rgba(255,199,102,.35); text-align: center; animation: packet 1.4s ease-in-out infinite; }
+    .layer-stack { display: flex; flex-direction: column-reverse; gap: 6px; width: min(420px,90%); margin: auto; perspective: 600px; }
+    .layer-slab { padding: 8px 13px; border: 1px solid rgba(171,140,255,.25); border-radius: 9px; background: rgba(171,140,255,.08); display: flex; justify-content: space-between; font-size: 10px; transform: rotateX(2deg); animation: layerGlow 1.2s calc(var(--i)*.13s) ease-in-out infinite; }
+    .logit-list, .prob-list { display: grid; gap: 8px; width: min(480px,100%); margin: auto; }
+    .score-row { display: grid; grid-template-columns: 65px 1fr 52px; gap: 10px; align-items: center; font-size: 11px; }
+    .score-token { font-weight: 760; text-align: right; }
+    .score-track { height: 10px; background: rgba(255,255,255,.05); border-radius: 999px; overflow: hidden; }
+    .score-fill { height: 100%; width: var(--w); border-radius: inherit; background: linear-gradient(90deg, var(--violet), var(--cyan)); transform-origin: left; animation: grow .55s ease both; }
+    .score-number { color: var(--muted); font: 10px Consolas, monospace; }
+    .score-row.outside { opacity: .3; }
+    .score-row.chosen .score-token { color: var(--amber); }
+    .score-row.chosen .score-fill { background: linear-gradient(90deg, var(--amber), #ff9366); box-shadow: 0 0 12px rgba(255,199,102,.35); }
+    .sample-orb { width: 92px; height: 92px; margin: 0 auto 18px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle, rgba(255,199,102,.22), rgba(255,199,102,.03) 60%, transparent 61%); border: 1px solid rgba(255,199,102,.35); animation: orb 1.5s ease-in-out infinite; }
+    .sample-orb b { font-size: 21px; color: var(--amber); }
+    .loop-scene { text-align: center; }
+    .new-token { display: inline-grid; place-items: center; min-width: 110px; min-height: 82px; border-radius: 18px; color: var(--violet); border: 1px solid rgba(171,140,255,.5); background: var(--violet-soft); font-size: 24px; font-weight: 850; box-shadow: 0 0 40px rgba(171,140,255,.15); animation: pop .55s cubic-bezier(.2,1.5,.4,1) both; }
+    .loop-arrow { margin: 20px auto 0; width: 180px; height: 44px; border: 2px solid var(--cyan); border-left-color: transparent; border-bottom-color: transparent; border-radius: 50%; transform: rotate(-7deg); position: relative; opacity: .7; }
+    .loop-arrow::after { content: "›"; position: absolute; right: -4px; top: -15px; color: var(--cyan); font-size: 28px; transform: rotate(40deg); }
+
+    .below-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; margin-top: 18px; }
+    .subcard { border: 1px solid var(--line); border-radius: 18px; padding: 20px; background: rgba(3,12,16,.28); }
+    .subcard-head { display: flex; justify-content: space-between; align-items: start; gap: 16px; margin-bottom: 16px; }
+    .subcard h3 { margin: 0; font-size: 18px; letter-spacing: -.02em; }
+    .subcard small { color: var(--muted); }
+    .cache-counter { color: var(--cyan); font: 12px Consolas, monospace; }
+    .cache-table { display: grid; gap: 6px; max-height: 310px; overflow: auto; padding-right: 4px; }
+    .cache-row { display: grid; grid-template-columns: 66px 1fr 1fr 74px; gap: 7px; align-items: center; padding: 7px; border: 1px solid var(--line); border-radius: 10px; color: var(--muted); font-size: 10px; animation: rise .3s ease both; }
+    .cache-row.cached { border-color: rgba(133,232,157,.18); background: rgba(133,232,157,.025); }
+    .cache-row.pending { border-color: rgba(255,199,102,.35); background: var(--amber-soft); }
+    .cache-token { color: var(--text); font-weight: 760; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .kv-vector { padding: 5px 6px; border-radius: 6px; background: rgba(87,229,210,.08); color: #79c9c1; font: 9px Consolas, monospace; white-space: nowrap; overflow: hidden; }
+    .kv-vector.v { background: rgba(171,140,255,.09); color: #b9a5ec; }
+    .cache-status { text-align: right; }
+    .cache-status.ok { color: var(--green); } .cache-status.wait { color: var(--amber); }
+    .empty-state { min-height: 120px; display: grid; place-items: center; color: var(--muted); border: 1px dashed var(--line-strong); border-radius: 12px; font-size: 12px; text-align: center; padding: 18px; }
+    .attention-list { display: grid; gap: 8px; }
+    .attn-row { display: grid; grid-template-columns: 60px 1fr 42px; gap: 8px; align-items: center; font-size: 10px; }
+    .attn-name { text-align: right; color: #c4d3d4; overflow: hidden; text-overflow: ellipsis; }
+    .attn-track { height: 8px; border-radius: 99px; background: rgba(255,255,255,.04); overflow: hidden; }
+    .attn-fill { width: var(--w); height: 100%; border-radius: inherit; background: linear-gradient(90deg, rgba(87,229,210,.35), var(--cyan)); animation: grow .5s ease both; }
+    .attn-pct { color: var(--muted); font: 9px Consolas, monospace; }
+    .attn-query { margin-bottom: 15px; padding: 9px 11px; border: 1px solid rgba(87,229,210,.2); background: var(--cyan-soft); border-radius: 10px; font-size: 11px; }
+
+    .phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .phase-card { padding: 24px; position: relative; overflow: hidden; }
+    .phase-card::after { content: attr(data-index); position: absolute; right: 18px; top: 2px; font: 800 74px/1 Consolas, monospace; color: rgba(255,255,255,.025); }
+    .phase-label { display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 5px 9px; font-size: 10px; font-weight: 800; margin-bottom: 15px; }
+    .phase-label.prefill { color: var(--cyan); background: var(--cyan-soft); }
+    .phase-label.decode { color: var(--violet); background: var(--violet-soft); }
+    .phase-card h3 { margin: 0 0 8px; font-size: 24px; }
+    .phase-card p { color: var(--muted); font-size: 13px; }
+    .phase-tokens { display: grid; grid-template-columns: repeat(6,1fr); gap: 6px; margin: 22px 0; }
+    .phase-token { height: 38px; display: grid; place-items: center; border-radius: 8px; background: rgba(87,229,210,.1); border: 1px solid rgba(87,229,210,.18); font-size: 10px; animation: phasePulse 1.6s calc(var(--i)*.12s) infinite; }
+    .phase-token.decode { background: rgba(171,140,255,.12); border-color: rgba(171,140,255,.23); }
+    .phase-points { display: grid; gap: 8px; color: #b8c9ca; font-size: 12px; }
+    .phase-points span::before { content: "↳"; color: var(--cyan); margin-right: 8px; }
+    .phase-card:nth-child(2) .phase-points span::before { color: var(--violet); }
+
+    .truth-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 18px; }
+    .truth { padding: 18px; border: 1px solid var(--line); border-radius: 15px; background: rgba(3,12,16,.22); }
+    .truth b { display: block; margin-bottom: 7px; font-size: 13px; }
+    .truth p { margin: 0; color: var(--muted); font-size: 11px; }
+    .truth .symbol { font: 26px Consolas, monospace; color: var(--amber); margin-bottom: 10px; }
+
+    .memory-card { padding: 24px; }
+    .memory-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 28px; }
+    .calc-controls { display: grid; gap: 12px; }
+    .preset-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 4px; }
+    .preset { padding: 6px 9px; color: var(--muted); background: rgba(255,255,255,.025); border: 1px solid var(--line); border-radius: 8px; font-size: 10px; cursor: pointer; }
+    .preset:hover, .preset.active { color: var(--cyan); border-color: rgba(87,229,210,.3); background: var(--cyan-soft); }
+    .calc-row { display: grid; grid-template-columns: 1fr 90px; align-items: center; gap: 10px; color: #b7c7c8; font-size: 12px; }
+    .calc-row input, .calc-row select { width: 100%; color: var(--text); background: #0b1920; border: 1px solid var(--line-strong); border-radius: 9px; padding: 7px 8px; outline: none; }
+    .calc-row input[type="range"] { padding: 0; }
+    .calc-row option { background: #0b1920; }
+    .context-value { color: var(--cyan); font: 11px Consolas, monospace; text-align: right; }
+    .vram-title { display: flex; align-items: end; justify-content: space-between; margin-bottom: 13px; }
+    .vram-title b { font-size: 32px; letter-spacing: -.04em; }
+    .vram-title span { color: var(--muted); font-size: 11px; }
+    .vram-shell { position: relative; height: 70px; border: 1px solid var(--line-strong); border-radius: 14px; background: rgba(0,0,0,.18); overflow: hidden; display: flex; }
+    .vram-seg { height: 100%; width: var(--w); display: grid; place-items: center; min-width: 0; overflow: hidden; transition: width .45s ease; border-right: 1px solid rgba(0,0,0,.25); }
+    .vram-seg span { font-size: 10px; font-weight: 800; white-space: nowrap; text-shadow: 0 1px 3px rgba(0,0,0,.5); }
+    .vram-seg.weights { background: linear-gradient(135deg, rgba(87,229,210,.85), rgba(60,164,159,.75)); color: #061411; }
+    .vram-seg.kv { background: linear-gradient(135deg, rgba(171,140,255,.9), rgba(111,82,183,.75)); }
+    .vram-seg.work { background: linear-gradient(135deg, rgba(255,199,102,.9), rgba(190,126,56,.8)); color: #211304; }
+    .vram-limit { position: absolute; top: 0; bottom: 0; border-right: 2px dashed var(--coral); display: none; z-index: 3; }
+    .vram-limit span { position: absolute; right: 4px; top: 3px; color: #ffd2cb; font: 9px Consolas, monospace; white-space: nowrap; text-shadow: 0 1px 4px #071015; }
+    .memory-legend { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 12px; }
+    .memory-value { padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
+    .memory-value b { display: block; font-size: 17px; }
+    .memory-value span { color: var(--muted); font-size: 9px; }
+    .fit-message { margin-top: 14px; border-radius: 11px; padding: 11px 13px; font-size: 11px; }
+    .fit-message.ok { color: var(--green); background: rgba(133,232,157,.07); border: 1px solid rgba(133,232,157,.18); }
+    .fit-message.warn { color: var(--amber); background: var(--amber-soft); border: 1px solid rgba(255,199,102,.2); }
+    .fit-message.bad { color: var(--coral); background: rgba(255,128,108,.08); border: 1px solid rgba(255,128,108,.2); }
+    .equation-box { margin-top: 15px; padding: 13px; border-radius: 11px; background: rgba(255,255,255,.025); color: var(--muted); font-size: 10px; }
+    .equation-box code { color: #b9dcda; }
+
+    /* KV Cache management simulator */
+    .kv-manager-card { overflow: hidden; }
+    .kv-manager-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 15px 18px; border-bottom: 1px solid var(--line); background: rgba(3,12,16,.38); }
+    .kv-manager-toolbar .field { padding-left: 7px; }
+    .kv-manager-body { padding: 20px; }
+    .kv-metrics { display: grid; grid-template-columns: repeat(6,1fr); gap: 9px; margin-bottom: 16px; }
+    .kv-metric { position: relative; min-height: 80px; padding: 13px; border: 1px solid var(--line); border-radius: 13px; background: rgba(3,12,16,.28); overflow: hidden; }
+    .kv-metric::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--metric, var(--cyan)); opacity: .65; }
+    .kv-metric b { display: block; font: 750 22px/1.2 "Cascadia Code", Consolas, monospace; letter-spacing: -.04em; }
+    .kv-metric span { display: block; margin-top: 6px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .09em; }
+
+    .kv-cluster { display: grid; grid-template-columns: 1fr auto 1.15fr auto 1fr; gap: 10px; align-items: stretch; margin-bottom: 16px; }
+    .cluster-node { min-height: 92px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: rgba(3,12,16,.28); }
+    .cluster-node.router { border-color: rgba(255,199,102,.25); background: var(--amber-soft); }
+    .cluster-node.decode { border-color: rgba(171,140,255,.25); background: var(--violet-soft); }
+    .cluster-label { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .12em; }
+    .cluster-node b { display: block; margin: 6px 0 2px; font-size: 15px; }
+    .cluster-node small { color: var(--muted); font-size: 10px; }
+    .cluster-arrow { display: grid; place-items: center; color: var(--cyan); font: 22px Consolas, monospace; animation: nudge 1.2s ease-in-out infinite; }
+    .cluster-live { display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 9px var(--green); }
+
+    .manager-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 16px; }
+    .manager-main, .manager-side { min-width: 0; }
+    .manager-panel { padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: rgba(3,12,16,.25); }
+    .manager-panel + .manager-panel { margin-top: 12px; }
+    .manager-panel-head { display: flex; align-items: start; justify-content: space-between; gap: 14px; margin-bottom: 13px; }
+    .manager-panel-head h3 { margin: 0; font-size: 16px; }
+    .manager-panel-head small { color: var(--muted); font-size: 10px; }
+    .pool-stat { color: var(--cyan); font: 11px Consolas, monospace; white-space: nowrap; }
+    .kv-page-grid { display: grid; grid-template-columns: repeat(12, minmax(31px,1fr)); gap: 5px; }
+    .kv-page { aspect-ratio: 1 / 1.05; position: relative; display: grid; place-items: center; min-width: 0; border: 1px dashed rgba(153,197,209,.14); border-radius: 7px; color: rgba(146,169,172,.35); background: rgba(255,255,255,.012); font: 8px Consolas, monospace; transition: .3s ease; overflow: hidden; }
+    .kv-page.used { color: #061411; border-style: solid; border-color: color-mix(in srgb, var(--page-color) 72%, white 8%); background: color-mix(in srgb, var(--page-color) 68%, #102129 32%); box-shadow: inset 0 -8px 15px rgba(0,0,0,.10); animation: pageFlash .4s ease both; }
+    .kv-page.shared { color: #221502; background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--page-color) 78%, #152229) 0 7px, color-mix(in srgb, var(--page-color) 48%, #152229) 7px 12px); }
+    .kv-page .page-num { position: absolute; left: 3px; top: 2px; opacity: .58; font-size: 6px; }
+    .kv-page .page-owner { max-width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+    .pool-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 11px; color: var(--muted); font-size: 9px; }
+    .pool-legend i { display: inline-block; width: 8px; height: 8px; margin-right: 5px; border-radius: 2px; vertical-align: -1px; }
+
+    .tier-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .tier-card { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.02); }
+    .tier-top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .tier-top b { font-size: 11px; }
+    .tier-top span { color: var(--muted); font: 9px Consolas, monospace; }
+    .tier-track { height: 7px; margin: 9px 0 6px; border-radius: 99px; overflow: hidden; background: rgba(255,255,255,.045); }
+    .tier-fill { width: var(--w); height: 100%; border-radius: inherit; background: var(--tier-color); transition: width .45s ease; }
+    .tier-card small { color: var(--muted); font-size: 9px; }
+
+    .request-list { display: grid; gap: 7px; max-height: 212px; overflow: auto; padding-right: 2px; }
+    .request-item { display: grid; grid-template-columns: 34px 1fr auto; gap: 9px; align-items: center; padding: 9px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.02); animation: rise .25s ease both; }
+    .request-avatar { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; color: #071015; background: var(--req-color); font: 800 10px Consolas, monospace; }
+    .request-info { min-width: 0; }
+    .request-info b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+    .request-info span { display: block; color: var(--muted); font-size: 9px; }
+    .request-state { text-align: right; color: var(--amber); font: 9px Consolas, monospace; }
+    .request-state.active { color: var(--green); }
+    .mini-progress { height: 3px; margin-top: 5px; border-radius: 99px; background: rgba(255,255,255,.05); overflow: hidden; }
+    .mini-progress i { display: block; width: var(--w); height: 100%; background: var(--req-color); transition: width .35s ease; }
+    .empty-mini { min-height: 72px; display: grid; place-items: center; color: var(--muted); font-size: 10px; border: 1px dashed var(--line); border-radius: 10px; text-align: center; padding: 12px; }
+
+    .prefix-list { display: grid; gap: 6px; }
+    .prefix-item { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 8px 9px; border-radius: 9px; background: rgba(255,255,255,.022); font-size: 9px; }
+    .prefix-key { color: #c5d5d6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .prefix-tier { padding: 2px 6px; border-radius: 99px; color: var(--cyan); background: var(--cyan-soft); font: 8px Consolas, monospace; }
+    .prefix-tier.cpu { color: var(--violet); background: var(--violet-soft); }
+    .prefix-tier.ssd { color: var(--amber); background: var(--amber-soft); }
+    .prefix-refs { color: var(--muted); font: 8px Consolas, monospace; }
+
+    .event-log { display: grid; gap: 6px; max-height: 180px; overflow: hidden; }
+    .event-row { display: grid; grid-template-columns: 42px 1fr; gap: 8px; padding-bottom: 6px; border-bottom: 1px solid rgba(153,197,209,.08); color: #b7c8c9; font-size: 9px; animation: rise .22s ease both; }
+    .event-row time { color: var(--cyan); font: 8px Consolas, monospace; }
+    .event-row.warn time { color: var(--amber); }
+    .event-row.evict time { color: var(--coral); }
+
+    .policy-note { margin-top: 14px; padding: 12px 14px; border: 1px solid rgba(87,229,210,.15); border-radius: 12px; color: #b8cccc; background: rgba(87,229,210,.04); font-size: 11px; }
+    .policy-note b { color: var(--cyan); }
+    .policy-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 9px; margin-top: 15px; }
+    .policy-card { min-height: 126px; padding: 13px; border: 1px solid var(--line); border-radius: 12px; background: rgba(3,12,16,.22); }
+    .policy-card .policy-icon { color: var(--amber); font: 18px Consolas, monospace; }
+    .policy-card b { display: block; margin: 7px 0 4px; font-size: 11px; }
+    .policy-card p { margin: 0; color: var(--muted); font-size: 9px; }
+
+    .takeaway { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; padding: 26px; border-color: rgba(87,229,210,.24); }
+    .takeaway-icon { width: 62px; height: 62px; display: grid; place-items: center; border-radius: 18px; color: var(--cyan); background: var(--cyan-soft); border: 1px solid rgba(87,229,210,.3); font: 800 25px Consolas, monospace; }
+    .takeaway h3 { margin: 0 0 7px; font-size: 20px; }
+    .takeaway p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    footer { border-top: 1px solid var(--line); padding: 28px 0 48px; color: var(--muted); font-size: 11px; display: flex; justify-content: space-between; gap: 20px; }
+
+    @keyframes tokenIn { from { opacity: 0; transform: translateY(8px) scale(.95); } }
+    @keyframes blink { 50% { opacity: .35; } }
+    @keyframes scan { 0%,100% { transform: scaleX(.35); opacity: .4; } 50% { transform: scaleX(1); opacity: 1; } }
+    @keyframes sceneIn { from { opacity: 0; transform: translateY(8px); } }
+    @keyframes nudge { 50% { transform: translateX(5px); } }
+    @keyframes rise { from { opacity: 0; transform: translateY(7px); } }
+    @keyframes matrixPulse { to { transform: scaleY(.72); opacity: .45; } }
+    @keyframes bars { to { transform: scaleY(.55); opacity: .35; } }
+    @keyframes packet { 50% { transform: translateX(10px); box-shadow: 0 0 25px rgba(255,199,102,.15); } }
+    @keyframes layerGlow { 50% { border-color: rgba(171,140,255,.6); background: rgba(171,140,255,.15); transform: translateX(4px); } }
+    @keyframes grow { from { transform: scaleX(0); } }
+    @keyframes orb { 50% { transform: scale(1.06); box-shadow: 0 0 32px rgba(255,199,102,.13); } }
+    @keyframes pop { from { opacity: 0; transform: scale(.65) translateY(8px); } }
+    @keyframes phasePulse { 50% { transform: translateY(-4px); border-color: rgba(87,229,210,.55); } }
+    @keyframes pageFlash { from { opacity: .25; transform: scale(.82); } }
+
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-side { display: grid; grid-template-columns: repeat(3,1fr); border-left: 0; padding: 0; gap: 10px; }
+      .hero-stat { border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+      .pipeline { grid-template-columns: repeat(4,1fr); }
+      .stage-node:nth-child(4) { border-right: 0; }
+      .stage-node:nth-child(-n+4) { border-bottom: 1px solid var(--line); }
+      .stage-panel, .below-grid, .memory-layout, .manager-grid { grid-template-columns: 1fr; }
+      .kv-metrics { grid-template-columns: repeat(3,1fr); }
+      .policy-grid { grid-template-columns: repeat(3,1fr); }
+      .site-nav { display: none; }
+    }
+    @media (max-width: 700px) {
+      .shell { width: min(100% - 22px, 1240px); }
+      .top-pills .tiny-pill:not(.live) { display: none; }
+      .hero { padding-top: 48px; }
+      .hero-side { grid-template-columns: 1fr; }
+      .section-head { align-items: start; flex-direction: column; }
+      .section-note { text-align: left; }
+      .input-strip { grid-template-columns: 1fr; gap: 6px; }
+      .mode-badge { width: max-content; }
+      .demo-inner { padding: 12px; }
+      .pipeline { grid-template-columns: repeat(2,1fr); }
+      .stage-node:nth-child(2n) { border-right: 0; }
+      .stage-node { min-height: 70px; }
+      .stage-panel { min-height: auto; }
+      .explain-pane, .visual-pane { padding: 16px; }
+      .visual-pane { min-height: 260px; }
+      .phase-grid, .truth-grid { grid-template-columns: 1fr; }
+      .kv-manager-body { padding: 11px; }
+      .kv-metrics { grid-template-columns: repeat(2,1fr); }
+      .kv-cluster { grid-template-columns: 1fr; }
+      .cluster-arrow { transform: rotate(90deg); min-height: 26px; }
+      .kv-page-grid { grid-template-columns: repeat(8,1fr); }
+      .tier-grid, .policy-grid { grid-template-columns: 1fr; }
+      .cache-row { grid-template-columns: 55px 1fr 1fr; }
+      .cache-status { grid-column: 1 / -1; text-align: left; }
+      .qkv { gap: 6px; }
+      .qkv-card { padding-inline: 7px; }
+      .cache-append { grid-template-columns: 1fr; }
+      .cache-append .flow-arrow { transform: rotate(90deg); }
+      .memory-legend { grid-template-columns: 1fr; }
+      .takeaway { grid-template-columns: 1fr; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="shell topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>LLM Systems Lab</span></div>
+    <nav class="site-nav" aria-label="课程导航">
+      <a href="#lab">Token 推理</a><a href="#phases">P/D 阶段</a><a href="#kv-manager">KV 管理</a><a href="#memory">显存估算</a>
+    </nav>
+    <div class="top-pills">
+      <span class="tiny-pill live">交互式课程</span>
+      <span class="tiny-pill">纯前端 · 无需后端</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Interactive guide to LLM inference systems</div>
+        <h1>看见大模型的<br><span class="accent">每一次推理</span></h1>
+        <p class="hero-copy">从 Token、Attention、Prefill/Decode，到 KV Cache 分页、共享、淘汰和分层存储。用动画与调度模拟器理解大模型如何生成，以及服务系统如何承载并发请求。</p>
+      </div>
+      <aside class="hero-side">
+        <div class="hero-stat"><b>Prefill</b><span>整段 Prompt 并行计算</span></div>
+        <div class="hero-stat"><b>Decode</b><span>之后每轮只输入 1 个新 Token</span></div>
+        <div class="hero-stat"><b>K + V</b><span>缓存每一层，不缓存 Q</span></div>
+      </aside>
+    </section>
+
+    <section class="section" id="lab">
+      <div class="section-head">
+        <div><div class="section-kicker">01 · Interactive Lab</div><h2>逐步生成实验室</h2></div>
+        <div class="section-note">这是机制演示，不是真实模型计算。Token ID、向量与概率为教学示意，但数据流和缓存时序遵循自回归 Transformer。</div>
+      </div>
+
+      <div class="card demo">
+        <div class="controlbar">
+          <button class="btn primary" id="playBtn" type="button">▶ 自动播放</button>
+          <button class="btn" id="stepBtn" type="button">下一步 →</button>
+          <button class="btn icon" id="resetBtn" type="button" title="重置">↺</button>
+          <div class="field">
+            <label for="scenarioSelect">示例</label>
+            <select id="scenarioSelect">
+              <option value="capital">首都问答</option>
+              <option value="cache">解释 KV Cache</option>
+              <option value="code">代码补全</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tokenCount">生成</label>
+            <select id="tokenCount">
+              <option value="1">1 Token</option>
+              <option value="3" selected>3 Token</option>
+              <option value="6">完整句子</option>
+            </select>
+          </div>
+          <div class="control-spacer"></div>
+          <div class="field speed-wrap">
+            <label for="speedRange">速度 <span id="speedText">1.0×</span></label>
+            <input id="speedRange" type="range" min="0.5" max="2.5" step="0.5" value="1" />
+          </div>
+        </div>
+
+        <div class="demo-inner">
+          <div class="input-strip">
+            <span class="input-label">Prompt</span>
+            <div class="prompt-text" id="promptText">法国的首都是</div>
+            <span class="mode-badge" id="modeBadge">PREFILL · 首轮</span>
+          </div>
+
+          <div class="sequence-wrap">
+            <div class="micro-label">当前序列 · 绿点表示已进入 KV Cache，黄点表示刚采样、尚未进入缓存</div>
+            <div class="token-sequence" id="tokenSequence"></div>
+            <div class="sequence-legend"><span class="dot green"></span>已计算并缓存 K/V <span class="dot amber"></span>下一轮 Decode 才写入 K/V</div>
+          </div>
+
+          <div class="pipeline" id="pipeline" aria-label="推理流水线"></div>
+
+          <div class="stage-panel">
+            <article class="explain-pane">
+              <div class="stage-meta"><span class="stage-chip" id="stageChip">INPUT</span><span class="cycle-label" id="cycleLabel">第 1 轮 · Prefill</span></div>
+              <h3 id="stageTitle">读取输入序列</h3>
+              <p id="stageDescription"></p>
+              <div class="formula" id="stageFormula"></div>
+              <div class="fact"><span>💡</span><span id="stageFact"></span></div>
+            </article>
+            <div class="visual-pane" id="stageVisual" aria-live="polite"></div>
+          </div>
+
+          <div class="below-grid">
+            <section class="subcard">
+              <div class="subcard-head">
+                <div><h3>KV Cache · 第 18 层（示意）</h3><small>真实模型的每一层都有一份独立 K/V 缓存</small></div>
+                <span class="cache-counter" id="cacheCounter">0 positions</span>
+              </div>
+              <div class="cache-table" id="cacheTable"></div>
+            </section>
+            <section class="subcard">
+              <div class="subcard-head">
+                <div><h3>当前 Query 在看哪里？</h3><small>只展示一个注意力头的示意权重</small></div>
+              </div>
+              <div id="attentionView"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="phases">
+      <div class="section-head">
+        <div><div class="section-kicker">02 · Two Phases</div><h2>Prefill 与 Decode，不是同一种工作负载</h2></div>
+        <div class="section-note">首轮更擅长并行；逐 Token 解码则具有严格的先后依赖，无法一次把整段答案算出来。</div>
+      </div>
+      <div class="phase-grid">
+        <article class="card phase-card" data-index="01">
+          <span class="phase-label prefill">● PREFILL · 提示词预填充</span>
+          <h3>Prompt 一次进入</h3>
+          <p>Prompt 中所有位置组成一个矩阵，通过因果 Mask 并行处理。每一层把各位置的 K/V 写入缓存，并用最后位置的隐藏状态预测第一个输出 Token。</p>
+          <div class="phase-tokens">
+            <span class="phase-token" style="--i:0">法</span><span class="phase-token" style="--i:1">国</span><span class="phase-token" style="--i:2">的</span><span class="phase-token" style="--i:3">首</span><span class="phase-token" style="--i:4">都</span><span class="phase-token" style="--i:5">是</span>
+          </div>
+          <div class="phase-points"><span>矩阵较大，GPU 并行度高</span><span>耗时通常体现为 TTFT（首 Token 延迟）</span><span>Prompt 越长，Prefill 工作越多</span></div>
+        </article>
+        <article class="card phase-card" data-index="02">
+          <span class="phase-label decode">● DECODE · 自回归解码</span>
+          <h3>每轮只向前一步</h3>
+          <p>把上一轮刚选出的 Token 作为本轮输入，只计算它的新 Q/K/V；新 K/V 追加到缓存，Q 则读取所有历史 K/V，最后再预测下一个 Token。</p>
+          <div class="phase-tokens">
+            <span class="phase-token decode" style="grid-column:3 / 5; --i:0">巴黎 →</span>
+          </div>
+          <div class="phase-points"><span>生成 N 个 Token 至少需要 N 次串行前向传播</span><span>每轮都要读取模型权重，常受显存带宽限制</span><span>上下文越长，注意力读取的 KV 越多</span></div>
+        </article>
+      </div>
+
+      <div class="truth-grid">
+        <article class="truth"><div class="symbol">O(n²) → O(n)</div><b>KV Cache 省的是重复投影</b><p>不再为每个历史 Token 重算各层 K/V。但新 Query 仍需扫描历史 K/V，所以单步注意力并不是 O(1)。</p></article>
+        <article class="truth"><div class="symbol">K,V ≠ Q</div><b>为什么不缓存 Query？</b><p>历史 Query 完成当时那一步后不再需要；未来 Token 只需用自己的 Q 去匹配历史 K，并汇总历史 V。</p></article>
+        <article class="truth"><div class="symbol">× batch</div><b>缓存属于每个请求</b><p>并发数、上下文长度、层数、KV Head 数和缓存精度都会直接放大 KV Cache 显存占用。</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="kv-manager">
+      <div class="section-head">
+        <div><div class="section-kicker">03 · KV Cache Operations</div><h2>亲手管理一池 KV Cache</h2></div>
+        <div class="section-note">把显存看作有限的 Token Page 池。制造突发流量，观察调度器怎样入场、共享前缀、连续批处理，以及在 GPU、CPU 与 SSD 之间淘汰缓存。</div>
+      </div>
+
+      <div class="card kv-manager-card">
+        <div class="kv-manager-toolbar">
+          <button class="btn primary" id="managerPlay" type="button">▶ 开始调度</button>
+          <button class="btn" id="managerStep" type="button">时钟 +1</button>
+          <button class="btn" id="managerBurst" type="button">＋ 突发 8 请求</button>
+          <button class="btn icon" id="managerReset" type="button" title="重置模拟器">↺</button>
+          <div class="field">
+            <label for="managerPolicy">管理策略</label>
+            <select id="managerPolicy">
+              <option value="paged">仅分页 + 连续批处理</option>
+              <option value="prefix">分页 + Prefix Cache</option>
+              <option value="tiered" selected>Prefix + 分层存储</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="managerCapacity">GPU 页池</label>
+            <select id="managerCapacity">
+              <option value="16">16 页 · 8K</option>
+              <option value="24" selected>24 页 · 12K</option>
+              <option value="32">32 页 · 16K</option>
+              <option value="48">48 页 · 24K</option>
+            </select>
+          </div>
+          <div class="control-spacer"></div>
+          <span class="tiny-pill" id="managerClock">TICK 00</span>
+        </div>
+
+        <div class="kv-manager-body">
+          <div class="kv-metrics">
+            <div class="kv-metric"><b id="mActive">0</b><span>Active Sequences</span></div>
+            <div class="kv-metric" style="--metric:var(--amber)"><b id="mQueued">0</b><span>Waiting Queue</span></div>
+            <div class="kv-metric" style="--metric:var(--violet)"><b id="mBatch">0</b><span>Continuous Batch</span></div>
+            <div class="kv-metric" style="--metric:var(--green)"><b id="mHit">0%</b><span>Prefix Hit Rate</span></div>
+            <div class="kv-metric" style="--metric:var(--cyan)"><b id="mSaved">0</b><span>Prefill Tokens Saved</span></div>
+            <div class="kv-metric" style="--metric:var(--coral)"><b id="mEvicted">0</b><span>Evictions / Offloads</span></div>
+          </div>
+
+          <div class="kv-cluster">
+            <div class="cluster-node"><span class="cluster-label">Prefill Pool</span><b><i class="cluster-live"></i><span id="prefillNodeText">等待请求</span></b><small>计算 Prompt，产生各层 K/V</small></div>
+            <div class="cluster-arrow">→</div>
+            <div class="cluster-node router"><span class="cluster-label">KV Router & Global Index</span><b id="routerNodeText">Prefix lookup · admission</b><small>块哈希、引用计数、位置与生命周期</small></div>
+            <div class="cluster-arrow">→</div>
+            <div class="cluster-node decode"><span class="cluster-label">Decode Pool</span><b><i class="cluster-live"></i><span id="decodeNodeText">0 条序列</span></b><small>每个时钟批量生成 256 Token（示意）</small></div>
+          </div>
+
+          <div class="manager-grid">
+            <div class="manager-main">
+              <section class="manager-panel">
+                <div class="manager-panel-head"><div><h3>GPU 热 KV · Paged Blocks</h3><small>每页代表 512 个 Token 位置；条纹页是可共享的 Prefix Block</small></div><span class="pool-stat" id="gpuPoolStat">0 / 24 pages</span></div>
+                <div class="kv-page-grid" id="kvPageGrid" aria-label="GPU KV 分页池"></div>
+                <div class="pool-legend"><span><i style="background:var(--cyan)"></i>请求独占页</span><span><i style="background:repeating-linear-gradient(135deg,var(--amber) 0 4px,#74521c 4px 7px)"></i>共享前缀页</span><span><i style="border:1px dashed var(--line-strong)"></i>空闲页</span></div>
+              </section>
+
+              <section class="manager-panel">
+                <div class="manager-panel-head"><div><h3>三级缓存水位</h3><small>热数据供 Attention 直接读取；温/冷数据命中后需要恢复</small></div></div>
+                <div class="tier-grid">
+                  <div class="tier-card"><div class="tier-top"><b>GPU · HOT</b><span id="gpuTierText">0 / 24</span></div><div class="tier-track"><div class="tier-fill" id="gpuTierBar" style="--tier-color:var(--cyan);--w:0%"></div></div><small>最低延迟 · 容量最贵</small></div>
+                  <div class="tier-card"><div class="tier-top"><b>CPU · WARM</b><span id="cpuTierText">0 / 64</span></div><div class="tier-track"><div class="tier-fill" id="cpuTierBar" style="--tier-color:var(--violet);--w:0%"></div></div><small>PCIe / RDMA 恢复</small></div>
+                  <div class="tier-card"><div class="tier-top"><b>SSD · COLD</b><span id="ssdTierText">0 pages</span></div><div class="tier-track"><div class="tier-fill" id="ssdTierBar" style="--tier-color:var(--amber);--w:0%"></div></div><small>容量大 · 恢复最慢</small></div>
+                </div>
+              </section>
+
+              <div class="policy-note" id="managerPolicyNote"><b>分层策略：</b>相同 Token 前缀共享物理 KV Page；显存不足时把无引用的冷前缀移到 CPU，CPU 超限后再落入 SSD。</div>
+            </div>
+
+            <aside class="manager-side">
+              <section class="manager-panel">
+                <div class="manager-panel-head"><div><h3>调度队列</h3><small>只有满足 KV Token Budget 才能 Admission</small></div><span class="pool-stat" id="doneStat">0 done</span></div>
+                <div class="request-list" id="requestList"></div>
+              </section>
+              <section class="manager-panel">
+                <div class="manager-panel-head"><div><h3>Prefix 全局索引</h3><small>Key 是 Token Block Hash，Value 指向 KV 位置</small></div></div>
+                <div class="prefix-list" id="prefixList"></div>
+              </section>
+              <section class="manager-panel">
+                <div class="manager-panel-head"><div><h3>调度事件</h3><small>最新事件显示在顶部</small></div></div>
+                <div class="event-log" id="managerEvents" aria-live="polite"></div>
+              </section>
+            </aside>
+          </div>
+
+          <div class="policy-grid">
+            <article class="policy-card"><span class="policy-icon">▦</span><b>Paged Allocation</b><p>按固定 Block 分配，避免为每条序列预留整段连续显存，并减少碎片。</p></article>
+            <article class="policy-card"><span class="policy-icon">⇶</span><b>Continuous Batch</b><p>每个 Decode 时钟把所有活跃序列的新 Token 合并成一批执行。</p></article>
+            <article class="policy-card"><span class="policy-icon">⌘</span><b>Prefix Sharing</b><p>完全相同的 Token 前缀共享不可变 KV Block，并通过引用计数保护。</p></article>
+            <article class="policy-card"><span class="policy-icon">↧</span><b>LRU & Offload</b><p>只淘汰无活跃引用的冷 Block；需要时从 CPU/SSD 恢复而非重算。</p></article>
+            <article class="policy-card"><span class="policy-icon">P→D</span><b>KV Transfer</b><p>Prefill 节点产生 KV，Decode 节点接收后继续逐 Token 生成。</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="memory">
+      <div class="section-head">
+        <div><div class="section-kicker">04 · Memory Budget</div><h2>你的 8GB 显存里装了什么？</h2></div>
+        <div class="section-note">以当前 RX 6650 XT 8GB 为容量上限。结果是便于理解的粗估；具体值会随 GGUF 格式、后端、模型结构与内存对齐变化。</div>
+      </div>
+      <div class="card memory-card">
+        <div class="memory-layout">
+          <div class="calc-controls">
+            <div class="preset-row">
+              <button class="preset active" data-preset="llama8" type="button">Llama 8B</button>
+              <button class="preset" data-preset="qwen7" type="button">Qwen 7B</button>
+              <button class="preset" data-preset="qwen14" type="button">Qwen 14B</button>
+            </div>
+            <label class="calc-row"><span>参数量（B）</span><input id="paramB" type="number" value="8" min="1" max="100" step="0.1"></label>
+            <label class="calc-row"><span>平均量化位宽</span><input id="quantBits" type="number" value="4.5" min="2" max="16" step="0.1"></label>
+            <label class="calc-row"><span>Transformer 层数</span><input id="layerCount" type="number" value="32" min="1" max="160" step="1"></label>
+            <label class="calc-row"><span>KV Heads</span><input id="kvHeads" type="number" value="8" min="1" max="128" step="1"></label>
+            <label class="calc-row"><span>Head dimension</span><input id="headDim" type="number" value="128" min="32" max="512" step="32"></label>
+            <label class="calc-row"><span>KV 精度</span><select id="kvBytes"><option value="2">FP16 · 2 bytes</option><option value="1">Q8 · 1 byte</option><option value="0.5">Q4 · 0.5 byte</option></select></label>
+            <label class="calc-row"><span>上下文长度</span><span class="context-value" id="contextValue">8,192 tokens</span></label>
+            <input id="contextRange" type="range" min="1024" max="32768" step="1024" value="8192" style="width:100%">
+            <label class="calc-row"><span>并发序列数</span><input id="parallelCount" type="number" value="1" min="1" max="16" step="1"></label>
+          </div>
+
+          <div>
+            <div class="vram-title"><div><span>估算占用 / 可用显存</span><br><b id="totalMemory">—</b></div><span>RX 6650 XT · 8GB</span></div>
+            <div class="vram-shell" id="vramShell">
+              <div class="vram-seg weights" id="weightSeg"><span>模型权重</span></div>
+              <div class="vram-seg kv" id="kvSeg"><span>KV Cache</span></div>
+              <div class="vram-seg work" id="workSeg"><span>运行缓冲</span></div>
+              <div class="vram-limit" id="vramLimit"><span>8GB 上限</span></div>
+            </div>
+            <div class="memory-legend">
+              <div class="memory-value"><b id="weightValue">—</b><span>模型权重（含格式开销粗估）</span></div>
+              <div class="memory-value"><b id="kvValue">—</b><span>KV Cache</span></div>
+              <div class="memory-value"><b id="workValue">0.70 GiB</b><span>计算图、临时缓冲等</span></div>
+            </div>
+            <div class="fit-message" id="fitMessage"></div>
+            <div class="equation-box">
+              <code>KV bytes = 2(K+V) × layers × kv_heads × head_dim × context × bytes × parallel</code><br>
+              注意：GQA/MQA 通过减少 KV Heads 显著缩小缓存；长上下文和并发会线性增加占用。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card takeaway">
+        <div class="takeaway-icon">∑</div>
+        <div><h3>一句话记住整个过程</h3><p>模型读取当前输入 → 每层产生新 Q/K/V → 把 K/V 追加进缓存 → 当前 Q 读取全部历史 K/V → MLP 变换 → LM Head 得到词表 Logits → 采样一个 Token → 把它作为下一轮输入，周而复始。</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <span>LLM Systems Lab · 大模型推理交互学习</span>
+    <span>机制动画与调度数据用于教学；真实结果取决于模型结构、推理引擎与硬件。</span>
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const scenarios = {
+        capital: {
+          prompt: "法国的首都是",
+          promptTokens: ["法国", "的", "首都", "是"],
+          generated: ["巴黎", "，", "它", "位于", "欧洲", "。"]
+        },
+        cache: {
+          prompt: "KV Cache 的作用是",
+          promptTokens: ["KV", " Cache", " 的", "作用", "是"],
+          generated: ["避免", "重复", "计算", "历史", "键值", "。"]
+        },
+        code: {
+          prompt: "Python 中列表推导式",
+          promptTokens: ["Python", " 中", "列表", "推导", "式"],
+          generated: ["可以", "简洁", "地", "构造", "列表", "。"]
+        }
+      };
+
+      const stages = [
+        {
+          key: "INPUT", name: "输入", title: "读取输入序列",
+          descPrefill: "首轮是 Prefill：Tokenizer 已把整段 Prompt 转为 Token ID。模型会同时处理这些位置，但因果 Mask 保证每个位置只能看到自己和左侧。",
+          descDecode: "进入 Decode：本轮真正送入模型的只有上一轮刚采样出的 1 个 Token。历史 Token 不需要重新跑完整网络。",
+          formula: "text → tokenizer → [ token_id₀, token_id₁, … ]",
+          fact: "演示中的切分只是示意。真实 BPE / SentencePiece Tokenizer 可能把一个汉字、词片段、空格或标点编码成不同 Token。"
+        },
+        {
+          key: "EMBED", name: "Embedding", title: "Token ID 变成向量",
+          descPrefill: "每个 Token ID 查询 Embedding 表，得到高维向量。位置信息通常通过 RoPE 等方式在注意力阶段注入。",
+          descDecode: "只为当前新 Token 查询一次 Embedding。得到的向量将依次通过所有 Transformer 层。",
+          formula: "X = Embedding[token_id]    ·    X ∈ ℝ^(positions × hidden_dim)",
+          fact: "向量里的单个数字通常没有可独立解释的含义；语义分布在许多维度及多层激活中。"
+        },
+        {
+          key: "QKV", name: "Q · K · V", title: "投影出 Query、Key、Value",
+          descPrefill: "在当前 Transformer 层，归一化后的隐藏状态分别乘 Wq、Wk、Wv，得到每个位置的 Q、K、V；RoPE 会旋转 Q/K 以编码相对位置。",
+          descDecode: "本轮只计算新 Token 的 qₜ、kₜ、vₜ。qₜ 用于发起查询，kₜ/vₜ 会成为之后所有 Token 可复用的历史。",
+          formula: "Q = XWq   ·   K = XWk   ·   V = XWv   ·   RoPE(Q, K)",
+          fact: "采用 GQA/MQA 的模型让多个 Query Heads 共享较少的 KV Heads，因此能明显缩小 KV Cache。"
+        },
+        {
+          key: "CACHE", name: "KV Cache", title: "追加 K/V，读取历史",
+          descPrefill: "Prompt 所有位置在每一层产生的 K/V 被写入缓存。最后位置的 Q 可以读取此前所有合法位置的 K/V。",
+          descDecode: "把本轮新 Token 的 kₜ、vₜ 追加到该层缓存；qₜ 与缓存中的全部 Key 计算相似度，再按权重汇总全部 Value。",
+          formula: "Kcache ← concat(Kcache, kₜ)   ·   Vcache ← concat(Vcache, vₜ)",
+          fact: "只缓存 K 和 V，不缓存 Q。历史 Q 用完即弃；未来查询只需要历史 K/V。"
+        },
+        {
+          key: "LAYERS", name: "Transformer × N", title: "注意力与 MLP 层层传递",
+          descPrefill: "Attention 输出经过输出投影和残差连接，再通过门控 MLP。这个结构重复 N 层，每一层都有自己的 K/V Cache。",
+          descDecode: "新 Token 的隐藏状态逐层更新。它在每一层都会读取那一层的历史 K/V，并把自己的新 K/V 写入对应层。",
+          formula: "H ← H + Attention(Norm(H))   ·   H ← H + MLP(Norm(H))",
+          fact: "KV Cache 存的是每层注意力投影后的 K/V，不是只存一份 Token 文本，也不是直接缓存最终答案。"
+        },
+        {
+          key: "LOGITS", name: "Logits", title: "映射到整个词表",
+          descPrefill: "取最后有效位置经过最终归一化后的隐藏状态，乘 LM Head 权重，得到词表中每个候选 Token 的原始分数 Logit。",
+          descDecode: "当前新位置的最终隐藏状态被映射为一整列词表分数。此时还不是概率，也还没有选出下一个 Token。",
+          formula: "logits = h_last · W_vocabᵀ    ·    logits ∈ ℝ^(vocab_size)",
+          fact: "即使最终只输出一个 Token，模型通常也要为数万到数十万个词表项计算分数。"
+        },
+        {
+          key: "SAMPLE", name: "采样", title: "从分数中选一个 Token",
+          descPrefill: "温度缩放和 Softmax 把 Logits 变成概率，再通过 Top-k / Top-p 等策略裁剪候选并采样；贪心解码则直接选最大值。",
+          descDecode: "与首轮相同：每次前向传播只产生下一位置的概率分布，然后选出恰好一个 Token。",
+          formula: "pᵢ = softmax(logitᵢ / temperature)   →   top-p   →   sample",
+          fact: "温度越低越确定，越高越发散。相同 Prompt 的输出是否一致，还受到随机种子和采样参数影响。"
+        },
+        {
+          key: "LOOP", name: "追加 & 循环", title: "输出一个 Token，然后循环",
+          descPrefill: "第一个输出 Token 已被选出并追加到可见序列。但要注意：它此刻尚未写入 KV Cache，要到下一轮作为输入经过各层时才会写入。",
+          descDecode: "新 Token 追加到答案末尾。下一轮把它作为输入，计算它的 Q/K/V，再预测更后面的 Token，直到停止条件满足。",
+          formula: "sequence ← sequence + sampled_token   ·   repeat until EOS / limit",
+          fact: "这就是“自回归”：后一个 Token 依赖前面已经生成的结果，因此 Decode 存在无法消除的串行依赖。"
+        }
+      ];
+
+      const $ = (id) => document.getElementById(id);
+      const els = {
+        play: $("playBtn"), step: $("stepBtn"), reset: $("resetBtn"), scenario: $("scenarioSelect"),
+        tokenCount: $("tokenCount"), speed: $("speedRange"), speedText: $("speedText"), prompt: $("promptText"),
+        badge: $("modeBadge"), sequence: $("tokenSequence"), pipeline: $("pipeline"), chip: $("stageChip"),
+        cycle: $("cycleLabel"), title: $("stageTitle"), desc: $("stageDescription"), formula: $("stageFormula"),
+        fact: $("stageFact"), visual: $("stageVisual"), cacheTable: $("cacheTable"), cacheCounter: $("cacheCounter"),
+        attention: $("attentionView")
+      };
+
+      let scenarioKey = "capital";
+      let stage = 0;
+      let cycle = 0;
+      let emittedCount = 0;
+      let cacheCount = 0;
+      let playing = false;
+      let finished = false;
+      let timer = null;
+
+      const escapeHTML = (value) => String(value).replace(/[&<>'"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[ch]));
+      const data = () => scenarios[scenarioKey];
+      const mode = () => cycle === 0 ? "prefill" : "decode";
+      const maxTokens = () => Math.min(Number(els.tokenCount.value), data().generated.length);
+      const tokenId = (token, index) => {
+        let hash = 17 + index * 977;
+        for (const char of token) hash = (hash * 31 + char.codePointAt(0)) % 128000;
+        return hash;
+      };
+      const currentInputToken = () => cycle === 0 ? data().promptTokens[data().promptTokens.length - 1] : data().generated[cycle - 1];
+      const currentOutputToken = () => data().generated[cycle] || "</s>";
+      const allVisibleTokens = () => data().promptTokens.concat(data().generated.slice(0, emittedCount));
+      const intendedAttentionTokens = () => data().promptTokens.concat(data().generated.slice(0, cycle));
+
+      function resetDemo() {
+        clearTimeout(timer);
+        playing = false;
+        finished = false;
+        stage = 0;
+        cycle = 0;
+        emittedCount = 0;
+        cacheCount = 0;
+        els.play.textContent = "▶ 自动播放";
+        render();
+      }
+
+      function stopPlaying() {
+        clearTimeout(timer);
+        playing = false;
+        els.play.textContent = finished ? "↺ 重新播放" : "▶ 继续播放";
+      }
+
+      function togglePlay() {
+        if (finished) resetDemo();
+        playing = !playing;
+        els.play.textContent = playing ? "Ⅱ 暂停" : "▶ 继续播放";
+        if (playing) schedule(); else clearTimeout(timer);
+      }
+
+      function schedule() {
+        clearTimeout(timer);
+        if (!playing || finished) return;
+        const delay = 1250 / Number(els.speed.value);
+        timer = setTimeout(() => {
+          advance();
+          schedule();
+        }, delay);
+      }
+
+      function advance() {
+        if (finished) {
+          resetDemo();
+          return;
+        }
+        if (stage === stages.length - 1) {
+          cycle += 1;
+          stage = 0;
+        } else {
+          stage += 1;
+        }
+
+        if (stage === 3) cacheCount = data().promptTokens.length + cycle;
+        if (stage === 7) {
+          emittedCount = Math.max(emittedCount, cycle + 1);
+          if (emittedCount >= maxTokens()) {
+            finished = true;
+            stopPlaying();
+          }
+        }
+        render();
+      }
+
+      function render() {
+        const s = stages[stage];
+        const isDecode = mode() === "decode";
+        els.prompt.textContent = data().prompt;
+        els.badge.textContent = isDecode ? `DECODE · 第 ${cycle} 步` : "PREFILL · 首轮";
+        els.badge.classList.toggle("decode", isDecode);
+        els.chip.textContent = s.key;
+        els.cycle.textContent = isDecode ? `第 ${cycle + 1} 轮 · Decode` : "第 1 轮 · Prefill";
+        els.title.textContent = s.title;
+        els.desc.textContent = isDecode ? s.descDecode : s.descPrefill;
+        els.formula.textContent = s.formula;
+        els.fact.innerHTML = s.fact.replace(/^([^。]+。)/, "<b>$1</b>");
+        renderPipeline();
+        renderSequence();
+        renderVisual();
+        renderCache();
+        renderAttention();
+        els.step.textContent = finished ? "重新开始 →" : "下一步 →";
+      }
+
+      function renderPipeline() {
+        els.pipeline.innerHTML = stages.map((item, i) => `
+          <div class="stage-node ${i === stage ? "active" : i < stage ? "done" : ""}">
+            <span class="stage-number">0${i + 1}</span><span class="stage-name">${escapeHTML(item.name)}</span>
+          </div>`).join("");
+      }
+
+      function renderSequence() {
+        const tokens = allVisibleTokens();
+        const promptLength = data().promptTokens.length;
+        els.sequence.innerHTML = tokens.map((token, i) => {
+          const cls = i < promptLength ? "prompt" : "generated";
+          const status = i < cacheCount ? "cached" : (i >= promptLength ? "pending" : "");
+          const arrow = i === promptLength && emittedCount > 0 ? '<span class="sequence-arrow">→</span>' : "";
+          return `${arrow}<span class="token ${cls} ${status}" style="animation-delay:${i * .025}s">${escapeHTML(token)}<small class="token-id">#${tokenId(token,i)}</small></span>`;
+        }).join("");
+      }
+
+      function matrixHTML() {
+        return `<div class="matrix">${Array.from({length: 63}, (_, i) => `<i style="--i:${i};--v:${18 + ((i * 37) % 82)}"></i>`).join("")}</div>`;
+      }
+
+      function candidates() {
+        const out = currentOutputToken();
+        const scenarioAlternatives = {
+          capital: ["里昂", "法国", "北京", "。"],
+          cache: ["保存", "增加", "删除", "。"],
+          code: ["用于", "通过", "不能", "。"]
+        };
+        const later = ["的", "并", "从而", "处理"];
+        const alternatives = cycle === 0 ? scenarioAlternatives[scenarioKey] : later.filter(x => x !== out);
+        const words = [out, ...alternatives].slice(0,5);
+        return words.map((token, i) => ({ token, logit: 8.35 - i * 0.85 - (i === 1 ? .18 : 0) }));
+      }
+
+      function probabilities() {
+        const list = candidates();
+        const temperature = 0.78;
+        const exps = list.map(x => Math.exp(x.logit / temperature));
+        const sum = exps.reduce((a,b) => a+b, 0);
+        return list.map((x,i) => ({...x, prob: exps[i] / sum}));
+      }
+
+      function scoreRows(kind) {
+        const list = kind === "prob" ? probabilities() : candidates();
+        let cumulative = 0;
+        return list.map((item, i) => {
+          const width = kind === "prob" ? Math.max(4,item.prob * 100) : 24 + ((item.logit - 4) / 4.5) * 68;
+          const inTopP = kind !== "prob" || cumulative < .9;
+          if (kind === "prob") cumulative += item.prob;
+          return `<div class="score-row ${i === 0 ? "chosen" : ""} ${inTopP ? "" : "outside"}">
+            <span class="score-token">${escapeHTML(item.token)}</span>
+            <span class="score-track"><span class="score-fill" style="--w:${width.toFixed(1)}%"></span></span>
+            <span class="score-number">${kind === "prob" ? (item.prob*100).toFixed(1)+"%" : item.logit.toFixed(2)}</span>
+          </div>`;
+        }).join("");
+      }
+
+      function renderVisual() {
+        const input = escapeHTML(currentInputToken());
+        const output = escapeHTML(currentOutputToken());
+        const promptIds = data().promptTokens.map((t,i) => `<span class="id-chip" style="--i:${i}">${escapeHTML(t)} → ${tokenId(t,i)}</span>`).join("");
+        let html = "";
+        if (stage === 0) {
+          html = `<div class="scene"><div class="flow-row"><div class="flow-box"><strong>${mode() === "prefill" ? escapeHTML(data().prompt) : input}</strong>输入文本 / Token</div><span class="flow-arrow">→</span><div class="flow-box cyan"><strong>Tokenizer</strong>词表编码</div></div><div class="id-chips" style="margin-top:20px">${mode() === "prefill" ? promptIds : `<span class="id-chip">${input} → ${tokenId(currentInputToken(),cycle)}</span>`}</div><div class="scene-caption">因果语言模型处理的是 Token ID，不直接处理字符本身</div></div>`;
+        } else if (stage === 1) {
+          html = `<div class="scene">${matrixHTML()}<div class="scene-caption"><b style="color:var(--cyan)">${input}</b> 的隐藏向量 · 示意维度 63 / 实际通常数千维</div></div>`;
+        } else if (stage === 2) {
+          html = `<div class="scene"><div class="qkv">
+            <div class="qkv-card" style="--c:var(--cyan)"><b>Q</b><span>我要寻找什么？</span><div class="vector-dots">${[15,25,9,31,20,12].map(h=>`<i style="--h:${h}px;--c:var(--cyan)"></i>`).join("")}</div></div>
+            <div class="qkv-card" style="--c:var(--amber)"><b>K</b><span>我能被怎样匹配？</span><div class="vector-dots">${[24,13,29,17,8,27].map(h=>`<i style="--h:${h}px;--c:var(--amber)"></i>`).join("")}</div></div>
+            <div class="qkv-card" style="--c:var(--violet)"><b>V</b><span>我携带什么信息？</span><div class="vector-dots">${[10,30,16,23,29,12].map(h=>`<i style="--h:${h}px;--c:var(--violet)"></i>`).join("")}</div></div>
+          </div><div class="scene-caption">Q 与 K 决定关注程度，权重再对 V 做加权求和</div></div>`;
+        } else if (stage === 3) {
+          const cacheRows = intendedAttentionTokens().slice(-4).map((t,i) => `<div class="cache-mini-row"><span>${escapeHTML(t)}</span><i class="cache-cell"></i><i class="cache-cell v"></i></div>`).join("");
+          html = `<div class="scene"><div class="cache-append"><div class="append-packet"><b>${input}</b><br><small>新 kₜ + vₜ</small></div><span class="flow-arrow">→</span><div class="cache-mini"><div class="micro-label">第 18 层 Cache</div>${cacheRows}</div></div><div class="scene-caption">这一步会在每个 Transformer 层各发生一次</div></div>`;
+        } else if (stage === 4) {
+          html = `<div class="scene"><div class="layer-stack">${[1,2,3,"…",30,31,32].map((n,i)=>`<div class="layer-slab" style="--i:${i}"><b>Layer ${n}</b><span>Attention → Residual → MLP</span></div>`).join("")}</div><div class="scene-caption">数据逐层通过；层与层之间不能并行跳过</div></div>`;
+        } else if (stage === 5) {
+          html = `<div class="scene"><div class="micro-label" style="text-align:center">词表候选 · 原始 LOGIT</div><div class="logit-list">${scoreRows("logit")}</div><div class="scene-caption">更高只代表模型更偏好，还不是归一化概率</div></div>`;
+        } else if (stage === 6) {
+          html = `<div class="scene"><div class="sample-orb"><b>${output}</b></div><div class="prob-list">${scoreRows("prob")}</div><div class="scene-caption">示意：temperature 0.78 · top-p 0.90 · 选中 <b style="color:var(--amber)">${output}</b></div></div>`;
+        } else {
+          html = `<div class="scene loop-scene"><div class="new-token">${output}</div><div class="loop-arrow"></div><div class="scene-caption">刚采样的 Token 已显示，但要到下一轮才生成并缓存它自己的 K/V</div></div>`;
+        }
+        els.visual.innerHTML = html;
+      }
+
+      function fakeVector(index, type) {
+        const a = (((index + 3) * (type === "K" ? 17 : 29)) % 93) / 100;
+        const b = (((index + 7) * (type === "K" ? 31 : 13)) % 87) / 100;
+        return `[${(a-.42).toFixed(2)}, ${(b-.39).toFixed(2)}, …]`;
+      }
+
+      function renderCache() {
+        const tokens = allVisibleTokens();
+        els.cacheCounter.textContent = `${cacheCount} position${cacheCount === 1 ? "" : "s"} / layer`;
+        if (!tokens.length) {
+          els.cacheTable.innerHTML = '<div class="empty-state">等待输入</div>';
+          return;
+        }
+        els.cacheTable.innerHTML = tokens.map((token,i) => {
+          const cached = i < cacheCount;
+          const pendingText = i < data().promptTokens.length ? "等待 Prefill" : "下一轮写入";
+          return `<div class="cache-row ${cached ? "cached" : "pending"}">
+            <span class="cache-token">${escapeHTML(token)}</span>
+            <span class="kv-vector">K ${cached ? fakeVector(i,"K") : "—"}</span>
+            <span class="kv-vector v">V ${cached ? fakeVector(i,"V") : "—"}</span>
+            <span class="cache-status ${cached ? "ok" : "wait"}">${cached ? "● cached" : "○ "+pendingText}</span>
+          </div>`;
+        }).join("");
+      }
+
+      function renderAttention() {
+        if (stage < 2) {
+          els.attention.innerHTML = '<div class="empty-state">Q 尚未生成<br>推进到“Q · K · V”阶段查看注意力</div>';
+          return;
+        }
+        const tokens = intendedAttentionTokens();
+        const raw = tokens.map((_,i) => 0.35 + ((i * 19 + cycle * 7) % 25) / 20 + (i === tokens.length-1 ? .8 : 0));
+        const sum = raw.reduce((a,b)=>a+b,0);
+        const weights = raw.map(x=>x/sum);
+        els.attention.innerHTML = `<div class="attn-query">当前 Q：<b>${escapeHTML(currentInputToken())}</b> <span style="color:var(--muted)">→ 匹配历史 Keys</span></div><div class="attention-list">${tokens.map((token,i)=>`
+          <div class="attn-row"><span class="attn-name">${escapeHTML(token)}</span><span class="attn-track"><span class="attn-fill" style="--w:${(weights[i]*100).toFixed(1)}%"></span></span><span class="attn-pct">${(weights[i]*100).toFixed(1)}%</span></div>`).join("")}</div>`;
+      }
+
+      els.play.addEventListener("click", togglePlay);
+      els.step.addEventListener("click", () => { clearTimeout(timer); playing = false; els.play.textContent = "▶ 继续播放"; advance(); });
+      els.reset.addEventListener("click", resetDemo);
+      els.scenario.addEventListener("change", () => { scenarioKey = els.scenario.value; resetDemo(); });
+      els.tokenCount.addEventListener("change", resetDemo);
+      els.speed.addEventListener("input", () => { els.speedText.textContent = `${Number(els.speed.value).toFixed(1)}×`; if (playing) schedule(); });
+
+      /* ─────────────────────────────────────────────────────────────
+         KV Cache management lab
+         Each visual page represents 512 token positions. This is an
+         educational scheduler simulation, not a real inference engine.
+      ───────────────────────────────────────────────────────────── */
+      const managerEls = {
+        play: $("managerPlay"), step: $("managerStep"), burst: $("managerBurst"), reset: $("managerReset"),
+        policy: $("managerPolicy"), capacity: $("managerCapacity"), clock: $("managerClock"),
+        active: $("mActive"), queued: $("mQueued"), batch: $("mBatch"), hit: $("mHit"), saved: $("mSaved"), evicted: $("mEvicted"),
+        prefillNode: $("prefillNodeText"), routerNode: $("routerNodeText"), decodeNode: $("decodeNodeText"),
+        pageGrid: $("kvPageGrid"), gpuStat: $("gpuPoolStat"), gpuText: $("gpuTierText"), gpuBar: $("gpuTierBar"),
+        cpuText: $("cpuTierText"), cpuBar: $("cpuTierBar"), ssdText: $("ssdTierText"), ssdBar: $("ssdTierBar"),
+        requests: $("requestList"), prefixes: $("prefixList"), events: $("managerEvents"), done: $("doneStat"), note: $("managerPolicyNote")
+      };
+      const managerSamples = [
+        { prefix:"SYS-A", title:"通用助手 · 多轮", prompt:3072, output:1280, prefixPages:2 },
+        { prefix:"SYS-A", title:"通用助手 · RAG", prompt:4096, output:1024, prefixPages:2 },
+        { prefix:"SYS-B", title:"代码助手 · Repo", prompt:2560, output:1536, prefixPages:3 },
+        { prefix:"SYS-A", title:"通用助手 · Agent", prompt:3584, output:1280, prefixPages:2 },
+        { prefix:"SYS-C", title:"客服机器人", prompt:2048, output:768, prefixPages:2 },
+        { prefix:"SYS-B", title:"代码助手 · Debug", prompt:3072, output:1024, prefixPages:3 },
+        { prefix:"SYS-D", title:"长文档问答", prompt:4608, output:1536, prefixPages:2 },
+        { prefix:"SYS-C", title:"客服机器人 · 追问", prompt:2560, output:768, prefixPages:2 }
+      ];
+      const managerColors = ["#57e5d2","#ab8cff","#ffc766","#ff806c","#85e89d","#6bb9ff","#e58fd4","#a9d36e"];
+      const policyCopy = {
+        paged: "<b>分页策略：</b>请求按需领取固定大小的 KV Page，完成后立即释放；连续批处理提高 GPU 利用率，但不同请求之间不共享相同前缀。",
+        prefix: "<b>Prefix 策略：</b>相同 Token 前缀共享不可变 KV Page；无引用的冷前缀按 LRU 直接删除，之后再次出现时需要重新 Prefill。",
+        tiered: "<b>分层策略：</b>相同 Token 前缀共享物理 KV Page；显存不足时把无引用的冷前缀移到 CPU，CPU 超限后再落入 SSD。"
+      };
+      let manager = null;
+      let managerTimer = null;
+
+      function managerLog(message, kind="") {
+        manager.events.unshift({ tick: manager.tick, message, kind });
+        manager.events = manager.events.slice(0, 8);
+      }
+
+      function addManagerRequests(count, announce=true) {
+        for (let i=0; i<count; i++) {
+          const sample = managerSamples[manager.sampleCursor++ % managerSamples.length];
+          const id = manager.nextId++;
+          manager.queue.push({
+            id, user:`U${String(id).padStart(2,"0")}`, title:sample.title, prefix:sample.prefix,
+            promptTokens:sample.prompt, promptPages:Math.ceil(sample.prompt/512), prefixPages:sample.prefixPages,
+            outputTarget:sample.output, generated:0, decodePages:1, blocks:[], status:"queued",
+            color:managerColors[(id-1)%managerColors.length], cacheHit:false, restoredFrom:null
+          });
+        }
+        if (announce) managerLog(`突发流量：${count} 个请求进入等待队列`, "warn");
+        renderManager();
+      }
+
+      function resetManager() {
+        clearInterval(managerTimer);
+        managerTimer = null;
+        managerEls.play.textContent = "▶ 开始调度";
+        const capacity = Number(managerEls.capacity.value);
+        manager = {
+          tick:0, capacity, pages:Array(capacity).fill(null), queue:[], active:[], completed:0,
+          prefixes:new Map(), cpuUsed:0, cpuCapacity:64, ssdUsed:0, lookups:0, hits:0,
+          savedTokens:0, evictions:0, decodeRounds:0, events:[], nextId:1, sampleCursor:0
+        };
+        addManagerRequests(6, false);
+        managerLog("模拟器已重置：6 个请求等待 Admission");
+        renderManager();
+      }
+
+      function freePageCount() {
+        return manager.pages.reduce((n,p)=>n+(p===null?1:0),0);
+      }
+
+      function allocatePages(count, block) {
+        const ids=[];
+        for (let i=0; i<manager.pages.length && ids.length<count; i++) {
+          if (manager.pages[i] === null) {
+            manager.pages[i] = {...block};
+            ids.push(i);
+          }
+        }
+        return ids;
+      }
+
+      function releasePages(ids) {
+        ids.forEach(id => { if (id >= 0 && id < manager.pages.length) manager.pages[id] = null; });
+      }
+
+      function spillCpuFor(required) {
+        if (manager.cpuUsed + required <= manager.cpuCapacity) return;
+        const candidates = [...manager.prefixes.values()].filter(x=>x.tier==="cpu").sort((a,b)=>a.lastUsed-b.lastUsed);
+        for (const entry of candidates) {
+          if (manager.cpuUsed + required <= manager.cpuCapacity) break;
+          entry.tier="ssd";
+          manager.cpuUsed=Math.max(0,manager.cpuUsed-entry.pages);
+          manager.ssdUsed+=entry.pages;
+          managerLog(`${entry.key} 从 CPU 温层下沉到 SSD 冷层`, "evict");
+        }
+      }
+
+      function evictUntil(required, protectedPrefix="") {
+        if (freePageCount() >= required) return true;
+        const candidates=[...manager.prefixes.values()]
+          .filter(x=>x.tier==="gpu" && x.refs===0 && x.key!==protectedPrefix)
+          .sort((a,b)=>a.lastUsed-b.lastUsed);
+        for (const entry of candidates) {
+          releasePages(entry.blockIds);
+          entry.blockIds=[];
+          manager.evictions++;
+          if (managerEls.policy.value === "tiered") {
+            spillCpuFor(entry.pages);
+            entry.tier="cpu";
+            manager.cpuUsed+=entry.pages;
+            managerLog(`LRU：${entry.key} ${entry.pages} 页从 GPU 卸载到 CPU`, "evict");
+          } else {
+            manager.prefixes.delete(entry.key);
+            managerLog(`LRU：删除冷前缀 ${entry.key}，释放 ${entry.pages} 页`, "evict");
+          }
+          if (freePageCount() >= required) return true;
+        }
+        return freePageCount() >= required;
+      }
+
+      function restoreOrCreatePrefix(req, entry) {
+        const block={ owner:req.prefix, label:req.prefix, color:"#ffc766", shared:true, title:`共享前缀 ${req.prefix}` };
+        if (!entry) {
+          const blockIds=allocatePages(req.prefixPages,block);
+          entry={key:req.prefix,pages:req.prefixPages,tier:"gpu",blockIds,refs:0,lastUsed:manager.tick};
+          manager.prefixes.set(req.prefix,entry);
+          managerLog(`${req.prefix} 首次 Prefill，写入 ${req.prefixPages} 个共享页`);
+        } else if (entry.tier !== "gpu") {
+          const source=entry.tier.toUpperCase();
+          if (entry.tier === "cpu") manager.cpuUsed=Math.max(0,manager.cpuUsed-entry.pages);
+          if (entry.tier === "ssd") manager.ssdUsed=Math.max(0,manager.ssdUsed-entry.pages);
+          entry.blockIds=allocatePages(entry.pages,block);
+          entry.tier="gpu";
+          req.restoredFrom=source;
+          managerLog(`命中 ${req.prefix}：从 ${source} 恢复到 GPU`, "warn");
+        }
+        entry.refs++;
+        entry.lastUsed=manager.tick;
+        return entry;
+      }
+
+      function tryAdmit(req) {
+        const cacheEnabled=managerEls.policy.value !== "paged";
+        const entry=cacheEnabled ? manager.prefixes.get(req.prefix) : null;
+        const prefixNeeded=cacheEnabled ? (entry && entry.tier==="gpu" ? 0 : (entry ? entry.pages : req.prefixPages)) : req.promptPages;
+        const uniquePromptPages=cacheEnabled ? Math.max(1,req.promptPages-req.prefixPages) : 0;
+        const required=prefixNeeded+uniquePromptPages+1;
+        const futureReserve=Math.max(0,Math.ceil(req.outputTarget/512)-1);
+        const existingReserve=manager.active.reduce((sum,x)=>sum+Math.max(0,Math.ceil(x.outputTarget/512)-x.decodePages),0);
+        // Admission control keeps a logical watermark for future Decode pages,
+        // preventing all active sequences from deadlocking when the pool is full.
+        if (!evictUntil(required+futureReserve+existingReserve, req.prefix)) return false;
+
+        manager.lookups++;
+        if (cacheEnabled && entry) {
+          manager.hits++;
+          req.cacheHit=true;
+          manager.savedTokens+=Math.min(entry.pages,req.prefixPages)*512;
+        }
+        if (cacheEnabled) restoreOrCreatePrefix(req,entry);
+        const ownCount=cacheEnabled ? uniquePromptPages+1 : req.promptPages+1;
+        req.blocks=allocatePages(ownCount,{
+          owner:req.user,label:req.user,color:req.color,shared:false,title:`${req.user} 独占 KV`
+        });
+        req.status="active";
+        req.admittedAt=manager.tick;
+        manager.active.push(req);
+        const hitText=req.cacheHit ? `，Prefix 命中 ${req.prefix}` : "";
+        managerLog(`${req.user} Admission：占用 ${ownCount} 个独占页${hitText}`);
+        return true;
+      }
+
+      function finishRequest(req) {
+        releasePages(req.blocks);
+        req.blocks=[];
+        if (managerEls.policy.value !== "paged") {
+          const entry=manager.prefixes.get(req.prefix);
+          if (entry) { entry.refs=Math.max(0,entry.refs-1); entry.lastUsed=manager.tick; }
+        }
+        req.status="done";
+        manager.completed++;
+        managerLog(`${req.user} 完成，释放独占页；共享前缀保留为可淘汰缓存`);
+      }
+
+      function growDecode(req) {
+        const nextGenerated=Math.min(req.outputTarget,req.generated+256);
+        const neededPages=Math.max(1,Math.ceil(nextGenerated/512));
+        if (neededPages > req.decodePages) {
+          if (!evictUntil(1,req.prefix)) {
+            managerLog(`${req.user} 等待新的 Decode Page：Token Budget 已满`, "warn");
+            return false;
+          }
+          req.blocks.push(...allocatePages(1,{owner:req.user,label:req.user,color:req.color,shared:false,title:`${req.user} Decode KV`}));
+          req.decodePages++;
+        }
+        req.generated=nextGenerated;
+        return true;
+      }
+
+      function admitWaiting() {
+        let changed=true;
+        while (changed && manager.active.length<4 && manager.queue.length) {
+          changed=false;
+          for (let i=0; i<manager.queue.length; i++) {
+            if (tryAdmit(manager.queue[i])) {
+              manager.queue.splice(i,1);
+              changed=true;
+              break;
+            }
+          }
+        }
+      }
+
+      function managerTick() {
+        manager.tick++;
+        admitWaiting();
+        const batch=[...manager.active];
+        if (batch.length) manager.decodeRounds++;
+        for (const req of batch) {
+          if (growDecode(req) && req.generated>=req.outputTarget) finishRequest(req);
+        }
+        manager.active=manager.active.filter(x=>x.status==="active");
+        admitWaiting();
+        if (!manager.queue.length && !manager.active.length && managerTimer) {
+          clearInterval(managerTimer); managerTimer=null; managerEls.play.textContent="↺ 再来一轮";
+          managerLog("所有请求完成；GPU 只保留可复用的 Prefix Cache");
+        }
+        renderManager();
+      }
+
+      function toggleManager() {
+        if (!manager.queue.length && !manager.active.length) resetManager();
+        if (managerTimer) {
+          clearInterval(managerTimer); managerTimer=null; managerEls.play.textContent="▶ 继续调度";
+        } else {
+          managerEls.play.textContent="Ⅱ 暂停调度";
+          managerTimer=setInterval(managerTick,850);
+          managerTick();
+        }
+      }
+
+      function renderManagerPages() {
+        managerEls.pageGrid.innerHTML=manager.pages.map((page,i)=>page ?
+          `<div class="kv-page used ${page.shared?"shared":""}" style="--page-color:${page.color}" title="${escapeHTML(page.title)}"><span class="page-num">${String(i).padStart(2,"0")}</span><span class="page-owner">${escapeHTML(page.label)}</span></div>` :
+          `<div class="kv-page"><span class="page-num">${String(i).padStart(2,"0")}</span>free</div>`).join("");
+      }
+
+      function renderManagerRequests() {
+        const list=[...manager.active,...manager.queue].slice(0,12);
+        if (!list.length) {
+          managerEls.requests.innerHTML='<div class="empty-mini">队列已清空<br>点击“突发 8 请求”继续实验</div>';
+          return;
+        }
+        managerEls.requests.innerHTML=list.map(req=>{
+          const active=req.status==="active";
+          const progress=active ? Math.min(100,req.generated/req.outputTarget*100) : 0;
+          const detail=active ? `${req.generated}/${req.outputTarget} 输出 Token${req.cacheHit?" · HIT":""}` : `${req.promptTokens} Prompt Token · 预计 ${req.promptPages+1} 页`;
+          return `<div class="request-item" style="--req-color:${req.color}"><span class="request-avatar">${escapeHTML(req.user)}</span><span class="request-info"><b>${escapeHTML(req.title)}</b><span>${detail}</span><span class="mini-progress"><i style="--w:${progress}%"></i></span></span><span class="request-state ${active?"active":""}">${active?"● DECODE":"○ QUEUE"}</span></div>`;
+        }).join("");
+      }
+
+      function renderManagerPrefixes() {
+        const entries=[...manager.prefixes.values()].sort((a,b)=>b.lastUsed-a.lastUsed);
+        if (managerEls.policy.value==="paged") {
+          managerEls.prefixes.innerHTML='<div class="empty-mini">当前策略不复用 Prefix<br>切换策略后将自动重置</div>';
+        } else if (!entries.length) {
+          managerEls.prefixes.innerHTML='<div class="empty-mini">尚无前缀索引<br>请求 Prefill 后写入</div>';
+        } else {
+          managerEls.prefixes.innerHTML=entries.map(x=>`<div class="prefix-item"><span class="prefix-key">#${escapeHTML(x.key)} · ${x.pages*512} tokens</span><span class="prefix-tier ${x.tier}">${x.tier.toUpperCase()}</span><span class="prefix-refs">refs ${x.refs}</span></div>`).join("");
+        }
+      }
+
+      function renderManager() {
+        if (!manager) return;
+        const used=manager.capacity-freePageCount();
+        const hitRate=manager.lookups ? manager.hits/manager.lookups*100 : 0;
+        managerEls.clock.textContent=`TICK ${String(manager.tick).padStart(2,"0")}`;
+        managerEls.active.textContent=manager.active.length;
+        managerEls.queued.textContent=manager.queue.length;
+        managerEls.batch.textContent=manager.active.length;
+        managerEls.hit.textContent=`${hitRate.toFixed(0)}%`;
+        managerEls.saved.textContent=manager.savedTokens.toLocaleString("zh-CN");
+        managerEls.evicted.textContent=manager.evictions;
+        managerEls.done.textContent=`${manager.completed} done`;
+        const reserved=manager.active.reduce((sum,x)=>sum+Math.max(0,Math.ceil(x.outputTarget/512)-x.decodePages),0);
+        managerEls.gpuStat.textContent=`${used} / ${manager.capacity} pages · ${reserved} reserved`;
+        managerEls.gpuText.textContent=`${used} / ${manager.capacity}`;
+        managerEls.cpuText.textContent=`${manager.cpuUsed} / ${manager.cpuCapacity}`;
+        managerEls.ssdText.textContent=`${manager.ssdUsed} pages`;
+        managerEls.gpuBar.style.setProperty("--w",`${used/manager.capacity*100}%`);
+        managerEls.cpuBar.style.setProperty("--w",`${manager.cpuUsed/manager.cpuCapacity*100}%`);
+        managerEls.ssdBar.style.setProperty("--w",`${Math.min(100,manager.ssdUsed/96*100)}%`);
+        managerEls.prefillNode.textContent=manager.queue.length ? `${manager.queue.length} 个 Prompt 待处理` : "Prefill 空闲";
+        managerEls.routerNode.textContent=managerEls.policy.value==="paged" ? "Paged admission · no reuse" : `${manager.prefixes.size} prefixes · ${manager.hits} hits`;
+        managerEls.decodeNode.textContent=`${manager.active.length} 条活跃序列`;
+        managerEls.note.innerHTML=policyCopy[managerEls.policy.value];
+        renderManagerPages();
+        renderManagerRequests();
+        renderManagerPrefixes();
+        managerEls.events.innerHTML=manager.events.map(e=>`<div class="event-row ${e.kind}"><time>T+${String(e.tick).padStart(2,"0")}</time><span>${escapeHTML(e.message)}</span></div>`).join("");
+      }
+
+      managerEls.play.addEventListener("click",toggleManager);
+      managerEls.step.addEventListener("click",()=>{ if(managerTimer){clearInterval(managerTimer);managerTimer=null;} managerEls.play.textContent="▶ 继续调度"; managerTick(); });
+      managerEls.burst.addEventListener("click",()=>addManagerRequests(8,true));
+      managerEls.reset.addEventListener("click",resetManager);
+      managerEls.policy.addEventListener("change",resetManager);
+      managerEls.capacity.addEventListener("change",resetManager);
+
+      const calcEls = {
+        param: $("paramB"), bits: $("quantBits"), layers: $("layerCount"), heads: $("kvHeads"), dim: $("headDim"),
+        bytes: $("kvBytes"), context: $("contextRange"), contextText: $("contextValue"), parallel: $("parallelCount"),
+        total: $("totalMemory"), weight: $("weightValue"), kv: $("kvValue"), work: $("workValue"),
+        weightSeg: $("weightSeg"), kvSeg: $("kvSeg"), workSeg: $("workSeg"), limit: $("vramLimit"), fit: $("fitMessage")
+      };
+      const presets = {
+        llama8: { param: 8, bits: 4.5, layers: 32, heads: 8, dim: 128 },
+        qwen7: { param: 7.6, bits: 4.5, layers: 28, heads: 4, dim: 128 },
+        qwen14: { param: 14.7, bits: 4.5, layers: 48, heads: 8, dim: 128 }
+      };
+      const numberValue = (el, fallback) => Number(el.value) || fallback;
+
+      function updateMemory() {
+        const param = numberValue(calcEls.param,8);
+        const bits = numberValue(calcEls.bits,4.5);
+        const layers = numberValue(calcEls.layers,32);
+        const heads = numberValue(calcEls.heads,8);
+        const dim = numberValue(calcEls.dim,128);
+        const bytes = numberValue(calcEls.bytes,2);
+        const context = numberValue(calcEls.context,8192);
+        const parallel = numberValue(calcEls.parallel,1);
+        const gib = 1024 ** 3;
+        const weights = (param * 1e9 * bits / 8 / gib) * 1.08;
+        const kv = (2 * layers * heads * dim * context * bytes * parallel) / gib;
+        const work = 0.70;
+        const total = weights + kv + work;
+        const capacity = 8;
+        const displayBase = Math.max(capacity,total);
+        calcEls.contextText.textContent = `${context.toLocaleString("zh-CN")} tokens`;
+        calcEls.weight.textContent = `${weights.toFixed(2)} GiB`;
+        calcEls.kv.textContent = `${kv.toFixed(2)} GiB`;
+        calcEls.total.textContent = `${total.toFixed(2)} / 8.00 GiB`;
+        calcEls.weightSeg.style.setProperty("--w", `${weights/displayBase*100}%`);
+        calcEls.kvSeg.style.setProperty("--w", `${kv/displayBase*100}%`);
+        calcEls.workSeg.style.setProperty("--w", `${work/displayBase*100}%`);
+        calcEls.limit.style.display = total > capacity ? "block" : "none";
+        calcEls.limit.style.left = `${capacity/displayBase*100}%`;
+        if (total <= 7.2) {
+          calcEls.fit.className = "fit-message ok";
+          calcEls.fit.textContent = `✓ 估算可完整放入 8GB 显存，并留有约 ${(capacity-total).toFixed(2)} GiB 余量。实际部署仍建议实测。`;
+        } else if (total <= capacity) {
+          calcEls.fit.className = "fit-message warn";
+          calcEls.fit.textContent = `△ 理论上接近可用，但只剩约 ${(capacity-total).toFixed(2)} GiB；后端额外分配可能导致显存不足，可降低上下文或 KV 精度。`;
+        } else {
+          calcEls.fit.className = "fit-message bad";
+          calcEls.fit.textContent = `✕ 超出约 ${(total-capacity).toFixed(2)} GiB，需要部分卸载到系统内存、降低量化/上下文/并发，或换更小模型。`;
+        }
+      }
+
+      Object.values(calcEls).forEach(el => {
+        if (el && ["INPUT","SELECT"].includes(el.tagName)) {
+          el.addEventListener("input", () => {
+            document.querySelectorAll(".preset").forEach(x => x.classList.remove("active"));
+            updateMemory();
+          });
+        }
+      });
+      document.querySelectorAll(".preset").forEach(btn => btn.addEventListener("click", () => {
+        const p = presets[btn.dataset.preset];
+        calcEls.param.value = p.param; calcEls.bits.value = p.bits; calcEls.layers.value = p.layers; calcEls.heads.value = p.heads; calcEls.dim.value = p.dim;
+        document.querySelectorAll(".preset").forEach(x => x.classList.toggle("active", x === btn));
+        updateMemory();
+      }));
+
+      resetManager();
+      render();
+      updateMemory();
+    })();
+  </script>
+</body>
+</html>
