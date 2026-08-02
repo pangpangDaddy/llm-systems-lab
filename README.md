@@ -17,8 +17,10 @@ https://pangpangDaddy.github.io/llm-systems-lab/
 - 1M 上下文：RoPE 扩展、长序列训练、Chunked Prefill、Context Parallel
 - Dense / Sliding Window / Hybrid Sparse Attention 交互对比
 - 1M KV 容量、P→D 传输与多 GPU 分片估算
-- Qwen2.5/Qwen3、Llama 3.1、Mixtral、DeepSeek-V3/R1、Mistral/Gemma 架构示例
-- Dense GQA、MoE、MLA、Local/Global 混合 KV 对比
+- Qwen2.5/Qwen3、Llama 3.1、Mixtral、DeepSeek、Kimi、Mistral/Gemma 架构示例
+- DeepSeek-V3、R1、V3.2-Exp：MLA、DeepSeekMoE、RL、DSA Top-k 2048
+- Kimi K2、K2.5、Kimi Linear、K3：MLA、Agent Swarm、KDA、AttnRes、LatentMoE
+- Dense GQA、MoE、MLA、DSA、KDA、Local/Global 混合 KV 对比
 - Q2/Q3/Q4/Q5/Q8 离散等级、二进制编码和量化误差实验
 - Group Scale、Outlier Clipping、权重/激活/KV 独立量化说明
 - Q8_0、Q6_K、Q5_K_M、Q4_K_M 等 GGUF 格式对比
