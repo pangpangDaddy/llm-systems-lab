@@ -14,7 +14,10 @@ https://pangpangDaddy.github.io/llm-systems-lab/
 - KV Cache 的写入时序与注意力读取
 - KV Cache 分页、连续批处理、Prefix 共享、Admission Control
 - GPU / CPU / SSD 分层缓存与 LRU 淘汰模拟
-- 8GB 显存模型权重与 KV Cache 估算器
+- 1M 上下文：RoPE 扩展、长序列训练、Chunked Prefill、Context Parallel
+- Dense / Sliding Window / Hybrid Sparse Attention 交互对比
+- 1M KV 容量、P→D 传输与多 GPU 分片估算
+- 支持 1K～1M 上下文的 8GB 显存估算器
 
 ## 本地运行
 
