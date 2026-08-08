@@ -8,7 +8,7 @@ https://pangpangDaddy.github.io/llm-systems-lab/
 
 ## 课程内容
 
-- 7 个独立课程 Tab，支持 URL 深链接、浏览器前进/后退和移动端横向切换
+- 8 个独立课程 Tab，支持 URL 深链接、浏览器前进/后退和移动端横向切换
 - 一次 Token 的生成过程
 - Embedding、Q/K/V、Attention、Transformer、Logits 与采样
 - Q/K/V 矩阵乘法实验：输入向量、Wq/Wk/Wv、逐项乘加、Head/GQA 形状
@@ -24,6 +24,7 @@ https://pangpangDaddy.github.io/llm-systems-lab/
 - DeepSeek-V3、R1、V3.2-Exp：MLA、DeepSeekMoE、RL、DSA Top-k 2048
 - Kimi K2、K2.5、Kimi Linear、K3：MLA、Agent Swarm、KDA、AttnRes、LatentMoE
 - Dense GQA、MoE、MLA、DSA、KDA、Local/Global 混合 KV 对比
+- 模型加载到 GPU：Checkpoint 分片、mmap、Pinned Buffer、H→D、TP/PP/EP、KV 池与 Warmup 动画
 - Q2/Q3/Q4/Q5/Q8 离散等级、二进制编码和量化误差实验
 - Group Scale、Outlier Clipping、权重/激活/KV 独立量化说明
 - Q8_0、Q6_K、Q5_K_M、Q4_K_M 等 GGUF 格式对比
