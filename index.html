@@ -394,6 +394,95 @@
     .truth p { margin: 0; color: var(--muted); font-size: 11px; }
     .truth .symbol { font: 26px Consolas, monospace; color: var(--amber); margin-bottom: 10px; }
 
+    /* Model loading to GPU lab */
+    .loader-card { overflow: hidden; }
+    .loader-toolbar { min-height: 78px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 14px 17px; border-bottom: 1px solid var(--line); background: rgba(3,12,16,.38); }
+    .loader-body { padding: 18px; }
+    .load-metrics { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; }
+    .load-metric { min-height: 76px; padding: 11px; border: 1px solid var(--line); border-radius: 11px; background: rgba(3,12,16,.28); }
+    .load-metric b { display: block; color: var(--metric,var(--cyan)); font: 760 17px/1.2 Consolas,monospace; }
+    .load-metric span { display: block; margin-top: 5px; color: var(--muted); font-size: 7px; text-transform: uppercase; letter-spacing: .08em; }
+    .load-metric small { display: block; margin-top: 4px; color: #6f888b; font-size: 7px; }
+    .load-stage-track { display: grid; grid-template-columns: repeat(8,1fr); gap: 5px; margin-top: 12px; }
+    .load-stage-node { min-height: 68px; padding: 8px; border: 1px solid var(--line); border-radius: 9px; background: rgba(255,255,255,.018); transition: .25s ease; }
+    .load-stage-node i { color: #657d80; font: 7px Consolas,monospace; font-style: normal; }
+    .load-stage-node b { display: block; margin-top: 5px; color: var(--muted); font-size: 8px; }
+    .load-stage-node.done { border-color: rgba(133,232,157,.22); background: rgba(133,232,157,.035); }
+    .load-stage-node.done i, .load-stage-node.done b { color: var(--green); }
+    .load-stage-node.active { border-color: rgba(87,229,210,.48); background: var(--cyan-soft); box-shadow: inset 0 -2px var(--cyan),0 0 22px rgba(87,229,210,.08); }
+    .load-stage-node.active i, .load-stage-node.active b { color: var(--cyan); }
+    .load-stage-node.failed { border-color: rgba(255,128,108,.5); background: rgba(255,128,108,.08); }
+    .load-stage-node.failed i, .load-stage-node.failed b { color: var(--coral); }
+    .load-stage-progress { height: 3px; margin-top: 7px; border-radius: 99px; background: rgba(255,255,255,.05); overflow: hidden; }
+    .load-stage-progress span { display: block; width: var(--w); height: 100%; background: currentColor; transition: width .25s ease; }
+
+    .load-map { display: grid; grid-template-columns: .72fr 68px .8fr 68px 1.4fr; gap: 8px; align-items: stretch; margin-top: 12px; }
+    .load-zone { min-height: 286px; padding: 13px; border: 1px solid var(--line); border-radius: 13px; background: rgba(3,12,16,.28); }
+    .load-zone-head { display: flex; justify-content: space-between; gap: 9px; align-items: start; margin-bottom: 11px; }
+    .load-zone-head b { font-size: 10px; }
+    .load-zone-head span { color: var(--muted); font: 7px Consolas,monospace; text-align: right; }
+    .load-shards { display: grid; grid-template-columns: repeat(2,1fr); gap: 5px; }
+    .load-shard { min-height: 37px; padding: 6px; border: 1px solid var(--line); border-radius: 7px; color: #6d8588; background: rgba(255,255,255,.018); font: 7px/1.35 Consolas,monospace; transition: .2s ease; overflow: hidden; }
+    .load-shard.read { color: var(--green); border-color: rgba(133,232,157,.25); background: rgba(133,232,157,.05); }
+    .load-shard.current { color: var(--amber); border-color: rgba(255,199,102,.45); background: var(--amber-soft); box-shadow: 0 0 14px rgba(255,199,102,.08); }
+    .load-source-bar { height: 7px; margin-top: 11px; border-radius: 99px; background: rgba(255,255,255,.045); overflow: hidden; }
+    .load-source-bar i { display: block; width: var(--w); height: 100%; border-radius: inherit; background: linear-gradient(90deg,var(--amber),var(--green)); transition: width .3s ease; }
+    .load-source-caption { display: flex; justify-content: space-between; margin-top: 5px; color: var(--muted); font: 7px Consolas,monospace; }
+    .host-stack { display: grid; gap: 7px; }
+    .host-step { padding: 9px; border: 1px solid var(--line); border-radius: 8px; background: rgba(255,255,255,.018); }
+    .host-step b { display: block; color: #a9bcbe; font-size: 8px; }
+    .host-step span { display: block; margin-top: 3px; color: var(--muted); font-size: 7px; }
+    .host-step.active { border-color: rgba(87,229,210,.35); background: var(--cyan-soft); }
+    .host-step.active b { color: var(--cyan); }
+    .host-step.done b { color: var(--green); }
+    .pinned-buffer { margin-top: 9px; padding: 8px; border: 1px dashed var(--line-strong); border-radius: 8px; color: var(--muted); font-size: 7px; text-align: center; }
+    .pinned-buffer.active { color: var(--amber); border-color: rgba(255,199,102,.45); background: var(--amber-soft); }
+    .load-link { position: relative; display: grid; place-items: center; min-width: 0; }
+    .load-link-line { position: relative; width: 100%; height: 2px; background: var(--line-strong); }
+    .load-link-line::after { content: "›"; position: absolute; right: -2px; top: -13px; color: var(--cyan); font-size: 18px; }
+    .load-packet { position: absolute; left: var(--packet); top: -5px; width: 11px; height: 11px; border-radius: 3px; background: var(--cyan); box-shadow: 0 0 14px rgba(87,229,210,.5); transform: translateX(-50%); transition: left .25s linear; }
+    .load-link-label { position: absolute; top: calc(50% + 12px); color: var(--muted); font: 6px Consolas,monospace; text-align: center; white-space: nowrap; }
+    .gpu-cluster { display: grid; grid-template-columns: repeat(2,1fr); gap: 6px; }
+    .gpu-load-card { padding: 8px; border: 1px solid var(--line); border-radius: 9px; background: rgba(255,255,255,.018); }
+    .gpu-load-head { display: flex; justify-content: space-between; gap: 5px; color: var(--muted); font: 7px Consolas,monospace; }
+    .gpu-load-head b { color: #bbcbcc; font-size: 8px; }
+    .gpu-memory-shell { position: relative; display: flex; height: 29px; margin-top: 7px; border: 1px solid var(--line); border-radius: 6px; background: rgba(0,0,0,.18); overflow: hidden; }
+    .gpu-mem-seg { width: var(--w); height: 100%; transition: width .3s ease; }
+    .gpu-mem-seg.weight { background: linear-gradient(135deg,var(--cyan),#358e9e); }
+    .gpu-mem-seg.kv { background: var(--violet); }
+    .gpu-mem-seg.runtime { background: var(--amber); }
+    .gpu-layer-caption { margin-top: 5px; color: #6e8689; font-size: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gpu-more { display: grid; place-items: center; min-height: 66px; border: 1px dashed var(--line-strong); border-radius: 9px; color: var(--muted); font-size: 8px; }
+    .gpu-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 9px; color: var(--muted); font-size: 6px; }
+    .gpu-legend i { display: inline-block; width: 7px; height: 7px; margin-right: 3px; border-radius: 2px; }
+
+    .load-current { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; margin-top: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 11px; background: rgba(255,255,255,.018); }
+    .load-current b { display: block; font-size: 11px; }
+    .load-current p { margin: 3px 0 0; color: var(--muted); font-size: 8px; }
+    .load-current code { color: var(--cyan); font-size: 9px; }
+    .load-current.failed { border-color: rgba(255,128,108,.35); background: rgba(255,128,108,.055); }
+    .load-current.failed code { color: var(--coral); }
+    .load-lower { display: grid; grid-template-columns: 1.05fr .95fr; gap: 12px; margin-top: 12px; }
+    .load-panel { padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: rgba(3,12,16,.25); }
+    .load-panel h3 { margin: 0; font-size: 13px; }
+    .load-panel > small { color: var(--muted); font-size: 7px; }
+    .load-budget { display: grid; gap: 7px; margin-top: 10px; }
+    .budget-row { display: grid; grid-template-columns: 82px 1fr 62px; gap: 8px; align-items: center; font-size: 7px; }
+    .budget-row b { color: #b9c9ca; }
+    .budget-track { height: 8px; border-radius: 99px; background: rgba(255,255,255,.04); overflow: hidden; }
+    .budget-track i { display: block; width: var(--w); height: 100%; border-radius: inherit; background: var(--bar); }
+    .budget-row span { color: var(--muted); text-align: right; font: 7px Consolas,monospace; }
+    .load-fit-note { margin-top: 9px; padding: 8px 9px; border-radius: 8px; color: #adc0c1; background: rgba(87,229,210,.05); font-size: 7px; }
+    .load-fit-note.bad { color: #e0a096; background: rgba(255,128,108,.07); }
+    .load-log { display: grid; gap: 5px; max-height: 164px; margin-top: 10px; overflow: auto; }
+    .load-log-row { display: grid; grid-template-columns: 43px 1fr; gap: 7px; padding: 6px 7px; border-left: 2px solid var(--line-strong); background: rgba(255,255,255,.016); color: var(--muted); font: 7px/1.45 Consolas,monospace; }
+    .load-log-row:first-child { border-left-color: var(--cyan); color: #b9d0d1; }
+    .load-log-row time { color: #688185; }
+    .loading-lessons { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 12px; }
+    .loading-lesson { padding: 11px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.018); }
+    .loading-lesson b { display: block; color: var(--cyan); font-size: 9px; }
+    .loading-lesson p { margin: 4px 0 0; color: var(--muted); font-size: 7px; }
+
     .memory-card { padding: 24px; }
     .memory-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 28px; }
     .calc-controls { display: grid; gap: 12px; }
@@ -763,7 +852,13 @@
       .kv-metrics { grid-template-columns: repeat(3,1fr); }
       .policy-grid, .long-concepts { grid-template-columns: repeat(3,1fr); }
       .long-metrics { grid-template-columns: repeat(3,1fr); }
-      .long-grid, .quant-layout, .quant-bottom, .frontier-overview, .frontier-details { grid-template-columns: 1fr; }
+      .long-grid, .quant-layout, .quant-bottom, .frontier-overview, .frontier-details, .load-lower { grid-template-columns: 1fr; }
+      .load-map { grid-template-columns: 1fr; }
+      .load-link { min-height: 44px; }
+      .load-link-line { width: 56px; transform: rotate(90deg); }
+      .load-link-label { top: 31px; left: calc(50% + 18px); }
+      .load-stage-track { grid-template-columns: repeat(4,1fr); }
+      .loading-lessons { grid-template-columns: repeat(2,1fr); }
       .frontier-metrics { grid-template-columns: repeat(5,1fr); }
       .long-flow { grid-template-columns: 1fr auto 1fr auto 1fr; }
       .format-grid { grid-template-columns: repeat(3,1fr); }
@@ -800,6 +895,12 @@
       .explain-pane, .visual-pane { padding: 16px; }
       .visual-pane { min-height: 260px; }
       .phase-grid, .truth-grid { grid-template-columns: 1fr; }
+      .loader-body { padding: 10px; }
+      .load-metrics { grid-template-columns: repeat(2,1fr); }
+      .load-stage-track { grid-template-columns: repeat(2,1fr); }
+      .gpu-cluster { grid-template-columns: 1fr; }
+      .loading-lessons { grid-template-columns: 1fr; }
+      .load-current { grid-template-columns: 1fr; }
       .kv-manager-body { padding: 11px; }
       .kv-metrics { grid-template-columns: repeat(2,1fr); }
       .kv-cluster { grid-template-columns: 1fr; }
@@ -854,8 +955,9 @@
       <a class="course-tab" id="tab-kv-manager" href="#kv-manager" data-course-tab="kv-manager" role="tab" aria-controls="kv-manager" aria-selected="false" tabindex="-1"><small>03</small><span>KV 管理</span></a>
       <a class="course-tab" id="tab-long-context" href="#long-context" data-course-tab="long-context" role="tab" aria-controls="long-context" aria-selected="false" tabindex="-1"><small>04</small><span>1M 上下文</span></a>
       <a class="course-tab" id="tab-frontier-models" href="#frontier-models" data-course-tab="frontier-models" role="tab" aria-controls="frontier-models" aria-selected="false" tabindex="-1"><small>05</small><span>模型分析</span></a>
-      <a class="course-tab" id="tab-memory" href="#memory" data-course-tab="memory" role="tab" aria-controls="memory" aria-selected="false" tabindex="-1"><small>06</small><span>显存估算</span></a>
-      <a class="course-tab" id="tab-quantization" href="#quantization" data-course-tab="quantization" role="tab" aria-controls="quantization" aria-selected="false" tabindex="-1"><small>07</small><span>模型量化</span></a>
+      <a class="course-tab" id="tab-model-loading" href="#model-loading" data-course-tab="model-loading" role="tab" aria-controls="model-loading" aria-selected="false" tabindex="-1"><small>06</small><span>模型加载</span></a>
+      <a class="course-tab" id="tab-memory" href="#memory" data-course-tab="memory" role="tab" aria-controls="memory" aria-selected="false" tabindex="-1"><small>07</small><span>显存估算</span></a>
+      <a class="course-tab" id="tab-quantization" href="#quantization" data-course-tab="quantization" role="tab" aria-controls="quantization" aria-selected="false" tabindex="-1"><small>08</small><span>模型量化</span></a>
     </nav>
   </div>
 
@@ -864,7 +966,7 @@
       <div>
         <div class="eyebrow">Interactive guide to LLM inference systems</div>
         <h1>看见大模型的<br><span class="accent">每一次推理</span></h1>
-        <p class="hero-copy">从 Token、Attention、Prefill/Decode，到 KV Cache 分页、共享、淘汰和分层存储。用动画与调度模拟器理解大模型如何生成，以及服务系统如何承载并发请求。</p>
+        <p class="hero-copy">从模型权重加载进 GPU，到 Token、Attention、Prefill/Decode，以及 KV Cache 分页、共享、淘汰和分层存储。用动画与调度模拟器理解大模型如何启动、生成并承载并发请求。</p>
       </div>
       <aside class="hero-side">
         <div class="hero-stat"><b>Prefill</b><span>整段 Prompt 并行计算</span></div>
@@ -1345,9 +1447,109 @@
       </div>
     </section>
 
+    <section class="section course-panel" id="model-loading" role="tabpanel" aria-labelledby="tab-model-loading" hidden>
+      <div class="section-head">
+        <div><div class="section-kicker">06 · Model Loading Pipeline</div><h2>一个模型，怎样真正进入 GPU？</h2></div>
+        <div class="section-note">GPU 不会自己“打开模型文件”。CPU 侧推理引擎读取配置与权重索引，规划多卡放置，申请显存，再通过 PCIe/C2C 把 Tensor 分片送入 GPU，最后建立 KV 池、通信器和执行图。预设体积与时间是教学估算。</div>
+      </div>
+
+      <div class="card loader-card">
+        <div class="loader-toolbar">
+          <button class="btn primary" id="loaderPlay" type="button">▶ 开始冷启动</button>
+          <button class="btn" id="loaderStep" type="button">下一步</button>
+          <button class="btn icon" id="loaderReset" type="button" title="重置加载动画">↺</button>
+          <div class="field"><label for="loaderModel">Checkpoint</label><select id="loaderModel">
+            <option value="llama8">Llama 3.1 8B · BF16</option>
+            <option value="qwen7q4">Qwen2.5 7B · AWQ Q4</option>
+            <option value="qwen32q4">Qwen3 32B · AWQ Q4</option>
+            <option value="llama70">Llama 3.1 70B · BF16</option>
+            <option value="deepseek">DeepSeek-V3 · FP8</option>
+            <option value="kimi3">Kimi K3 · MXFP4</option>
+          </select></div>
+          <div class="field"><label for="loaderHardware">GPU</label><select id="loaderHardware">
+            <option value="g8">1×8GiB</option><option value="g24" selected>1×24GiB</option><option value="g2x24">2×24GiB</option><option value="g4x48">4×48GiB</option><option value="g8x80">8×80GiB</option><option value="g8x141">8×141GiB</option><option value="g16x192">16×192GiB</option>
+          </select></div>
+          <div class="field"><label for="loaderStrategy">放置</label><select id="loaderStrategy"><option value="auto">自动规划</option><option value="single">单 GPU</option><option value="tp">Tensor Parallel</option><option value="pp">Pipeline Parallel</option><option value="ep">Expert Parallel</option></select></div>
+          <div class="field"><label for="loaderSource">权重源</label><select id="loaderSource"><option value="sata">SATA SSD · 0.45GiB/s</option><option value="nvme" selected>NVMe · 3GiB/s</option><option value="raid">NVMe RAID · 10GiB/s</option><option value="network">共享存储 · 12GiB/s</option></select></div>
+          <div class="field"><label for="loaderBus">H→D</label><select id="loaderBus"><option value="pcie4" selected>PCIe 4 · 24GiB/s</option><option value="pcie5">PCIe 5 · 48GiB/s</option><option value="c2c">C2C · 350GiB/s</option></select></div>
+          <div class="field"><label for="loaderKv">每卡 KV 池</label><select id="loaderKv"><option value="1">1GiB</option><option value="2" selected>2GiB</option><option value="4">4GiB</option><option value="8">8GiB</option><option value="16">16GiB</option></select></div>
+        </div>
+
+        <div class="loader-body">
+          <div class="load-metrics">
+            <div class="load-metric"><b id="loadCheckpointSize">14.9 GiB</b><span>Checkpoint Weights</span><small id="loadFormat">BF16 · safetensors</small></div>
+            <div class="load-metric" style="--metric:var(--violet)"><b id="loadTopology">1×24 GiB</b><span>GPU Topology</span><small id="loadPlacement">Single GPU</small></div>
+            <div class="load-metric" style="--metric:var(--amber)"><b id="loadColdStart">≈ 14.0s</b><span>Ideal Cold-start</span><small>教学下界，不含下载与排队</small></div>
+            <div class="load-metric" style="--metric:var(--green)"><b id="loadTransferred">0 GiB</b><span>Host → Device</span><small id="loadBandwidthLabel">PCIe 有效带宽 24GiB/s</small></div>
+            <div class="load-metric" style="--metric:var(--coral)"><b id="loadState">WAITING</b><span>Engine State</span><small id="loadFitState">显存规划通过</small></div>
+          </div>
+
+          <div class="load-stage-track" id="loadStageTrack" aria-label="模型加载阶段"></div>
+
+          <div class="load-map">
+            <section class="load-zone">
+              <div class="load-zone-head"><b>① 本地 / 共享存储</b><span id="loadShardCaption">4 SAFETENSORS SHARDS</span></div>
+              <div class="load-shards" id="loadShardGrid"></div>
+              <div class="load-source-bar"><i id="loadReadBar" style="--w:0%"></i></div>
+              <div class="load-source-caption"><span id="loadReadValue">READ 0 GiB</span><span id="loadReadSpeed">3 GiB/s</span></div>
+            </section>
+
+            <div class="load-link"><div class="load-link-line"><i class="load-packet" id="loadReadPacket" style="--packet:0%"></i></div><span class="load-link-label">文件页 / DMA Buffer</span></div>
+
+            <section class="load-zone">
+              <div class="load-zone-head"><b>② CPU 侧 Runtime</b><span>ORCHESTRATOR</span></div>
+              <div class="host-stack">
+                <div class="host-step" data-host-step="0"><b>config.json + Tokenizer</b><span>创建模型结构与超参数，不含大权重</span></div>
+                <div class="host-step" data-host-step="1"><b>权重索引 + Device Map</b><span>Tensor 名称 → 文件分片 → 目标 GPU</span></div>
+                <div class="host-step" data-host-step="2"><b>mmap / Streaming Reader</b><span>按页读取，避免一次复制完整 CPU 权重</span></div>
+                <div class="host-step" data-host-step="3"><b>CUDA Allocator</b><span>在目标设备为 Tensor 申请显存地址</span></div>
+              </div>
+              <div class="pinned-buffer" id="loadPinnedBuffer">Pinned Host Buffer · 等待权重块</div>
+            </section>
+
+            <div class="load-link"><div class="load-link-line"><i class="load-packet" id="loadH2dPacket" style="--packet:0%"></i></div><span class="load-link-label" id="loadBusLabel">PCIe 4 ×16</span></div>
+
+            <section class="load-zone">
+              <div class="load-zone-head"><b>③ GPU 显存与执行引擎</b><span id="loadGpuCaption">WEIGHTS → RUNTIME → READY</span></div>
+              <div class="gpu-cluster" id="loadGpuCluster"></div>
+              <div class="gpu-legend"><span><i style="background:var(--cyan)"></i>模型权重</span><span><i style="background:var(--violet)"></i>KV Page 池</span><span><i style="background:var(--amber)"></i>Workspace / Graph</span></div>
+            </section>
+          </div>
+
+          <div class="load-current" id="loadCurrent">
+            <div><b id="loadCurrentTitle">等待开始：模型文件仍在存储中</b><p id="loadCurrentText">选择模型、GPU 与加载路径，然后播放。推理请求不会每次重新加载模型；引擎通常常驻并复用这些权重。</p></div>
+            <code id="loadCurrentTensor">engine = unloaded</code>
+          </div>
+
+          <div class="load-lower">
+            <section class="load-panel">
+              <h3>最终显存账本 · 每卡近似均分</h3><small>权重只是主体；能加载成功不代表还留有足够 KV Cache 承载目标并发</small>
+              <div class="load-budget">
+                <div class="budget-row"><b>Weight Shard</b><span class="budget-track"><i id="loadBudgetWeight" style="--w:0%;--bar:var(--cyan)"></i></span><span id="loadBudgetWeightText">0 GiB</span></div>
+                <div class="budget-row"><b>KV Page Pool</b><span class="budget-track"><i id="loadBudgetKv" style="--w:0%;--bar:var(--violet)"></i></span><span id="loadBudgetKvText">2 GiB</span></div>
+                <div class="budget-row"><b>Runtime</b><span class="budget-track"><i id="loadBudgetRuntime" style="--w:0%;--bar:var(--amber)"></i></span><span id="loadBudgetRuntimeText">1.2 GiB</span></div>
+              </div>
+              <div class="load-fit-note" id="loadFitNote">单卡需要约 18.1GiB，24GiB 可以容纳，并保留少量余量。</div>
+            </section>
+            <section class="load-panel">
+              <h3>引擎启动日志</h3><small>观察“文件已读”与“GPU 已可推理”之间还差哪些工作</small>
+              <div class="load-log" id="loadLog"></div>
+            </section>
+          </div>
+
+          <div class="loading-lessons">
+            <article class="loading-lesson"><b>朴素加载 vs 流式加载</b><p>先在 CPU 构造完整 FP16 模型再复制到 GPU，会同时占用大量 RAM 和 VRAM；Meta Device、mmap、分片流式加载可降低主机内存峰值。</p></article>
+            <article class="loading-lesson"><b>量化权重不会全部还原</b><p>AWQ/GPTQ/MXFP4 若有匹配 Kernel，会以 Packed 低比特形式常驻；GEMM 按 Tile 解量化到寄存器/共享内存，而不是永久展开成整份 FP16。</p></article>
+            <article class="loading-lesson"><b>多 GPU 不只是平均切文件</b><p>TP 切矩阵并建立 Collective，PP 切层，EP 切专家。加载后还要初始化 NCCL/RCCL、通信 Buffer 与拓扑，推理时会持续通信。</p></article>
+            <article class="loading-lesson"><b>READY 之前还要 Warmup</b><p>框架需选择 Kernel、建立 KV Block 池、捕获 CUDA Graph 或编译算子，并用假请求预热；权重复制完不等于首个请求已可服务。</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section course-panel" id="memory" role="tabpanel" aria-labelledby="tab-memory" hidden>
       <div class="section-head">
-        <div><div class="section-kicker">06 · Memory Budget</div><h2>从 7B 到 405B，显存账本怎么算？</h2></div>
+        <div><div class="section-kicker">07 · Memory Budget</div><h2>从 7B 到 405B，显存账本怎么算？</h2></div>
         <div class="section-note">不再局限于本机：切换消费级显卡、工作站卡和数据中心 GPU，对比 Dense、MoE 模型的权重与标准 GQA KV 占用。</div>
       </div>
       <div class="card memory-card">
@@ -1399,7 +1601,7 @@
 
     <section class="section course-panel" id="quantization" role="tabpanel" aria-labelledby="tab-quantization" hidden>
       <div class="section-head">
-        <div><div class="section-kicker">07 · Quantization Lab</div><h2>Q4、Q8 到底把数字变成了什么？</h2></div>
+        <div><div class="section-kicker">08 · Quantization Lab</div><h2>Q4、Q8 到底把数字变成了什么？</h2></div>
         <div class="section-note">移动原始权重，观察它如何“吸附”到最近的离散等级。Q4 是约 4 bit，不是 4 字节或 4 位小数；Q8 也不等于 FP8。</div>
       </div>
 
@@ -1480,7 +1682,7 @@
 
     <nav class="course-pagination" aria-label="课程上一页和下一页">
       <button class="course-page-button prev" id="coursePrev" type="button"><i>←</i><span><small>上一页</small><b id="coursePrevLabel">已经是第一页</b></span></button>
-      <div class="course-page-status" aria-live="polite"><small id="courseProgress">PAGE 1 / 7</small><b id="courseCurrentTitle">Token 推理</b></div>
+      <div class="course-page-status" aria-live="polite"><small id="courseProgress">PAGE 1 / 8</small><b id="courseCurrentTitle">Token 推理</b></div>
       <button class="course-page-button next" id="courseNext" type="button"><span><small>下一页</small><b id="courseNextLabel">P/D 阶段</b></span><i>→</i></button>
     </nav>
   </main>
@@ -1599,6 +1801,7 @@
         {id:"kv-manager",title:"KV Cache 管理"},
         {id:"long-context",title:"1M 上下文"},
         {id:"frontier-models",title:"DeepSeek / Kimi 模型分析"},
+        {id:"model-loading",title:"模型如何加载到 GPU"},
         {id:"memory",title:"显存估算"},
         {id:"quantization",title:"模型量化"}
       ];
@@ -2573,6 +2776,128 @@
       }
       document.querySelectorAll(".family-button").forEach(btn=>btn.addEventListener("click",()=>{frontierFamily=btn.dataset.modelFamily;frontierKey=frontierModels[frontierFamily].find(x=>x.latest).key;renderFrontier();}));
 
+      /* Model checkpoint → GPU loading simulator */
+      const loadingModels={
+        llama8:{name:"Llama 3.1 8B",weight:14.9,layers:32,shards:4,format:"BF16 · safetensors",kind:"dense"},
+        qwen7q4:{name:"Qwen2.5 7B AWQ",weight:4.4,layers:28,shards:3,format:"Packed INT4 · safetensors",kind:"dense"},
+        qwen32q4:{name:"Qwen3 32B AWQ",weight:18.3,layers:64,shards:5,format:"Packed INT4 · safetensors",kind:"dense"},
+        llama70:{name:"Llama 3.1 70B",weight:130.4,layers:80,shards:30,format:"BF16 · safetensors",kind:"dense"},
+        deepseek:{name:"DeepSeek-V3",weight:650,layers:61,shards:163,format:"FP8 · sharded safetensors",kind:"moe"},
+        kimi3:{name:"Kimi K3",weight:1680,layers:93,shards:256,format:"MXFP4 · sharded checkpoint",kind:"moe"}
+      };
+      const loadingHardware={
+        g8:{name:"1×8GiB",count:1,per:8},g24:{name:"1×24GiB",count:1,per:24},g2x24:{name:"2×24GiB",count:2,per:24},g4x48:{name:"4×48GiB",count:4,per:48},g8x80:{name:"8×80GiB",count:8,per:80},g8x141:{name:"8×141GiB",count:8,per:141},g16x192:{name:"16×192GiB",count:16,per:192}
+      };
+      const loadingSources={sata:{name:"SATA SSD",bw:.45},nvme:{name:"NVMe",bw:3},raid:{name:"NVMe RAID",bw:10},network:{name:"共享存储",bw:12}};
+      const loadingBuses={pcie4:{name:"PCIe 4 ×16",bw:24},pcie5:{name:"PCIe 5 ×16",bw:48},c2c:{name:"CPU–GPU C2C",bw:350}};
+      const loadingStrategies={single:"Single GPU",tp:"Tensor Parallel",pp:"Pipeline Parallel",ep:"Expert Parallel"};
+      const loadingStages=[
+        {key:"META",name:"解析元数据",title:"读取配置、Tokenizer 与权重索引",text:"CPU 先读取很小的 config.json、Tokenizer 和 safetensors index，知道模型层数、数据类型、Tensor 名称与每个 Tensor 所在文件。此时大权重还没有进入 GPU。",tensor:"config.json · model.safetensors.index.json",ticks:3},
+        {key:"MAP",name:"规划放置",title:"建立空模型与多 GPU Device Map",text:"推理引擎可先在 Meta Device 上创建只有形状、没有真实存储的 Tensor，再根据 TP/PP/EP 计算每个权重分片的目标 GPU，避免先在 CPU 构造一份完整模型。",tensor:"tensor_name → shard_file → cuda:N",ticks:3},
+        {key:"READ",name:"读取分片",title:"mmap 或流式读取 Checkpoint Shards",text:"操作系统把文件页送入 Page Cache，Runtime 按 Tensor/分块读取。mmap 能减少 CPU 侧复制和内存峰值，但普通路径仍需经过主机内存；它不等于权重已经在 GPU。",tensor:"storage → page cache → pinned buffer",ticks:8},
+        {key:"ALLOC",name:"申请显存",title:"CUDA Allocator 为目标 Tensor 申请地址",text:"框架按 Device Map 在每张 GPU 上申请权重显存并检查容量。若权重分片、KV 预留和 Runtime Workspace 超过单卡容量，冷启动会在这里失败。",tensor:"cudaMalloc / memory pool reserve",ticks:3},
+        {key:"H2D",name:"传输权重",title:"通过 DMA 将 Tensor 分块复制到 GPU",text:"Pinned Host Buffer 让 DMA 更高效。多个分片可流水化读取与 H→D 复制；多 GPU 可能并行接收各自的 TP/PP/EP 权重。量化权重通常以 Packed 形式常驻，不会整份展开为 FP16。",tensor:"cudaMemcpyAsync(H→D) · stream per device",ticks:12},
+        {key:"ENGINE",name:"初始化引擎",title:"建立 KV Block 池、Workspace 与通信器",text:"权重到齐后还要创建 Paged KV Cache、临时计算 Buffer、NCCL/RCCL Communicator，并绑定量化 GEMM、Attention 与 MoE Kernel。",tensor:"KV pages · NCCL · kernel workspace",ticks:5},
+        {key:"WARM",name:"预热执行",title:"用假请求选择 Kernel 并捕获执行图",text:"Warmup 会触发 JIT/Kernel Autotune、内存峰值检查和 CUDA Graph Capture。模型权重复制完成，并不等于服务已经 READY。",tensor:"dummy prefill → decode → CUDA Graph",ticks:6},
+        {key:"READY",name:"开始服务",title:"模型常驻 GPU，开始接收推理请求",text:"后续请求直接复用同一份权重，只为各请求分配 KV Page 和调度计算。除非进程退出、模型切换或被卸载，否则不会每个请求重新读取 Checkpoint。",tensor:"engine.is_ready = true",ticks:1}
+      ];
+      const loaderEls={
+        play:$("loaderPlay"),step:$("loaderStep"),reset:$("loaderReset"),model:$("loaderModel"),hardware:$("loaderHardware"),strategy:$("loaderStrategy"),source:$("loaderSource"),bus:$("loaderBus"),kv:$("loaderKv"),
+        size:$("loadCheckpointSize"),format:$("loadFormat"),topology:$("loadTopology"),placement:$("loadPlacement"),cold:$("loadColdStart"),transferred:$("loadTransferred"),bandwidth:$("loadBandwidthLabel"),state:$("loadState"),fitState:$("loadFitState"),
+        stageTrack:$("loadStageTrack"),shardCaption:$("loadShardCaption"),shards:$("loadShardGrid"),readBar:$("loadReadBar"),readValue:$("loadReadValue"),readSpeed:$("loadReadSpeed"),readPacket:$("loadReadPacket"),pinned:$("loadPinnedBuffer"),h2dPacket:$("loadH2dPacket"),busLabel:$("loadBusLabel"),gpuCaption:$("loadGpuCaption"),gpuCluster:$("loadGpuCluster"),
+        current:$("loadCurrent"),currentTitle:$("loadCurrentTitle"),currentText:$("loadCurrentText"),currentTensor:$("loadCurrentTensor"),budgetWeight:$("loadBudgetWeight"),budgetKv:$("loadBudgetKv"),budgetRuntime:$("loadBudgetRuntime"),budgetWeightText:$("loadBudgetWeightText"),budgetKvText:$("loadBudgetKvText"),budgetRuntimeText:$("loadBudgetRuntimeText"),fitNote:$("loadFitNote"),log:$("loadLog")
+      };
+      let loadingStage=0,loadingProgress=0,loadingPlaying=false,loadingStarted=false,loadingFailed=false,loadingTimer=null,loadingLog=[];
+
+      const loadSize=value=>value>=1024?`${(value/1024).toFixed(value>=1536?2:1)} TiB`:`${value.toFixed(value<10?1:0)} GiB`;
+      function getLoadingPlan(){
+        const model=loadingModels[loaderEls.model.value],hardware=loadingHardware[loaderEls.hardware.value],source=loadingSources[loaderEls.source.value],bus=loadingBuses[loaderEls.bus.value];
+        let strategy=loaderEls.strategy.value;
+        if(strategy==="auto")strategy=hardware.count===1?"single":model.kind==="moe"?"ep":"tp";
+        const usedGpus=strategy==="single"?1:hardware.count;
+        const runtimeTotal=Math.max(1.2,model.weight*.03),kvPer=Number(loaderEls.kv.value),weightPer=model.weight/usedGpus,runtimePer=runtimeTotal/usedGpus,needPer=weightPer+runtimePer+kvPer;
+        const fit=needPer<=hardware.per;
+        const readSeconds=model.weight/source.bw,transferSeconds=model.weight/(bus.bw*Math.min(usedGpus,4));
+        const engineSeconds=.8+usedGpus*.16+model.layers*.018,warmSeconds=1.6+Math.log2(model.layers)*.28;
+        const ideal=.8+Math.max(readSeconds,transferSeconds)+engineSeconds+warmSeconds;
+        return {model,hardware,source,bus,strategy,usedGpus,runtimeTotal,kvPer,weightPer,runtimePer,needPer,fit,readSeconds,transferSeconds,ideal};
+      }
+      function loadingLogPush(message){loadingLog.unshift({step:`S${String(loadingStage).padStart(2,"0")}`,message});loadingLog=loadingLog.slice(0,8);}
+      function stopModelLoading(){clearTimeout(loadingTimer);loadingPlaying=false;loaderEls.play.textContent=loadingFailed||loadingStage===loadingStages.length-1&&loadingProgress>=1?"↺ 重新演示":"▶ 继续加载";}
+      function scheduleModelLoading(){clearTimeout(loadingTimer);if(!loadingPlaying||loadingFailed)return;loadingTimer=setTimeout(()=>{advanceModelLoading();scheduleModelLoading();},430);}
+      function toggleModelLoading(){
+        if(loadingFailed||loadingStage===loadingStages.length-1&&loadingProgress>=1)resetModelLoading();
+        loadingStarted=true;loadingPlaying=!loadingPlaying;loaderEls.play.textContent=loadingPlaying?"Ⅱ 暂停":"▶ 继续加载";
+        if(loadingPlaying)scheduleModelLoading();else clearTimeout(loadingTimer);
+        renderModelLoading();
+      }
+      function advanceModelLoading(){
+        if(loadingFailed)return;
+        loadingStarted=true;
+        const stage=loadingStages[loadingStage];
+        loadingProgress=Math.min(1,loadingProgress+1/stage.ticks);
+        if(loadingProgress>=.999999){
+          loadingProgress=1;
+          const plan=getLoadingPlan();
+          if(loadingStage===3&&!plan.fit){loadingFailed=true;loadingLogPush(`显存申请失败：每卡需要 ${plan.needPer.toFixed(1)}GiB，只有 ${plan.hardware.per}GiB`);stopModelLoading();renderModelLoading();return;}
+          loadingLogPush(`${stage.name}完成 · ${stage.tensor}`);
+          if(loadingStage<loadingStages.length-1){loadingStage++;loadingProgress=0;loadingLogPush(`进入 ${loadingStages[loadingStage].name}`);}else stopModelLoading();
+        }
+        renderModelLoading();
+      }
+      function resetModelLoading(){
+        clearTimeout(loadingTimer);loadingStage=0;loadingProgress=0;loadingPlaying=false;loadingStarted=false;loadingFailed=false;
+        loadingLog=[{step:"INIT",message:"Engine 创建完成，等待读取本地 Checkpoint；不包含模型下载时间。"}];
+        loaderEls.play.textContent="▶ 开始冷启动";
+        renderModelLoading();
+      }
+      function stageFraction(target){return loadingStage<target?0:loadingStage>target?1:loadingProgress;}
+      function renderModelLoading(){
+        const plan=getLoadingPlan(),{model,hardware,source,bus}=plan;
+        const readP=stageFraction(2),transferP=stageFraction(4),engineP=stageFraction(5),warmP=stageFraction(6),ready=loadingStage===7&&loadingProgress>=1;
+        loaderEls.size.textContent=loadSize(model.weight);loaderEls.format.textContent=model.format;
+        loaderEls.topology.textContent=hardware.name;loaderEls.placement.textContent=`${loadingStrategies[plan.strategy]} · ${plan.usedGpus} GPU${plan.usedGpus>1?"s":""}`;
+        loaderEls.cold.textContent=plan.ideal>600?`≈ ${(plan.ideal/60).toFixed(1)}min`:`≈ ${plan.ideal.toFixed(1)}s`;
+        loaderEls.transferred.textContent=loadSize(model.weight*transferP);loaderEls.bandwidth.textContent=`${bus.name} · ${bus.bw}GiB/s / link`;
+        const state=loadingFailed?"FAILED":ready?"READY":loadingPlaying?loadingStages[loadingStage].key:loadingStarted?"PAUSED":"WAITING";
+        loaderEls.state.textContent=state;loaderEls.state.style.color=loadingFailed?"var(--coral)":ready?"var(--green)":"";
+        loaderEls.fitState.textContent=plan.fit?"显存规划通过":"显存不足，将在 ALLOC 失败";
+        loaderEls.stageTrack.innerHTML=loadingStages.map((stage,i)=>{const done=i<loadingStage||ready,active=i===loadingStage&&!ready,failed=loadingFailed&&i===loadingStage;const progress=done?100:active?loadingProgress*100:0;return `<div class="load-stage-node ${done?"done":""} ${active?"active":""} ${failed?"failed":""}"><i>0${i+1} · ${stage.key}</i><b>${stage.name}</b><div class="load-stage-progress"><span style="--w:${progress}%"></span></div></div>`;}).join("");
+
+        const shownShards=Math.min(model.shards,12),currentShard=Math.min(shownShards-1,Math.floor(readP*shownShards));
+        loaderEls.shardCaption.textContent=`${model.shards} CHECKPOINT SHARD${model.shards>1?"S":""}`;
+        loaderEls.shards.innerHTML=Array.from({length:shownShards},(_,i)=>{const done=readP>=1||(i<currentShard&&readP>0),current=readP>0&&readP<1&&i===currentShard;const actual=model.shards>shownShards?Math.floor(i/ shownShards*model.shards)+1:i+1;return `<div class="load-shard ${done?"read":""} ${current?"current":""}">model-${String(actual).padStart(5,"0")}<br>of-${String(model.shards).padStart(5,"0")}.safetensors</div>`;}).join("");
+        loaderEls.readBar.style.setProperty("--w",`${readP*100}%`);loaderEls.readValue.textContent=`READ ${loadSize(model.weight*readP)}`;loaderEls.readSpeed.textContent=`${source.bw} GiB/s`;
+        loaderEls.readPacket.style.setProperty("--packet",`${readP*100}%`);loaderEls.readPacket.style.opacity=loadingStage===2?"1":"0";
+        loaderEls.h2dPacket.style.setProperty("--packet",`${transferP*100}%`);loaderEls.h2dPacket.style.opacity=loadingStage===4?"1":"0";loaderEls.busLabel.textContent=bus.name;
+        document.querySelectorAll("[data-host-step]").forEach(el=>{const i=Number(el.dataset.hostStep);el.classList.toggle("active",loadingStage===i);el.classList.toggle("done",loadingStage>i);});
+        loaderEls.pinned.classList.toggle("active",loadingStage===2||loadingStage===4);loaderEls.pinned.textContent=loadingStage===4?"Pinned Buffer · 异步 DMA 正在搬运 Tensor":loadingStage===2?"Pinned Buffer · 正在接收文件页":"Pinned Host Buffer · 等待权重块";
+
+        const visible=Math.min(plan.usedGpus,8),runtimeLoaded=engineP,weightLoaded=transferP;
+        loaderEls.gpuCaption.textContent=`${loadingStrategies[plan.strategy].toUpperCase()} · ${plan.usedGpus} DEVICE${plan.usedGpus>1?"S":""}`;
+        loaderEls.gpuCluster.innerHTML=Array.from({length:visible},(_,i)=>{
+          const weight=plan.weightPer*weightLoaded,kv=plan.kvPer*runtimeLoaded,runtime=plan.runtimePer*runtimeLoaded,total=weight+kv+runtime;
+          let placement="完整模型 · 单卡";
+          if(plan.strategy==="tp")placement=`所有层 · Tensor stripe ${i+1}/${plan.usedGpus}`;
+          if(plan.strategy==="pp"){const start=Math.floor(i*model.layers/plan.usedGpus)+1,end=Math.floor((i+1)*model.layers/plan.usedGpus);placement=`Layer ${start}–${end}`;}
+          if(plan.strategy==="ep")placement=`Attention shard + Expert group ${i+1}`;
+          return `<div class="gpu-load-card"><div class="gpu-load-head"><b>GPU ${i}</b><span>${total.toFixed(1)} / ${hardware.per}GiB</span></div><div class="gpu-memory-shell"><i class="gpu-mem-seg weight" style="--w:${Math.min(100,weight/hardware.per*100)}%"></i><i class="gpu-mem-seg kv" style="--w:${Math.min(100,kv/hardware.per*100)}%"></i><i class="gpu-mem-seg runtime" style="--w:${Math.min(100,runtime/hardware.per*100)}%"></i></div><div class="gpu-layer-caption">${escapeHTML(placement)}</div></div>`;
+        }).join("")+(plan.usedGpus>visible?`<div class="gpu-more">＋ ${plan.usedGpus-visible} GPUs · 同类分片</div>`:"");
+
+        const stage=loadingStages[loadingStage];
+        loaderEls.current.classList.toggle("failed",loadingFailed);
+        loaderEls.currentTitle.textContent=loadingFailed?"加载失败：GPU 显存无法完成当前放置计划":loadingStarted?stage.title:"等待开始：模型文件仍在存储中";
+        loaderEls.currentText.textContent=loadingFailed?`当前方案每卡需要约 ${plan.needPer.toFixed(1)}GiB，但目标 GPU 只有 ${hardware.per}GiB。请选择更多 GPU、更低精度权重或更小 KV 预留。`:loadingStarted?stage.text:"选择模型、GPU 与加载路径，然后播放。推理请求不会每次重新加载模型；引擎通常常驻并复用这些权重。";
+        loaderEls.currentTensor.textContent=loadingFailed?"CUDA out of memory":loadingStarted?stage.tensor:"engine = unloaded";
+        const weightPct=Math.min(100,plan.weightPer/hardware.per*100),kvPct=Math.min(100,plan.kvPer/hardware.per*100),runtimePct=Math.min(100,plan.runtimePer/hardware.per*100);
+        loaderEls.budgetWeight.style.setProperty("--w",`${weightPct}%`);loaderEls.budgetKv.style.setProperty("--w",`${kvPct}%`);loaderEls.budgetRuntime.style.setProperty("--w",`${runtimePct}%`);
+        loaderEls.budgetWeightText.textContent=loadSize(plan.weightPer);loaderEls.budgetKvText.textContent=`${plan.kvPer.toFixed(1)} GiB`;loaderEls.budgetRuntimeText.textContent=loadSize(plan.runtimePer);
+        loaderEls.fitNote.classList.toggle("bad",!plan.fit);loaderEls.fitNote.textContent=plan.fit?`每卡最终约 ${plan.needPer.toFixed(1)}GiB / ${hardware.per}GiB，规划可容纳；剩余空间约 ${(hardware.per-plan.needPer).toFixed(1)}GiB。`:`每卡最终约 ${plan.needPer.toFixed(1)}GiB / ${hardware.per}GiB，至少还缺 ${(plan.needPer-hardware.per).toFixed(1)}GiB；加载会在申请显存阶段失败。`;
+        loaderEls.log.innerHTML=loadingLog.map(item=>`<div class="load-log-row"><time>${item.step}</time><span>${escapeHTML(item.message)}</span></div>`).join("");
+      }
+      loaderEls.play.addEventListener("click",toggleModelLoading);loaderEls.step.addEventListener("click",()=>{if(loadingFailed||loadingStage===7&&loadingProgress>=1)resetModelLoading();else advanceModelLoading();});loaderEls.reset.addEventListener("click",resetModelLoading);
+      [loaderEls.model,loaderEls.hardware,loaderEls.strategy,loaderEls.source,loaderEls.bus,loaderEls.kv].forEach(el=>el.addEventListener("change",resetModelLoading));
+
       const calcEls = {
         capacity:$("vramCapacity"), hardware:$("vramHardwareLabel"), limitLabel:$("vramLimitLabel"),
         param: $("paramB"), bits: $("quantBits"), layers: $("layerCount"), heads: $("kvHeads"), dim: $("headDim"),
@@ -2722,6 +3047,7 @@
       resetManager();
       renderLongContext();
       renderFrontier();
+      resetModelLoading();
       renderQuantization();
       render();
       updateMemory();
